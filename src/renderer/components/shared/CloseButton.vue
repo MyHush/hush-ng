@@ -27,10 +27,11 @@
   .close {
     position: absolute;
     right: 15px;
-    top: 10px;
+    top: 15px;
     width: 22px;
     height: 22px;
     opacity: 0.3;
+    z-index: 3;
     -webkit-app-region: no-drag;
   }
 

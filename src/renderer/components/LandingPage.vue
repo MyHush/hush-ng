@@ -35,7 +35,9 @@
 
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
-  import CloseButton from './CloseButton'
+  import CloseButton from './shared/CloseButton'
+
+  var store = require('store')
 
   export default {
     name: 'landing-page',
@@ -43,6 +45,11 @@
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
+      }
+    },
+    mounted: function() {
+      if (store.get('setupComplete') == true) {
+        this.$router.push('/wallet')
       }
     }
   }

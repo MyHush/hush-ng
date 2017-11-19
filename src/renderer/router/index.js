@@ -16,6 +16,11 @@ export default new Router({
       component: require('@/components/Install').default
     },
     {
+      path: '/wallet',
+      name: 'wallet',
+      component: require('@/components/Wallet').default
+    },
+    {
       path: '*',
       redirect: '/'
     }
