@@ -47,7 +47,7 @@
         fullBalance: 0,
         tBalance: 0,
         zBalance: 0,
-        blockHeight: null,
+        blockHeight: 0,
       }
     },
     methods: {
@@ -61,12 +61,13 @@
         // Start Hushd
         var exec = ''
         if (require('os').platform() == 'linux') {
-          exec = 'cd ' + execPath + '&& ./hushd -daemon'
+          exec = 'cd ' + execPath + '&& ./hushd'
         } else if (require('os').platform() == 'win32') {
-          exec = 'cd ' + execPath + '&& hushd.exe -daemon'
+          exec = execPath + '\\hushd.exe'
+          console.log(exec)
         }
         cmd.get(
-          `cd ` + execPath + '&& ./hushd -daemon',
+          exec,
           function(err, data, stderr){
               if (!err) {
                  console.log('HushNG: Could not start hushd!')
@@ -81,7 +82,7 @@
           port: 8822,
           user: 'rpcuser',
           pass: store.get('connection').rpcpassword,
-          timeout: 30000
+          timeout: 60000
         });
 
         Repeat(function() {
@@ -95,7 +96,7 @@
       }
     },
     mounted: function() {
-      this.startPolling(1000)
+      this.startPolling(3000)
     }
   }
 </script>
