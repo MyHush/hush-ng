@@ -2,8 +2,8 @@
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
     <ul class="icons">
-      <li class="active"><img class="icon" src="~@/assets/icons/wallet.png" style="font-color: #fff;" /></li>
-      <li><img class="icon" src="~@/assets/icons/comment.png" style="font-color: #fff;" /></li>
+      <li class="active"><img class="icon" src="~@/assets/icons/wallet.svg" style="font-color: #fff;" /></li>
+      <li><img class="icon" src="~@/assets/icons/comment.svg" style="font-color: #fff;" /></li>
     </ul>
   </div>
 </template>

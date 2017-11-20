@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 30 33"
+	 style="enable-background:new 0 0 30 33;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+</style>
+<title>wallet</title>
+<desc>Created with Sketch Beta.</desc>
+<g id="Page-1" sketch:type="MSPage">
+	<g id="Icon-Set" transform="translate(-257.000000, -774.000000)" sketch:type="MSLayerGroup">
+		<path id="wallet" sketch:type="MSShapeGroup" class="st0" d="M285,793h-5c-0.6,0-1,0.4-1,1v4c0,0.6,0.4,1,1,1h5v5c0,0.6-0.4,1-1,1
+			h-24c-0.6,0-1-0.4-1-1v-19h25c0.6,0,1,0.4,1,1V793L285,793z M285,796v1h-4v-1v-1h4V796L285,796z M283,777v6h-19.5L283,777L283,777
+			z M285,783v-7c0-0.6-0.2-0.9-0.8-1.1c-0.4-0.2-0.8-0.1-1.2,0.1l-26,8v22c0,1.1,0.9,2,2,2h26c1.1,0,2-0.9,2-2v-20
+			C287,783.9,286.1,783,285,783L285,783z"/>
+	</g>
+</g>
+</svg>
