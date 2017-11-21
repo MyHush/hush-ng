@@ -34,15 +34,15 @@
               })
 
               client.stop(function(err, data, resHeaders) {
-                if (!err) {
+                if (err) {
                    console.log('HushNG: Could not terminate hushd process!')
                 } else {
                    console.log('HushNG: Terminated hushd.exe')
+                   require('electron').remote.getCurrentWindow().close();
                 }
               })
             }
           }
-          require('electron').remote.getCurrentWindow().close();
         }
     }
   }
