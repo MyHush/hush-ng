@@ -219,11 +219,14 @@
             stream.write("# Creation date: " + compileTime + "\n\n")
             stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\n\n")
             stream.write("# Start Hush Configuration\n\n")
-            stream.write("daemon=1\nserver=1\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1")
+            stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=node.myhush.network")
             stream.end();
           });
           self.installSteps[2].success = true
         } else if (platform == "win32") {
+          if (!fs.existsSync(process.env.APPDATA + '\\Hush')) {
+            fs.mkdirSync(process.env.APPDATA + '\\Hush')
+          }
           var path = process.env.APPDATA + '\\Hush'
           var stream = fs.createWriteStream(path + "\\hush.conf")
           var rpcpassword = Math.random().toString(36).slice(2)
@@ -236,7 +239,7 @@
             stream.write("# Creation date: " + compileTime + "\r\n")
             stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\r\n")
             stream.write("# Start Hush Configuration\r\n")
-            stream.write("daemon=1\r\nserver=1\r\nrpcallowip=127.0.0.1\r\nrpcuser=rpcuser\r\nrpcpassword=" + rpcpassword + "\r\n\nshowmetrics=1")
+            stream.write("daemon=1\r\nserver=0\r\nrpcallowip=127.0.0.1\r\nrpcuser=rpcuser\r\nrpcpassword=" + rpcpassword + "\r\n\nshowmetrics=1\r\naddnode=explorer.myhush.org\r\naddnode=node.myhush.network")
             stream.end();
           });
           self.installSteps[2].success = true

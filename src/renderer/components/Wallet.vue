@@ -96,7 +96,7 @@
       }
     },
     mounted: function() {
-      this.startPolling(1000)
+      this.startPolling(2500)
     }
   }
 </script>

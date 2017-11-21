@@ -27,7 +27,7 @@
           { 'name': 'addresses', 'active': true },
           { 'name': 'transactions', 'active': false }
         ],
-        blockHeight: null
+        blockHeight: 0
       }
     },
     methods: {
@@ -46,7 +46,6 @@
         var self = this
         Repeat(function() {
           self.blockHeight = store.get('getinfo').blocks
-          console.log("dd")
         }).every(interval, 'ms').start.now();
       }
     },
