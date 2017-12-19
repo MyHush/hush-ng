@@ -18,7 +18,7 @@
   },
   "build": {
     "productName": "hush-ng",
-    "appId": "org.simulatedgreg.electron-vue",
+    "appId": "hushorg.hushng",
     "directories": {
       "output": "build"
     },
@@ -53,7 +53,6 @@
   "dependencies": {
     "axios": "^0.16.1",
     "bitcoin": "^3.0.1",
-    "electron-rebuild": "^1.6.0",
     "node-cmd": "^3.0.0",
     "repeat": "^0.0.6",
     "request": "^2.83.0",
