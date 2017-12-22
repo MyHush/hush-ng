@@ -47,6 +47,8 @@
         fullBalance: 0,
         tBalance: 0,
         zBalance: 0,
+        tAddresses: [],
+        zAddresses: [],
         blockHeight: 0,
       }
     },
@@ -87,10 +89,18 @@
 
         Repeat(function() {
           var hushData = {}
+          // Get Baseline Info
           client.getInfo(function(err, data, resHeaders) {
             if (err) return console.log(err);
-            store.set('getinfo', data)
+            store.set('getInfo', data)
             console.log('Blockchain data:',  JSON.stringify(data));
+          });
+
+          // Get Wallet Info
+          client.getWalletInfo(function(err, data, resHeaders) {
+            if (err) return console.log(err);
+            store.set('getWalletInfo', data)
+            console.log('Wallet data:',  JSON.stringify(data));
           });
         }).every(interval, 'ms').start.now();
       }

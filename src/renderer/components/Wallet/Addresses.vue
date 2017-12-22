@@ -16,15 +16,22 @@
     <div class="address-list" id="t-addr">
       <div class="type">T-ADDR</div>
       <div class="copy">click on an address to copy it</div>
-      <div class="address-details">
-        <div class="balance">394</div>
-        <div class="address">t1aYp69J595Rhaof2AEFuEvJjLWVboddB2x</div>
-      </div>
+      <ul class="address-details">
+        <li v-for="address in tAddresses">
+          <div class="balance" style="clear: both;">{{ address.balance }}</div>
+          <div class="address">{{ address.address }}</div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
+  const Repeat = require('repeat')
+  var request = require('request')
+  var store = require('store')
+  const bitcoin = require('bitcoin')
+
   export default {
     name: 'addresses',
     components: {  },
@@ -35,7 +42,40 @@
       }
     },
     methods: {
+      open (link) {
+        this.$electron.shell.openExternal(link)
+      },
+      startPolling (interval) {
+        var self = this
 
+        var client = new bitcoin.Client({
+          port: 8822,
+          user: store.get('connection').rpcuser,
+          pass: store.get('connection').rpcpassword,
+          timeout: 60000
+        });
+
+        // Get T-Addresses
+        client.getAddressesByAccount('', function(err, data, resHeaders) {
+          if (err) return console.log(err);
+          for (var i = 0; i < data.length; i++) {
+            self.tAddresses.push({"address": data[i], "balance": 0})
+          }
+        });
+
+        Repeat(function() {
+          // Refresh T-Addresses Balances
+          for (var i = 0; i < self.tAddresses.length; i++) {
+            var m = i
+            client.getReceivedByAddress(self.tAddresses[i].address, function(err, data, resHeaders) {
+              self.tAddresses[m].balance = data
+            })
+          }
+        }).every(interval, 'ms').start.now();
+      }
+    },
+    mounted: function() {
+      this.startPolling(10000)
     }
   }
 </script>
@@ -102,9 +142,15 @@
     float: left;
     margin-top: 20px;
     font-size: 11pt;
+    list-style-type: none;
+  }
+
+  .address-details .balance {
+    width: 25px;
   }
 
   .address-list .address-details .address {
+    position: static;
     margin-left: 120px;
   }
 
