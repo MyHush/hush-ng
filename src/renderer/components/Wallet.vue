@@ -80,7 +80,7 @@
 
         var client = new bitcoin.Client({
           port: 8822,
-          user: 'rpcuser',
+          user: store.get('connection').rpcuser,
           pass: store.get('connection').rpcpassword,
           timeout: 60000
         });

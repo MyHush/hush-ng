@@ -2,8 +2,10 @@
   <div>
     <div id="wallet-menu">
       <div class="menu-title">Wallet</div>
-      <div class="block-height">{{ blockHeight }}</div>
-      <div class="block-text">Blockheight</div>
+      <ul class="block-text chain-data">
+        <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
+        <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
+      </ul>
       <ul class="wallet-sections" v-for="(item, index) in walletSections">
         <li v-bind:class="{ active: item.active }" style="padding: 0px 10px 0px 10px;" v-on:click="toggle(index)">{{ item.name }}</li>
       </ul>
@@ -27,7 +29,8 @@
           { 'name': 'addresses', 'active': true },
           { 'name': 'transactions', 'active': false }
         ],
-        blockHeight: 0
+        blockHeight: 0,
+        peerCount: 0
       }
     },
     methods: {
@@ -46,6 +49,7 @@
         var self = this
         Repeat(function() {
           self.blockHeight = store.get('getinfo').blocks
+          self.peerCount = store.get('getinfo').connections
         }).every(interval, 'ms').start.now();
       }
     },
@@ -82,17 +86,23 @@
 
   .block-text {
     position: fixed;
-    right: 110px;
+    right: 40px;
     margin: 4px 15px 0px 0px;
   }
 
-  .block-height {
+  .chain-data {
     float: right;
     margin-top: 4px;
     margin-right: 40px;
     font-size: 12pt;
     font-weight: 300;
     text-transform: uppercase;
+    list-style-type: none;
+  }
+
+  .chain-data li {
+    margin-left: 15px;
+    display: inline;
   }
 
   .wallet-sections {

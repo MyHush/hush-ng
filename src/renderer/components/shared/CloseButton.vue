@@ -10,40 +10,24 @@
   export default {
     name: 'close-button',
     methods: {
-        quit () {
-          if (store.get('setupComplete') == true) {
-            // Kill Hushd process
-            if (require('os').platform() == 'linux') {
-              cmd.get(
-                'pkill hushd',
-                function(err, data, stderr){
-                    if (!err) {
-                       console.log('HushNG: Could not terminate hushd process!')
-                    } else {
-                       console.log('HushNG: Terminated hushd.exe')
-                    }
-                }
-              )
-            }
-            else if (require('os').platform() == 'win32') {
-              var client = new bitcoin.Client({
-                port: 8822,
-                user: 'rpcuser',
-                pass: store.get('connection').rpcpassword,
-                timeout: 60000
-              })
+      quit () {
+        // Kill Hushd process
+        var client = new bitcoin.Client({
+          port: 8822,
+          user: store.get('connection').rpcuser,
+          pass: store.get('connection').rpcpassword,
+          timeout: 60000
+        })
 
-              client.stop(function(err, data, resHeaders) {
-                if (err) {
-                   console.log('HushNG: Could not terminate hushd process!')
-                } else {
-                   console.log('HushNG: Terminated hushd.exe')
-                   require('electron').remote.getCurrentWindow().close();
-                }
-              })
-            }
+        client.stop(function(err, data, resHeaders) {
+          if (err) {
+             console.log('HushNG: Could not terminate hushd process!')
+          } else {
+             console.log('HushNG: Terminated hushd.exe')
+             require('electron').remote.getCurrentWindow().close();
           }
-        }
+        })
+      }
     }
   }
 </script>
