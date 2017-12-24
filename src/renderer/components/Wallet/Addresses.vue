@@ -55,27 +55,13 @@
           timeout: 60000
         });
 
-        // Get T-Addresses
-        client.getAddressesByAccount('', function(err, data, resHeaders) {
-          if (err) return console.log(err);
-          for (var i = 0; i < data.length; i++) {
-            self.tAddresses.push({"address": data[i], "balance": 0})
-          }
-        });
-
         Repeat(function() {
-          // Refresh T-Addresses Balances
-          for (var i = 0; i < self.tAddresses.length; i++) {
-            var m = i
-            client.getReceivedByAddress(self.tAddresses[i].address, function(err, data, resHeaders) {
-              self.tAddresses[m].balance = data
-            })
-          }
+          self.tAddresses = store.get('tAddresses')
         }).every(interval, 'ms').start.now();
       }
     },
     mounted: function() {
-      this.startPolling(10000)
+      this.startPolling(1000)
     }
   }
 </script>

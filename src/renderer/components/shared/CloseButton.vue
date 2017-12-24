@@ -12,21 +12,7 @@
     methods: {
       quit () {
         // Kill Hushd process
-        var client = new bitcoin.Client({
-          port: 8822,
-          user: store.get('connection').rpcuser,
-          pass: store.get('connection').rpcpassword,
-          timeout: 60000
-        })
-
-        client.stop(function(err, data, resHeaders) {
-          if (err) {
-             console.log('HushNG: Could not terminate hushd process!')
-          } else {
-             console.log('HushNG: Terminated hushd.exe')
-             require('electron').remote.getCurrentWindow().close();
-          }
-        })
+        require('electron').remote.getCurrentWindow().close();
       }
     }
   }

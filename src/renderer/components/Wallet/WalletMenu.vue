@@ -47,6 +47,7 @@
       },
       startPolling (interval) {
         var self = this
+
         Repeat(function() {
           self.blockHeight = store.get('getInfo').blocks
           self.peerCount = store.get('getInfo').connections

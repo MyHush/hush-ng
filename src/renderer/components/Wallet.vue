@@ -91,9 +91,16 @@
           var hushData = {}
           // Get Baseline Info
           client.getInfo(function(err, data, resHeaders) {
-            if (err) return console.log(err);
-            store.set('getInfo', data)
-            console.log('Blockchain data:',  JSON.stringify(data));
+            if (err) {
+              var getInfo = {}
+              getInfo.connections = 0
+              getInfo.blocks = 'Scanning...'
+              store.set('getInfo', getInfo)
+              console.log(err);
+            } else {
+              store.set('getInfo', data)
+              console.log('Blockchain data:',  JSON.stringify(data));
+            }
           });
 
           // Get Wallet Info
@@ -101,6 +108,19 @@
             if (err) return console.log(err);
             store.set('getWalletInfo', data)
             console.log('Wallet data:',  JSON.stringify(data));
+          });
+
+          // Get T-Addresses & Refresh Balances
+          client.getAddressesByAccount('', function(err, data, resHeaders) {
+            if (err) return console.log(err);
+            var tAddr = []
+            for (var i = 0; i < data.length; i++) {
+              var address = data[i]
+              client.getReceivedByAddress(address, function(err, data, resHeaders) {
+                tAddr.push({"address": address, "balance": data})
+                store.set('tAddresses', tAddr)
+              })
+            }
           });
         }).every(interval, 'ms').start.now();
       }
