@@ -7,14 +7,14 @@
       <div class="bottom-row">
         <div class="box">
           <ul id="texts">
-            <li>T BALANCE:</li>
-            <li>Z BALANCE:</li>
-            <li>TOTAL BALANCE:</li>
+            <li>T:</li>
+            <li>Z:</li>
+            <li>TOTAL:</li>
           </ul>
           <ul id="balances">
-            <li>460 HUSH</li>
-            <li>460 HUSH</li>
-            <li>460 HUSH</li>
+            <li>{{ tBalance }} HUSH</li>
+            <li>{{ zBalance }} HUSH</li>
+            <li>{{ fullBalance }} HUSH</li>
           </ul>
         </div>
         <div class="box alt">
@@ -110,18 +110,40 @@
             console.log('Wallet data:',  JSON.stringify(data));
           });
 
+          //Get Z Balance
+          client.cmd('z_gettotalbalance', function(err, balance, resHeaders){
+            if (err) return console.log(err);
+            store.set('z_balance', balance)
+            self.fullBalance = store.get('z_balance').total
+            self.tBalance = store.get('z_balance').transparent
+            self.zBalance = store.get('z_balance').private
+          });
+
+          client.getWalletInfo(function(err, data, resHeaders) {
+            if (err) return console.log(err);
+            store.set('getWalletInfo', data)
+            self.fullBalance = store.get('getInfo').balance
+            console.log('Wallet data:',  JSON.stringify(data));
+          });
+
           // Get T-Addresses & Refresh Balances
           client.getAddressesByAccount('', function(err, data, resHeaders) {
             if (err) return console.log(err);
             var tAddr = []
+            var m = 0
             for (var i = 0; i < data.length; i++) {
-              var address = data[i]
-              client.getReceivedByAddress(address, function(err, data, resHeaders) {
-                tAddr.push({"address": address, "balance": data})
-                store.set('tAddresses', tAddr)
-              })
+              tAddr.push({"address": data[i], "balance": 0})
             }
+            store.set('tAddresses', tAddr)
           });
+
+          var taddr = store.get('tAddresses')
+          for (var i = 0; i < taddr.length; i++) {
+            client.getReceivedByAddress(store.get('tAddresses')[i].address, function(err, data, resHeaders) {
+              taddr.balance = data
+              store.set('tAddresses', taddr)
+            });
+          }
         }).every(interval, 'ms').start.now();
       }
     },
