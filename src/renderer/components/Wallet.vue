@@ -87,16 +87,26 @@
           timeout: 60000
         });
 
-        // Get T-Addresses & Refresh Balances
+        // Get T-Addresses
         client.getAddressesByAccount('', function(err, data, resHeaders) {
           if (err) return console.log(err);
           var tAddr = []
-          var m = 0
           for (var i = 0; i < data.length; i++) {
             tAddr.push({"address": data[i], "balance": 0})
           }
           console.log('Scanning for T-Addrs... Found: ' + tAddr.length + '\n' + JSON.stringify(tAddr))
           store.set('tAddresses', tAddr)
+        });
+
+        // Get Z-Addresses
+        client.cmd('z_listaddresses', function(err, data, resHeaders){
+          if (err) return console.log(err);
+          var zAddr = []
+          for (var i = 0; i < data.length; i++) {
+            zAddr.push({"address": data[i], "balance": 0})
+          }
+          console.log('Scanning for Z-Addrs... Found: ' + zAddr.length + '\n' + JSON.stringify(zAddr))
+          store.set('zAddresses', zAddr)
         });
 
         Repeat(function() {
@@ -137,12 +147,21 @@
             self.fullBalance = store.get('getInfo').balance
           });
 
-          // Refresh T Balances
+          // Refresh T-Balances
           var taddr = store.get('tAddresses')
           for (let i = 0; i < taddr.length; i++) {
             client.getReceivedByAddress(taddr[i].address, function(err, data, resHeaders) {
               taddr[i].balance = data
               store.set('tAddresses', taddr)
+            });
+          }
+
+          // Refresh Z-Balances
+          var zaddr = store.get('zAddresses')
+          for (let i = 0; i < zaddr.length; i++) {
+            client.cmd('z_getbalance', zaddr[i].address, function(err, data, resHeaders) {
+              zaddr[i].balance = data
+              store.set('zAddresses', zaddr)
             });
           }
         }).every(interval, 'ms').start.now();

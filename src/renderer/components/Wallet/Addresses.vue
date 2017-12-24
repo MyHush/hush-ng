@@ -8,10 +8,12 @@
     <div class="address-list" id="z-addr">
       <div class="type">Z-ADDR</div>
       <div class="copy">click on an address to copy it</div>
-      <div class="address-details">
-        <div class="balance">394</div>
-        <div class="address">t1aYp69J595Rhaof2AEFuEvJjLWVboddB2x</div>
-      </div>
+      <ul class="address-details">
+        <li v-for="address in zAddresses">
+          <div class="balance" style="clear: both;">{{ address.balance }}</div>
+          <div class="address">{{ address.address }}</div>
+        </li>
+      </ul>
     </div>
     <div class="address-list" id="t-addr">
       <div class="type">T-ADDR</div>
@@ -57,6 +59,7 @@
 
         Repeat(function() {
           self.tAddresses = store.get('tAddresses')
+          self.zAddresses = store.get('zAddresses')
         }).every(interval, 'ms').start.now();
       }
     },
@@ -117,7 +120,7 @@
 
   .address-list .copy {
     float: left;
-    margin-left: 83px;
+    margin-left: 88px;
     font-weight: 400;
     font-size: 11pt;
     color: #5e5e5e;
@@ -129,6 +132,7 @@
     margin-top: 20px;
     font-size: 11pt;
     list-style-type: none;
+    padding: 10px 0px 10px 0px;
   }
 
   .address-details .balance {
@@ -138,6 +142,10 @@
   .address-list .address-details .address {
     position: static;
     margin-left: 120px;
+    max-width: 80%;
+    padding: 0px 5px 0px 5px;
+    word-break: break-all;
+    line-height: 12px;
   }
 
   .address-list .address-details .balance, .address-list .address-details .address  {
