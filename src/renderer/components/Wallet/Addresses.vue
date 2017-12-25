@@ -11,7 +11,7 @@
       <ul class="address-details">
         <li v-for="address in zAddresses">
           <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address">{{ address.address }}</div>
+          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
         </li>
       </ul>
     </div>
@@ -21,7 +21,7 @@
       <ul class="address-details">
         <li v-for="address in tAddresses">
           <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address">{{ address.address }}</div>
+          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
         </li>
       </ul>
     </div>
@@ -33,6 +33,7 @@
   var request = require('request')
   var store = require('store')
   const bitcoin = require('bitcoin')
+  import copy from 'copy-to-clipboard';
 
   export default {
     name: 'addresses',
@@ -46,6 +47,10 @@
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
+      },
+      copy (value) {
+        copy(value)
+        alert('Copied ' + value + ' to clipboard.')
       },
       startPolling (interval) {
         var self = this
@@ -146,6 +151,8 @@
     padding: 0px 5px 0px 5px;
     word-break: break-all;
     line-height: 12px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
   }
 
   .address-list .address-details .balance, .address-list .address-details .address  {
