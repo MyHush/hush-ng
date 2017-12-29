@@ -51,6 +51,7 @@
     }
   },
   "dependencies": {
+    "7zip-bin-mac": "^1.0.1",
     "axios": "^0.16.1",
     "bitcoin": "^3.0.1",
     "copy-to-clipboard": "^3.0.8",
