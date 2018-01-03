@@ -25,6 +25,26 @@
         </li>
       </ul>
     </div>
+    <div class="bottom-row">
+      <div class="box">
+        <ul id="texts">
+          <li>T:</li>
+          <li>Z:</li>
+          <li>TOTAL:</li>
+        </ul>
+        <ul id="balances">
+          <li>{{ tBalance }} HUSH</li>
+          <li>{{ zBalance }} HUSH</li>
+          <li>{{ fullBalance }} HUSH</li>
+        </ul>
+      </div>
+      <div class="box alt">
+        <p>For more on Z and T addresses, visit the following links:</p>
+        <div class="links">
+          <a @click="open('https://discord.gg/VfaZjyR')">MyHush.org</a>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,6 +60,9 @@
     components: {  },
     data () {
       return {
+        fullBalance: 0,
+        tBalance: 0,
+        zBalance: 0,
         tAddresses: [],
         zAddresses: []
       }
@@ -55,16 +78,12 @@
       startPolling (interval) {
         var self = this
 
-        var client = new bitcoin.Client({
-          port: 8822,
-          user: store.get('connection').rpcuser,
-          pass: store.get('connection').rpcpassword,
-          timeout: 60000
-        });
-
         Repeat(function() {
           self.tAddresses = store.get('tAddresses')
           self.zAddresses = store.get('zAddresses')
+          self.fullBalance = store.get('z_balance').total
+          self.tBalance = store.get('z_balance').transparent
+          self.zBalance = store.get('z_balance').private
         }).every(interval, 'ms').start.now();
       }
     },
@@ -137,7 +156,10 @@
     margin-top: 20px;
     font-size: 11pt;
     list-style-type: none;
+    width: 100%;
     padding: 10px 0px 10px 0px;
+    overflow: auto;
+    -webkit-app-region: no-drag;
   }
 
   .address-details .balance {

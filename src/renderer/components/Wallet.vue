@@ -3,27 +3,7 @@
     <side-menu></side-menu>
     <wallet-menu></wallet-menu>
     <div class="inner-content">
-      <addresses></addresses>
-      <div class="bottom-row">
-        <div class="box">
-          <ul id="texts">
-            <li>T:</li>
-            <li>Z:</li>
-            <li>TOTAL:</li>
-          </ul>
-          <ul id="balances">
-            <li>{{ tBalance }} HUSH</li>
-            <li>{{ zBalance }} HUSH</li>
-            <li>{{ fullBalance }} HUSH</li>
-          </ul>
-        </div>
-        <div class="box alt">
-          <p>For more on Z and T addresses, visit the following links:</p>
-          <div class="links">
-            <a @click="open('https://discord.gg/VfaZjyR')">MyHush.org</a>
-          </div>
-        </div>
-      </div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -44,9 +24,6 @@
     components: { WalletMenu, SideMenu, Addresses },
     data () {
       return {
-        fullBalance: 0,
-        tBalance: 0,
-        zBalance: 0,
         tAddresses: [],
         zAddresses: [],
         blockHeight: 0,
@@ -136,15 +113,18 @@
           client.cmd('z_gettotalbalance', function(err, balance, resHeaders){
             if (err) return console.log(err);
             store.set('z_balance', balance)
-            self.fullBalance = store.get('z_balance').total
-            self.tBalance = store.get('z_balance').transparent
-            self.zBalance = store.get('z_balance').private
           });
 
           client.getWalletInfo(function(err, data, resHeaders) {
             if (err) return console.log(err);
             store.set('getWalletInfo', data)
             self.fullBalance = store.get('getInfo').balance
+          });
+
+          // Get transactions
+          client.listTransactions(function(err, data, resHeaders) {
+            if (err) return console.log(err);
+            store.set('transactions', data)
           });
 
           // Refresh T-Balances

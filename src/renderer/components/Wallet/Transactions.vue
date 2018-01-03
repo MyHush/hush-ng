@@ -1,17 +1,36 @@
 <template>
-  <div>
-    <div id="wallet-menu">
-      <div class="menu-title">Wallet</div>
-      <ul class="wallet-sections" v-for="(item, index) in walletSections">
-        <li v-bind:class="{ active: item.active }" style="padding: 0px 10px 0px 10px;" v-on:click="toggle(index)">{{ item.name }}</li>
+  <div id="addresses">
+    <p id="intro">
+      Transactions can be sent<br />
+      <span>from a Z-ADDR or T-ADDR depending on your preference</span>
+    </p>
+    <a class="button" id="generate-address">New address</a>
+    <div class="address-list" id="z-addr">
+      <div class="type">Create a transaction</div>
+      <div class="copy">Spendable Balance: <span>{{ balanceAvailable }}</span></div>
+      <ul class="address-details">
+        <li v-for="address in zAddresses">
+          <div class="balance" style="clear: both;">{{ address.balance }}</div>
+          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
+        </li>
       </ul>
     </div>
-    <close-button></close-button>
+    <div class="address-list" id="t-addr">
+      <div class="type">Transaction History</div>
+      <div class="copy">click on an address to copy it</div>
+      <ul class="address-details">
+        <li v-for="tx in transactions">
+          {{ tx.category }} :::: {{ tx.amount }} :::: {{ tx.address }} :::: {{ tx.confirmations }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
   import CloseButton from '../shared/CloseButton'
+  const Repeat = require('repeat')
+  var store = require('store')
 
   export default {
     name: 'wallet-menu',
@@ -21,7 +40,9 @@
         walletSections: [
           { 'name': 'addresses', 'active': true },
           { 'name': 'transactions', 'active': false }
-        ]
+        ],
+        balanceAvailable: store.get('getWalletInfo').balance - store.get('getWalletInfo').unconfirmed_balance,
+        transactions: null
       }
     },
     methods: {
@@ -36,7 +57,17 @@
           }
         }
 
+      },
+      startPolling (interval) {
+        var self = this
+
+        Repeat(function() {
+          self.transactions = store.get('transactions')
+        }).every(interval, 'ms').start.now();
       }
+    },
+    mounted: function() {
+      this.startPolling(1000)
     }
   }
 </script>
@@ -49,47 +80,8 @@
     color: #2d2d2d;
   }
 
-  div#wallet-menu {
-    position: absolute;
-    width: 100vw;
-    background-color: #fff;
-    padding: 10px 10px 10px 88.3px;
-    border-bottom: 2px solid #e3e3e3;
-    z-index: 1;
-  }
-
-  .menu-title {
-    float: left;
-    font-size: 17pt;
-    font-weight: 700;
-  }
-
-  .wallet-sections {
-    float: left;
-    margin-left: 30px;
-    margin-top: -10px;
-    margin-bottom: -11px;
-    height: 56px;
-    -webkit-app-region: no-drag;
-  }
-
-  .wallet-sections li {
-    list-style-type: none;
-    display: inline-block;
-    font-size: 12pt;
-    font-weight: 500;
-    text-transform: uppercase;
-    height: 100%;
-    line-height: 56px;
-    margin: 0px -15px 0px -15px;
-  }
-
-  .wallet-sections li:hover {
-    cursor: pointer;
-    background-color: #e2e2e2;
-  }
-
-  .wallet-sections .active {
-    border-bottom: 4px solid #cacaca;
+  .address-list span {
+    font-weight: 600;
+    color: #2f77f7;
   }
 </style>

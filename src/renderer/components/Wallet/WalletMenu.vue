@@ -7,7 +7,7 @@
         <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
       </ul>
       <ul class="wallet-sections" v-for="(item, index) in walletSections">
-        <li v-bind:class="{ active: item.active }" style="padding: 0px 10px 0px 10px;" v-on:click="toggle(index)">{{ item.name }}</li>
+        <li v-bind:class="{ active: item.active }" style="padding: 0px 10px 0px 10px;" v-on:click="toggle(index)"><router-link :to="item.path">{{ item.name }}</router-link></li>
       </ul>
     </div>
     <close-button></close-button>
@@ -26,8 +26,8 @@
     data () {
       return {
         walletSections: [
-          { 'name': 'addresses', 'active': true },
-          { 'name': 'transactions', 'active': false }
+          { 'name': 'addresses', 'path': '/wallet/addresses', 'active': true },
+          { 'name': 'transactions', 'path': '/wallet/transactions', 'active': false }
         ],
         blockHeight: 0,
         peerCount: 0
@@ -66,6 +66,11 @@
   * {
     font-family: 'Poppins', sans-serif;
     color: #2d2d2d;
+  }
+
+  a {
+    color: inherit; /* blue colors for links too */
+    text-decoration: inherit; /* no underline */
   }
 
   div#wallet-menu {

@@ -18,7 +18,11 @@ export default new Router({
     {
       path: '/wallet',
       name: 'wallet',
-      component: require('@/components/Wallet').default
+      component: require('@/components/Wallet').default,
+      children: [
+        { path: 'addresses', component: require('@/components/Wallet/Addresses').default },
+        { path: 'transactions', component: require('@/components/Wallet/Transactions').default }
+      ]
     },
     {
       path: '*',
