@@ -6,6 +6,10 @@ related to their wallets, sending + receiving HushList memos and mining.
 Currently we are focused on HushList-related operations, since other basic wallets
 exist. This codebase uses the Electron framework to enable cross-platform support.
 
+## Preview
+
+<img src="https://raw.githubusercontent.com/MyHush/hush-ng/master/static/hush-ng-preview.jpg" alt="Hush-NG preview">
+
 ## Build Setup
 
     # install dependencies
