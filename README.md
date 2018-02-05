@@ -1,18 +1,23 @@
-# hush-ng
+#  Hush Next-Generation
 
-> Hush Next-generation
+The Next Generation Hush GUI will include an integrated experience for users to do tasks
+related to their wallets, sending + receiving HushList memos and mining.
 
-#### Build Setup
+Currently we are focused on HushList-related operations, since other basic wallets
+exist. This codebase uses the Electron framework to enable cross-platform support.
 
-``` bash
-# install dependencies
-npm install
+## Build Setup
 
-# serve with hot reload at localhost:9080
-npm run dev
+    # install dependencies
+    npm install
 
-# build electron application for production
-npm run build
+    # serve with hot reload at localhost:9080
+    npm run dev
 
+    # build electron application for production
+    npm run build
 
-```
+## License
+
+GPLv3
+
