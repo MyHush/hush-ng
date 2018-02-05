@@ -2,11 +2,11 @@
   <div id="addresses">
     <p id="intro">
       Below is a list of your addresses<br />
-      <span>Z-ADDRs are private while T-ADDRs are public</span>
+      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs) </span>
     </p>
     <a class="button" id="generate-address">New address</a>
     <div class="address-list" id="z-addr">
-      <div class="type">Z-ADDR</div>
+      <div class="type">zaddr</div>
       <div class="copy">click on an address to copy it</div>
       <ul class="address-details">
         <li v-for="address in zAddresses">
@@ -16,7 +16,7 @@
       </ul>
     </div>
     <div class="address-list" id="t-addr">
-      <div class="type">T-ADDR</div>
+      <div class="type">taddr</div>
       <div class="copy">click on an address to copy it</div>
       <ul class="address-details">
         <li v-for="address in tAddresses">
@@ -28,8 +28,8 @@
     <div class="bottom-row">
       <div class="box">
         <ul id="texts">
-          <li>T:</li>
-          <li>Z:</li>
+          <li>Transparent (taddr):</li>
+          <li>Shielded (zaddr):</li>
           <li>TOTAL:</li>
         </ul>
         <ul id="balances">
@@ -39,9 +39,9 @@
         </ul>
       </div>
       <div class="box alt">
-        <p>For more on Z and T addresses, visit the following links:</p>
+        <p>For more on shielded and transparent addresses, visit the following links:</p>
         <div class="links">
-          <a @click="open('https://discord.gg/VfaZjyR')">MyHush.org</a>
+          <a @click="open('https://www.myhush.org')">MyHush.org</a>
         </div>
       </div>
     </div>

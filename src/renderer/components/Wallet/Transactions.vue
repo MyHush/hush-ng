@@ -2,7 +2,7 @@
   <div id="addresses">
     <p id="intro">
       Transactions can be sent<br />
-      <span>from a Z-ADDR or T-ADDR depending on your preference</span>
+      <span>from a zaddr or taddr depending on your preference</span>
     </p>
     <a class="button" id="generate-address">New address</a>
     <div class="address-list" id="z-addr">
