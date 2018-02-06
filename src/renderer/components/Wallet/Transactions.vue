@@ -4,16 +4,30 @@
       Transactions can be sent<br />
       <span>from a Z-ADDR or T-ADDR depending on your preference</span>
     </p>
-    <a class="button" id="generate-address">New address</a>
+    
     <div class="address-list" id="z-addr">
       <div class="type">Create a transaction</div>
-      <div class="copy">Spendable Balance: <span>{{ balanceAvailable }}</span></div>
+      <div class="copy">Spendable Balance: <span>{{ availableBalance }}</span></div>
+
       <ul class="address-details">
         <li v-for="address in zAddresses">
           <div class="balance" style="clear: both;">{{ address.balance }}</div>
           <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
         </li>
       </ul>
+      <div class="property">
+        <label>Destination address</label>
+        <input type="text" v-model="destinationAddress" > 
+      </div>
+      <div class="property">
+        <label>Amount </label>
+        <input type="number" v-model="amount" > HUSH
+      </div>
+      <div class="property">
+        <label>Fee </label>
+        <input type="number" v-model="fee"> HUSH
+       </div>
+      <a class="button" id="generate-address">send</a>
     </div>
     <div class="address-list" id="t-addr">
       <div class="type">Transaction History</div>
@@ -28,22 +42,32 @@
 </template>
 
 <script>
+  import { mapState,mapGetters, mapActions } from 'vuex'
   import CloseButton from '../shared/CloseButton'
+
   const Repeat = require('repeat')
   var store = require('store')
 
   export default {
-    name: 'wallet-menu',
+    name: 'transactions',
     components: { CloseButton },
     data () {
       return {
-        walletSections: [
-          { 'name': 'addresses', 'active': true },
-          { 'name': 'transactions', 'active': false }
-        ],
-        balanceAvailable: store.get('getWalletInfo').balance - store.get('getWalletInfo').unconfirmed_balance,
-        transactions: null
+        destinationAddress: null,
+        amount: 0.0,
+        fee: 0.0
       }
+    },
+    computed:{
+      ...mapState([
+        'zAddresses',       
+        'transactions',
+        'availableBalance',  
+      ]),        
+         // mix the getters into computed with object spread operator
+      ...mapGetters([
+        'tAddresses',
+      ])           
     },
     methods: {
       toggle (item) {
@@ -57,17 +81,10 @@
           }
         }
 
-      },
-      startPolling (interval) {
-        var self = this
-
-        Repeat(function() {
-          self.transactions = store.get('transactions')
-        }).every(interval, 'ms').start.now();
       }
+      
     },
     mounted: function() {
-      this.startPolling(1000)
     }
   }
 </script>
@@ -84,4 +101,13 @@
     font-weight: 600;
     color: #2f77f7;
   }
+
+  .property {
+    display:block;
+  }
+  .property label {
+    display:inline;
+    min-width: 250px;
+    width:120pc;
+  } 
 </style>

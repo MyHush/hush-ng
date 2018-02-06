@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div id="wallet-menu">
-      <div class="menu-title">Wallet</div>
+    <div id="addressbook-menu">
+      <div class="menu-title">Addressbook</div>
       <ul class="block-text chain-data">
         <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
         <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
       </ul>
-      <ul class="wallet-sections" v-for="(item, index) in walletSections">
+      <ul class="addressbook-sections" v-for="(item, index) in addressBookSections">
         <li v-bind:class="{ active: item.active }" style="padding: 0px 10px 0px 10px;" v-on:click="toggle(index)"><router-link :to="item.path">{{ item.name }}</router-link></li>
       </ul>
     </div>
@@ -19,13 +19,13 @@
   var store = require('store')
 
   export default {
-    name: 'wallet-menu',
+    name: 'contacts-menu',
     components: { CloseButton },
     data () {
       return {
-        walletSections: [
-          { 'name': 'addresses', 'path': '/wallet/addresses', 'active': true },
-          { 'name': 'transactions', 'path': '/wallet/transactions', 'active': false }
+        addressBookSections: [
+          { 'name': 'addresses', 'path': '/Contacts/Contacts', 'active': true },
+          { 'name': 'groups', 'path': '/Contacts/Groups', 'active': false }
         ]
       }
     },
@@ -39,11 +39,11 @@
       toggle (item) {
         var self = this
         var item  = item
-        for (var i = 0; i < self.walletSections.length; i++) {
+        for (var i = 0; i < self.addressBookSections.length; i++) {
           if (i == item) {
-            self.walletSections[i].active = true
+            self.addressBookSections[i].active = true
           } else {
-            self.walletSections[i].active = false
+            self.addressBookSections[i].active = false
           }
         }
       }
@@ -67,7 +67,7 @@
     text-decoration: inherit; /* no underline */
   }
 
-  div#wallet-menu {
+  div#addressbook-menu {
     position: absolute;
     width: 100vw;
     background-color: #fff;
@@ -105,7 +105,7 @@
     display: inline;
   }
 
-  .wallet-sections {
+  .addressbook-sections {
     float: left;
     margin-left: 30px;
     margin-top: -10px;
@@ -114,7 +114,7 @@
     -webkit-app-region: no-drag;
   }
 
-  .wallet-sections li {
+  .addressbook-sections li {
     list-style-type: none;
     display: inline-block;
     font-size: 12pt;
@@ -125,12 +125,12 @@
     margin: 0px -15px 0px -15px;
   }
 
-  .wallet-sections li:hover {
+  .addressbook-sections li:hover {
     cursor: pointer;
     background-color: #e2e2e2;
   }
 
-  .wallet-sections .active {
+  .addressbook-sections .active {
     border-bottom: 4px solid #cacaca;
   }
 </style>

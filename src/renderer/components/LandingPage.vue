@@ -1,5 +1,5 @@
 <template>
-  <div id="wrapper" style="-webkit-app-region: drag">
+  <div id="wrapper">
     <close-button></close-button>
     <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
     <span id="logo-text">HushNG</span>
@@ -50,6 +50,7 @@
     mounted: function() {
       if (store.get('setupComplete') == true) {
         this.$router.push('/wallet/addresses')
+       
       }
     }
   }

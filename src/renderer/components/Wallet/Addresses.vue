@@ -4,10 +4,11 @@
       Below is a list of your addresses<br />
       <span>Z-ADDRs are private while T-ADDRs are public</span>
     </p>
-    <a class="button" id="generate-address">New address</a>
+    
     <div class="address-list" id="z-addr">
       <div class="type">Z-ADDR</div>
       <div class="copy">click on an address to copy it</div>
+      <a class="button" id="generate-address" v-on:click="addZAddress()">New address</a>
       <ul class="address-details">
         <li v-for="address in zAddresses">
           <div class="balance" style="clear: both;">{{ address.balance }}</div>
@@ -16,12 +17,14 @@
       </ul>
     </div>
     <div class="address-list" id="t-addr">
-      <div class="type">T-ADDR</div>
+      <div class="type">T-ADDR </div>
       <div class="copy">click on an address to copy it</div>
+      <a class="button" id="generate-address" v-on:click="addTAddress()">New address</a>
       <ul class="address-details">
-        <li v-for="address in tAddresses">
+        <li v-for="address in tAddresses" v-on:mouseover="mouseover(address)">
           <div class="balance" style="clear: both;">{{ address.balance }}</div>
           <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
+          <div class="smallButton" v-if="hoverAddress == address"> send cash</div>
         </li>
       </ul>
     </div>
@@ -35,7 +38,7 @@
         <ul id="balances">
           <li>{{ tBalance }} HUSH</li>
           <li>{{ zBalance }} HUSH</li>
-          <li>{{ fullBalance }} HUSH</li>
+          <li>{{ totalBalance }} HUSH</li>
         </ul>
       </div>
       <div class="box alt">
@@ -54,41 +57,46 @@
   var store = require('store')
   const bitcoin = require('bitcoin')
   import copy from 'copy-to-clipboard';
+  import { mapState,mapGetters, mapActions } from 'vuex'
 
-  export default {
+  export default { 
     name: 'addresses',
     components: {  },
-    data () {
+    data() {
       return {
-        fullBalance: 0,
-        tBalance: 0,
-        zBalance: 0,
-        tAddresses: [],
-        zAddresses: []
+        polling :false,
+        'hoverAddress': null
       }
+    },
+    computed:{
+      ...mapState([       
+        'tBalance',
+        'zBalance',
+        'totalBalance'
+      ]),
+      // mix the getters into computed with object spread operator
+      ...mapGetters([
+        'zAddresses',
+        'tAddresses',
+      ])
     },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
       },
+      mouseover (address) {
+        this.$data.hoverAddress = address;
+      },
+      ...mapActions([
+        'addTAddress',
+        'addZAddress', 
+      ]),
       copy (value) {
         copy(value)
         alert('Copied ' + value + ' to clipboard.')
-      },
-      startPolling (interval) {
-        var self = this
-
-        Repeat(function() {
-          self.tAddresses = store.get('tAddresses')
-          self.zAddresses = store.get('zAddresses')
-          self.fullBalance = store.get('z_balance').total
-          self.tBalance = store.get('z_balance').transparent
-          self.zBalance = store.get('z_balance').private
-        }).every(interval, 'ms').start.now();
-      }
+      }     
     },
-    mounted: function() {
-      this.startPolling(1000)
+    mounted: function() {     
     }
   }
 </script>
@@ -172,14 +180,15 @@
     max-width: 80%;
     padding: 0px 5px 0px 5px;
     word-break: break-all;
-    line-height: 12px;
+    line-height: 11px;
     cursor: pointer;
     -webkit-app-region: no-drag;
+    font-family: 'Courier', sans-serif;
   }
 
   .address-list .address-details .balance, .address-list .address-details .address  {
     float: left;
-    font-weight: 400;
+    font-weight: 300;
     color: #5e5e5e;
   }
 
@@ -211,5 +220,22 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  .smallButton {
+    float: left;
+    display:inline;
+    font-size: 8pt;
+    cursor: pointer;
+    outline: none;
+    padding: 1px 1px 1px 1px;
+    border-radius: 2px;
+    display: inline-block;
+    color: #fff;
+    background-color: #2F77F7;
+    transition: all 0.15s ease;
+    border: 1px solid #2F77F7;
+    text-decoration: none;
+    -webkit-app-region: no-drag;
   }
 </style>

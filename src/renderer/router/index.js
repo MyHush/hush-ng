@@ -16,6 +16,15 @@ export default new Router({
       component: require('@/components/Install').default
     },
     {
+      path: '/contacts',
+      name: 'contacts',
+      component: require('@/components/Contacts').default,
+      children: [
+        { path: 'contacts', component: require('@/components/Contacts/Contacts').default },
+        { path: 'groups', component: require('@/components/Contacts/Groups').default }
+      ]
+    },
+    {
       path: '/wallet',
       name: 'wallet',
       component: require('@/components/Wallet').default,
@@ -24,7 +33,8 @@ export default new Router({
         { path: 'transactions', component: require('@/components/Wallet/Transactions').default }
       ]
     },
-    {
+        
+    { 
       path: '*',
       redirect: '/'
     }

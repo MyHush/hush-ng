@@ -1,10 +1,16 @@
 <template>
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
-    <ul class="icons">
-      <li class="active"><img class="icon" src="~@/assets/icons/wallet.svg" style="font-color: #fff;" /></li>
-      <li><img class="icon" src="~@/assets/icons/comment.svg" style="font-color: #fff;" /></li>
-    </ul>
+    <div class="icons">
+      <div :class="{active: item.active }" v-for="(item, index) in menuSections" >        
+          <div class="icon"  v-on:click="x(index)" >
+            <router-link :to="item.route">
+              <img :src="item.path" style="font-color: #fff;" />              
+            </router-link>
+        </div>
+
+      </div> 
+    </div>       
   </div>
 </template>
 
@@ -15,15 +21,36 @@
     components: {  },
     data () {
       return {
-
+        menuSections: [
+          { 'name': 'wallet', 'route': '/wallet/addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
+          { 'name': 'contacts', 'route': '/Contacts/contacts', 'path' : '/static/icons/addressbook.svg','active': false },
+          { 'name': 'transactions', 'route': '/wallet/transactions', 'path' : '/static/icons/comment.svg','active': false },
+        ]
       }
+    },
+    methods: { 
+      x(item) {
+        
+        var self = this;
+        var item  = item;
+        for (var i = 0; i < self.menuSections.length; i++) {
+          if (i == item) {
+            self.menuSections[i].active = true
+          } else {
+            self.menuSections[i].active = false
+          }
+        }
+      }
+    },
+    mounted: function() {
+    
     }
   }
 </script>
 
 <style>
   div#side-menu {
-    position: absolute;
+    position: fixed;
     height: 100%;
     background-color: #3e3e3e;
     z-index: 2;
@@ -34,27 +61,25 @@
     padding: 15px;
   }
 
-  .icons {
+  .icons {    
     position: absolute;
     top: 120px;
-    list-style-type: none;
+    
     width: 100%;
   }
 
-  .icons li {
+  .icons div {    
     text-align: center;
-    margin: 20px 0px 20px 0px;
+    padding: 0px 0px 10px 0px;
+    margin:auto;
   }
 
   .icons .active {
-    border-left: 4px solid #fff;
-  }
-
-  .icons .active .icon {
-    margin-left: -4px;
+    border-left: 3px solid #fff;
   }
 
   .icon {
+    margin:auto;
     width: 25px;
   }
 

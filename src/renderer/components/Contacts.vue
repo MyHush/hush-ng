@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper" >
     <side-menu></side-menu>
-    <wallet-menu></wallet-menu>
+    <addressbook-menu></addressbook-menu>
     <div class="inner-content">
       <router-view></router-view>
     </div>
@@ -9,70 +9,36 @@
 </template>
 
 <script>
-  import WalletMenu from './Wallet/WalletMenu'
+  import ContactsMenu from './Contacts/ContactsMenu'
   import SideMenu from './shared/Menu'
-  import Addresses from './Wallet/Addresses'
-   import { mapState } from 'vuex'
+  import Contacts from './Contacts/Contacts'
+  import Groups from './Contacts/Groups'
+  import { mapState } from 'vuex'
 
   const Repeat = require('repeat')
   var request = require('request')
   var store = require('store')
   var cmd = require('node-cmd')
-  const bitcoin = require('bitcoin')
+  const bitcoin = require('bitcoin') 
  
   export default {
-    name: 'wallet',
-    components: { WalletMenu, SideMenu, Addresses },
-   
-    computed: { 
-      ...mapState([
-          'walletPolling'                
-        ]), 
-    },
-    methods: {
-      open (link) {
-        this.$electron.shell.openExternal(link)
-      },
-      startPolling (interval) {
-        
-        var execPath = store.get('execPath')
-
-        // Start Hushd
-        var exec = ''
-        if (require('os').platform() == 'linux') {
-          exec = 'cd ' + execPath + '&& ./hushd'
-        } else if (require('os').platform() == 'win32') {
-          exec = execPath + '\\hushd.exe'
-          console.log(exec)
-        }
-        cmd.get(
-          exec,
-          function(err, data, stderr){
-              if (!err) {
-                 console.log('HushNG: Could not start hushd!')
-              } else {
-                 console.log('HushNG: Started hushd')
-              }
-
-          }
-        )
-
-        this.$store.commit('setRpcCredentials', {user : 'User1229564006', password : 'Pass81467358015016086301032122898'});
-        this.$store.commit('setWalletPolling', true);  
-        this.$store.dispatch('refreshAddresses');
-
-        var self = this
-        Repeat(function() {
-          self.$store.dispatch('refreshBalances');    
-          self.$store.dispatch('refreshTransactions'); 
-
-        }).every(interval, 'ms').start.now();
+    name: 'addressbook',
+    components: { ContactsMenu, SideMenu, Contacts },
+    data () {
+      return {        
+        zAddresses: [],
+        blockHeight: 0,
       }
+    },
+    computed: mapState({
+      count: state => state.count,
+      tAddresses: state => state.tAddresses
+    }),
+    methods: {
+      
     },
     mounted: function() {
-      if(!this.walletPolling) {
-        this.startPolling(5000)
-      }
+     
     }
   }
 </script>
@@ -150,7 +116,7 @@
     margin-bottom: 50px;
   }
 
-  .intall-list li {
+  .install-list li {
     color: #000;
     height: 20px;
   }
