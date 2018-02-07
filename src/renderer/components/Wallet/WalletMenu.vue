@@ -6,8 +6,8 @@
         <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
         <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
       </ul>
-      <ul class="wallet-sections" v-for="(item, index) in walletSections">
-        <li v-bind:class="{ active: item.active }" style="padding: 0px 10px 0px 10px;" v-on:click="toggle(index)"><router-link :to="item.path">{{ item.name }}</router-link></li>
+      <ul class="wallet-sections">
+        <router-link v-for="(item, index) in walletSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
       </ul>
     </div>
     <close-button></close-button>
@@ -122,7 +122,6 @@
     text-transform: uppercase;
     height: 100%;
     line-height: 56px;
-    margin: 0px -15px 0px -15px;
   }
 
   .wallet-sections li:hover {
