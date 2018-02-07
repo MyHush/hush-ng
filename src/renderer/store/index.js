@@ -23,7 +23,8 @@ export default new Vuex.Store({
     walletPolling: false,
     rpcCredentials : {
       user : "",
-      password : ""
+      password : "",
+      port : 0
     }
   },
   getters: {   
@@ -79,9 +80,9 @@ export default new Vuex.Store({
       console.log("scanning for addresses");
 
       var client = new bitcoin.Client({
-        port: 8822,
-        user: this.state.rpcCredentials.user,    //'User1229564006',
-        pass: this.state.rpcCredentials.password, //'Pass81467358015016086301032122898',
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
 
@@ -106,9 +107,9 @@ export default new Vuex.Store({
     refreshBalances({ commit }) {
       console.log("updating address balances");
       var client = new bitcoin.Client({
-        port: 8822,
-        user: 'User1229564006',
-        pass: 'Pass81467358015016086301032122898',
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
 
@@ -149,9 +150,9 @@ export default new Vuex.Store({
       console.log("scanning for addresses");
 
       var client = new bitcoin.Client({
-        port: 8822,
-        user: 'User1229564006',
-        pass: 'Pass81467358015016086301032122898',
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
 
@@ -163,9 +164,9 @@ export default new Vuex.Store({
 
     addTAddress({ commit }) {
       var client = new bitcoin.Client({
-        port: 8822,
-        user: 'User1229564006',
-        pass: 'Pass81467358015016086301032122898',
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
 
@@ -179,9 +180,9 @@ export default new Vuex.Store({
 
     addZAddress({ commit }) {
       var client = new bitcoin.Client({
-        port: 8822,
-        user: 'User1229564006',
-        pass: 'Pass81467358015016086301032122898',
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
 

@@ -57,7 +57,49 @@
           }
         )
 
-        this.$store.commit('setRpcCredentials', {user : 'User1229564006', password : 'Pass81467358015016086301032122898'});
+        var confpathfile = 'hush.conf'
+        const fs = require('fs');
+        var platform = require('os').platform()
+        if (platform == "linux") {
+          var path = require('os').homedir() + '/.hush/'
+          confpathfile = path + confpathfile
+        }
+        else if (platform == "win32") {
+          if (!fs.existsSync(process.env.APPDATA + '\\Hush')) {
+            fs.mkdirSync(process.env.APPDATA + '\\Hush')
+          }
+          var path = process.env.APPDATA + '\\Hush\\'
+          confpathfile = path + confpathfile
+        }
+
+        var rpcuser = 'rpcuser'
+        var rpcpassword = 'rpcpassword'
+        var rpcport = 8822
+    
+        var lines = require('fs').readFileSync(confpathfile, 'utf-8').split('\n');
+
+        lines.forEach(function (line) {
+          if (line.indexOf('rpcuser') == 0) {
+            var sp = line.split('=', 2)
+            if (sp.length == 2) {
+              rpcuser = sp[1].trim()
+            }
+          }
+          if (line.indexOf('rpcpassword') == 0) {
+            var sp = line.split('=', 2)
+            if (sp.length == 2) {
+              rpcpassword = sp[1].trim()
+            }
+          }
+          if (line.indexOf('testnet') == 0) {
+            var sp = line.split('=', 2)
+            if (sp.length == 2 && parseInt(sp[1]) != 0) {
+              rpcport = 18822
+            }
+          }
+        })
+
+        this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
         this.$store.commit('setWalletPolling', true);  
         this.$store.dispatch('refreshAddresses');
 
