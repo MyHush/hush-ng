@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper" >
     <side-menu></side-menu>
-    <addressbook-menu></addressbook-menu>
+    <contacts-menu></contacts-menu>
     <div class="inner-content">
       <router-view></router-view>
     </div>
