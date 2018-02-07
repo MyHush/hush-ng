@@ -44,7 +44,7 @@
       <div class="box alt">
         <p>For more on Z and T addresses, visit the following links:</p>
         <div class="links">
-          <a @click="open('https://discord.gg/VfaZjyR')">MyHush.org</a>
+          <a @click="open('https://discord.gg/DNGndGY')">MyHush.org</a>
         </div>
       </div>
     </div>

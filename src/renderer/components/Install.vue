@@ -29,7 +29,7 @@
         <div class="doc">
           <div class="title alt">Get Involved</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://discord.gg/VfaZjyR')">Discord</button>
+          <button class="button button-alt" @click="open('https://discord.gg/DNGndGY')">Discord</button>
         </div>
       </div>
     </main>
