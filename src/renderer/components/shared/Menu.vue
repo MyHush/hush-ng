@@ -1,16 +1,9 @@
 <template>
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
-    <div class="icons">
-      <div :class="{active: item.active }" v-for="(item, index) in menuSections" >        
-          <div class="icon"  v-on:click="x(index)" >
-            <router-link :to="item.route">
-              <img :src="item.path" style="font-color: #fff;" />              
-            </router-link>
-        </div>
-
-      </div> 
-    </div>       
+    <ul class="icons menu-sections">
+      <router-link v-for="(item, index) in menuSections" v-bind:class="{ active: item.active }" v-bind:key="item.name" class="icon" tag="li" :to="item.route" v-on:click.native="x(index);" ><img :src="item.path" style="font-color: #fff;" /></router-link>
+    </ul>
   </div>
 </template>
 
@@ -64,23 +57,35 @@
   .icons {    
     position: absolute;
     top: 120px;
-    
     width: 100%;
-  }
-
-  .icons div {    
-    text-align: center;
-    padding: 0px 0px 10px 0px;
-    margin:auto;
-  }
-
-  .icons .active {
-    border-left: 3px solid #fff;
+    -webkit-app-region: no-drag;
   }
 
   .icon {
     margin:auto;
     width: 25px;
+    padding: 12px 16px 8px 16px;
+  }
+
+  .menu-sections {
+    -webkit-app-region: no-drag;
+  }
+
+  .menu-sections li {
+    list-style-type: none;
+    width: 100%;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+  }
+
+  .menu-sections .active {
+    border-left: 3px solid #cacaca;
+    border-right: 3px solid transparent;
+  }
+  
+  .menu-sections li:hover {
+    cursor: pointer;
+    background-color: #9e9e9e;
   }
 
 
