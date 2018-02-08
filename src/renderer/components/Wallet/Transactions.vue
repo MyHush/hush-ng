@@ -1,6 +1,6 @@
 <template>
   <div>
-    Transactions can be sent </br> from a Z-ADDR or T-ADDR depending on your preference
+    Transactions can be sent </br> from a zaddr or taddr depending on your preference
     <div class="container" >
       <el-row class="caption">
         <el-col :span="16" >Create a transaction</el-col>

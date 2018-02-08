@@ -1,10 +1,10 @@
 <template>
   <div>
       Below is a list of your addresses<br />
-      <span>Z-ADDRs are private while T-ADDRs are public</span>
+      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs)</span>
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="2" >Z-ADDR</el-col>
+        <el-col :span="2" >zaddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
       </el-row>
@@ -15,7 +15,7 @@
     </div>
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="2" >T-ADDR</el-col>
+        <el-col :span="2" >taddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
       </el-row>   
@@ -23,12 +23,13 @@
         <el-table-column prop="balance" label="Amount" width="120" class-name="balance"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
       </el-table>       
+
     </div>
     <div class="bottom-row">
       <div class="box">
         <ul id="texts">
-          <li>T:</li>
-          <li>Z:</li>
+          <li>Transparent:</li>
+          <li>Shielded:</li>
           <li>TOTAL:</li>
         </ul>
         <ul id="balances">
@@ -38,9 +39,10 @@
         </ul>
       </div>
       <div class="box alt">
-        <p>For more on Z and T addresses, visit the following links:</p>
+        <p>For more on shielded and transparent addresses, visit the following links:</p>
         <div class="links">
           <a @click="open('https://discord.gg/DNGndGY')">MyHush.org</a>
+          <a @click="open('https://www.myhush.org')">MyHush.org</a>
         </div>
       </div>
     </div>
