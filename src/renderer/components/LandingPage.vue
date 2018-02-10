@@ -6,7 +6,7 @@
     <main>
       <div class="left-side">
         <span class="title">
-          Welcome to Hush Next-generation
+          Welcome to HushNG!
         </span>
         <system-information></system-information>
       </div>
@@ -16,7 +16,7 @@
           <div class="title">Getting Started</div>
           <p>
             Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets, easily enable mining,
-            send encrypted messages via Hush Messenger, and issue your own assets with Hush Party.
+            and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.
           </p>
           <p>
             Start by downloading the Hush proving-key. Afterwards, your wallet will be initialized and ready for use.
@@ -26,7 +26,9 @@
         <div class="doc">
           <div class="title alt">Get Involved</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://discord.gg/DNGndGY')">Discord</button>
+          <button class="button button-alt" @click="open('https://twitter.com/MyHushTeam')">Twitter</button>
+          <button class="button button-alt" @click="open('https://reddit.com/r/myhush/')">Reddit</button>
+          <button class="button button-alt" @click="open('https://discord.myhush.org')">Discord</button>
         </div>
       </div>
     </main>
