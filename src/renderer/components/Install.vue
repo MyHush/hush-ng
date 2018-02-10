@@ -219,7 +219,7 @@
             stream.write("# Creation date: " + compileTime + "\n\n")
             stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\n\n")
             stream.write("# Start Hush Configuration\n\n")
-            stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=node.myhush.network")
+            stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
             stream.end();
           });
           self.installSteps[2].success = true
