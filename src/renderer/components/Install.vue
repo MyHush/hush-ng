@@ -6,7 +6,7 @@
     <main>
       <div class="left-side">
         <span class="title">
-          Welcome to Hush Next-generation
+          Welcome to HushNG
         </span>
         <system-information></system-information>
       </div>
