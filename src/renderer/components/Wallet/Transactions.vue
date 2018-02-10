@@ -1,42 +1,52 @@
 <template>
-  <div id="addresses">
-    <p id="intro">
-      Transactions can be sent<br />
-      <span>from a Z-ADDR or T-ADDR depending on your preference</span>
-    </p>
-    
-    <div class="address-list" id="z-addr">
-      <div class="type">Create a transaction</div>
-      <div class="copy">Spendable Balance: <span>{{ availableBalance }}</span></div>
-
-      <ul class="address-details">
-        <li v-for="address in zAddresses">
-          <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
-        </li>
-      </ul>
-      <div class="property">
-        <label>Destination address</label>
-        <input type="text" v-model="destinationAddress" > 
-      </div>
-      <div class="property">
-        <label>Amount </label>
-        <input type="number" v-model="amount" > HUSH
-      </div>
-      <div class="property">
-        <label>Fee </label>
-        <input type="number" v-model="fee"> HUSH
-       </div>
-      <a class="button" id="generate-address">send</a>
+  <div>
+    Transactions can be sent </br> from a zaddr or taddr depending on your preference
+    <div class="container" >
+      <el-row class="caption">
+        <el-col :span="16" >Create a transaction</el-col>
+        <el-col :span="8" class="balance">Spendable Balance: <span>{{ fakeBalance }}</span></el-col>
+      </el-row>
+      
+      <el-form ref="form" :model="transactionForm" label-width="60px" >
+        <el-form-item label="From" >
+          <el-select v-model="transactionForm.from" placeholder="Select" style="width:100%;">
+            <el-option
+              v-for="address in addresses"
+              :key="address.address"
+              :label="address.address"
+              :value="address.address">             
+          </el-option>
+        </el-select>
+        </el-form-item>
+        <el-form-item label="To">
+          <el-input v-model="transactionForm.destinationAddress"></el-input>
+        </el-form-item>
+        <el-form-item label="Amount">
+          <el-col :span="11">
+            <el-input placeholder="" v-model="transactionForm.amount" style="width: 95%;"></el-input>
+          </el-col>
+          <el-col :span="2">Fee</el-col>
+          <el-col :span="11">
+            <el-input placeholder="" v-model="transactionForm.fee" style="width:100%;"></el-input>
+          </el-col>
+        </el-form-item>
+      </el-form>         
+      <el-button type="primary" @click="createTransaction">Create</el-button>
     </div>
-    <div class="address-list" id="t-addr">
-      <div class="type">Transaction History</div>
-      <div class="copy">click on an address to copy it</div>
-      <ul class="address-details">
-        <li v-for="tx in transactions">
-          {{ tx.category }} :::: {{ tx.amount }} :::: {{ tx.address }} :::: {{ tx.confirmations }}
-        </li>
-      </ul>
+    <div class="container" >
+      <el-row class="caption">
+        <el-col :span="16" >Transaction History</el-col>
+      </el-row>
+      <el-row class="intro">
+        <el-col :span="24" >click on a row to open block explorer</el-col>
+      </el-row>
+
+      <el-table :data="transactions" height="280" style="width: 100%">
+        <el-table-column prop="category" label="Category" width="100"> </el-table-column>
+        <el-table-column prop="0" label="Amount" width="180"> </el-table-column>
+        <el-table-column prop="address" label="Address" width="*" class-name="address"> </el-table-column>
+        <el-table-column prop="confirmations" label="Conf" width="60"> </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
@@ -52,15 +62,19 @@
     name: 'transactions',
     components: { CloseButton },
     data () {
-      return {
-        destinationAddress: null,
-        amount: 0.0,
-        fee: 0.0
+       return {
+         transactionForm : {
+          from: null,
+          destinationAddress: null,
+          amount: 0.0,
+          fee: 0.0
+        },
+        fakeBalance: 0.0
       }
     },
     computed:{
       ...mapState([
-        'zAddresses',       
+        'addresses',       
         'transactions',
         'availableBalance',  
       ]),        
@@ -70,17 +84,8 @@
       ])           
     },
     methods: {
-      toggle (item) {
-        var self = this
-        var item  = item
-        for (var i = 0; i < self.walletSections.length; i++) {
-          if (i == item) {
-            self.walletSections[i].active = true
-          } else {
-            self.walletSections[i].active = false
-          }
-        }
-
+      createTransaction () {
+        alert('TODO');
       }
       
     },
@@ -97,17 +102,4 @@
     color: #2d2d2d;
   }
 
-  .address-list span {
-    font-weight: 600;
-    color: #2f77f7;
-  }
-
-  .property {
-    display:block;
-  }
-  .property label {
-    display:inline;
-    min-width: 250px;
-    width:120pc;
-  } 
 </style>

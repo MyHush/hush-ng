@@ -1,38 +1,35 @@
 <template>
-  <div id="addresses">
-    <p id="intro">
+  <div>
       Below is a list of your addresses<br />
-      <span>Z-ADDRs are private while T-ADDRs are public</span>
-    </p>
-    
-    <div class="address-list" id="z-addr">
-      <div class="type">Z-ADDR</div>
-      <div class="copy">click on an address to copy it</div>
-      <a class="button" id="generate-address" v-on:click="addZAddress()">New address</a>
-      <ul class="address-details">
-        <li v-for="address in zAddresses">
-          <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
-        </li>
-      </ul>
+      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs)</span>
+    <div class="container" >
+      <el-row class="caption">
+        <el-col :span="2" >zaddr</el-col>
+        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
+        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
+      </el-row>
+      <el-table :data="zAddresses" height="200" style="width: 100%">
+        <el-table-column prop="balance" label="Amount" width="100"> </el-table-column>
+        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
+      </el-table>        
     </div>
-    <div class="address-list" id="t-addr">
-      <div class="type">T-ADDR </div>
-      <div class="copy">click on an address to copy it</div>
-      <a class="button" id="generate-address" v-on:click="addTAddress()">New address</a>
-      <ul class="address-details">
-        <li v-for="address in tAddresses" v-on:mouseover="mouseover(address)">
-          <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
-          <div class="smallButton" v-if="hoverAddress == address"> send cash</div>
-        </li>
-      </ul>
+    <div class="container" >
+      <el-row class="caption">
+        <el-col :span="2" >taddr</el-col>
+        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
+        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
+      </el-row>   
+      <el-table :data="tAddresses" height="200" style="width: 100%">
+        <el-table-column prop="balance" label="Amount" width="120" class-name="balance"> </el-table-column>
+        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
+      </el-table>       
+
     </div>
     <div class="bottom-row">
       <div class="box">
         <ul id="texts">
-          <li>T:</li>
-          <li>Z:</li>
+          <li>Transparent:</li>
+          <li>Shielded:</li>
           <li>TOTAL:</li>
         </ul>
         <ul id="balances">
@@ -42,9 +39,10 @@
         </ul>
       </div>
       <div class="box alt">
-        <p>For more on Z and T addresses, visit the following links:</p>
+        <p>For more on shielded and transparent addresses, visit the following links:</p>
         <div class="links">
           <a @click="open('https://discord.gg/DNGndGY')">MyHush.org</a>
+          <a @click="open('https://www.myhush.org')">MyHush.org</a>
         </div>
       </div>
     </div>
@@ -109,87 +107,66 @@
     color: #2d2d2d;
   }
 
-  #addresses {
-    width: 100%;
-  }
-
-  #addresses #intro {
-    float: left;
-    font-weight: 500;
-    font-size: 12pt;
-    margin-left: 40px;
-  }
-
-  #addresses #intro span {
-    position: relative;
-    top: -5px;
-    font-weight: 400;
-    font-size: 10pt;
-  }
-
-  #addresses #generate-address {
-    float: right;
-    position: relative;
-    top: 3px;
-    font-weight: 500;
-  }
-
-  .address-list {
-    clear: both;
-    float: left;
+ .container {    
     width: 100%;
     margin-top: 10px;
-    padding: 15px 25px 15px 60px;
+    padding: 15px 25px 15px 30px;
     background-color: #eaeaea;
     border-radius: 11px;
   }
-
-  .address-list .type {
-    float: left;
-    font-weight: 600;
-    font-size: 12pt;
+  
+  .caption {
+    font-weight: 700;
+    font-size: 12pt
+  }
+  
+  .caption .balance {
+    font-weight: 400;
   }
 
-  .address-list .copy {
-    float: left;
-    margin-left: 88px;
+  .caption span {
+    font-weight: 400;
+    color: #2f77f7;
+  }
+
+  .intro {
+    font-weight: 400;
+    font-size: 10pt
+  }
+  .copy {    
     font-weight: 400;
     font-size: 11pt;
     color: #5e5e5e;
   }
 
-  .address-list .address-details {
-    clear: left;
-    float: left;
-    margin-top: 20px;
-    font-size: 11pt;
-    list-style-type: none;
-    width: 100%;
-    padding: 10px 0px 10px 0px;
-    overflow: auto;
-    -webkit-app-region: no-drag;
-  }
-
-  .address-details .balance {
-    width: 25px;
-  }
-
-  .address-list .address-details .address {
-    position: static;
-    margin-left: 120px;
-    max-width: 80%;
-    padding: 0px 5px 0px 5px;
-    word-break: break-all;
-    line-height: 11px;
-    cursor: pointer;
-    -webkit-app-region: no-drag;
+  .el-table__row .address .cell {
     font-family: 'Courier', sans-serif;
   }
 
-  .address-list .address-details .balance, .address-list .address-details .address  {
-    float: left;
-    font-weight: 300;
-    color: #5e5e5e;
+  .el-table__row .balance .cell {
+    font-family: 'Courier', sans-serif;
+    color: #2f77f7;
+  }
+
+  .el-table td, .el-table th {
+    padding: 4px 0;
+  }
+
+  .el-table__body-wrapper, .el-table__footer-wrapper, .el-table__header-wrapper {
+    background-color:#eaeaea;
+  }
+
+  el-table__body, .el-table__footer, .el-table__header {    
+      background-color:#eaeaea;
+  }
+
+  .el-table .gutter {
+        background-color:#eaeaea;
+  }
+
+  .el-table td, .el-table th.is-leaf {
+      background-color:#eaeaea;
+      border: none;
   }
 
   .button {
@@ -222,20 +199,4 @@
     background-color: #e2e2e2;
   }
 
-  .smallButton {
-    float: left;
-    display:inline;
-    font-size: 8pt;
-    cursor: pointer;
-    outline: none;
-    padding: 1px 1px 1px 1px;
-    border-radius: 2px;
-    display: inline-block;
-    color: #fff;
-    background-color: #2F77F7;
-    transition: all 0.15s ease;
-    border: 1px solid #2F77F7;
-    text-decoration: none;
-    -webkit-app-region: no-drag;
-  }
 </style>
