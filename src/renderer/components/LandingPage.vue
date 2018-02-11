@@ -1,8 +1,10 @@
 <template>
   <div id="wrapper">
     <close-button></close-button>
+    <div id="hushng">
       <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
       <span id="logo-text">HushNG</span>
+    </div>
     <main>
       <div class="left-side">
         <span class="title">
@@ -79,6 +81,12 @@
     height: 100vh;
     padding: 60px 80px;
     width: 100vw;
+  }
+
+  #hushng {
+    width: 100%;
+    -webkit-app-region: drag;
+    height: 100px;
   }
 
   #logo {

@@ -60,6 +60,7 @@
   img#logo {
     height: 80px;
     padding: 15px;
+    -webkit-app-region: drag;
   }
 
   .icons {    
