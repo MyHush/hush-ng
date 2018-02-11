@@ -1,9 +1,18 @@
 <template>
   <div id="wrapper" >
-    <side-menu></side-menu>
-    <wallet-menu></wallet-menu>
-    <div class="inner-content">
-      <router-view></router-view>
+    <div v-if="connectedToDeamon === true">
+      <side-menu></side-menu>
+      <wallet-menu></wallet-menu>
+      <div class="inner-content">
+        <router-view></router-view>
+      </div>
+    </div>
+    <div v-else>
+      <side-menu v-bind:is-enabled="connectedToDeamon"></side-menu>
+      <wallet-menu v-bind:is-enabled="connectedToDeamon"></wallet-menu>
+      <div class="inner-content">
+        <div id="connecting">{{ connStatus }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +38,12 @@
       ...mapState([
           'walletPolling'                
         ]), 
+    },
+    data () {
+      return {
+        connStatus: 'Connecting...',
+        connectedToDeamon: false
+      }
     },
     methods: {
       open (link) {
@@ -73,8 +88,36 @@
 
         var self = this
         Repeat(function() {
-          self.$store.dispatch('refreshBalances');    
-          self.$store.dispatch('refreshTransactions'); 
+
+          if (self.connectedToDeamon) {
+            self.$store.dispatch('refreshBalances');    
+            self.$store.dispatch('refreshTransactions'); 
+          }
+          else {
+            var client = new bitcoin.Client({
+              port: rpcport,
+              user: rpcuser,
+              pass: rpcpassword,
+              timeout: 60000
+            });
+
+            client.getInfo(function(err, data, resHeaders) {
+              if (err) {
+                console.log(err)
+                if (err.code == "ECONNREFUSED") {
+                  self.connStatus = "Connecting..."
+                }
+                else {
+                  self.connStatus = err.message
+                }
+                return
+              } 
+              
+              self.connectedToDeamon = true
+              self.$store.dispatch('refreshAddresses');
+              self.$router.push('/wallet/addresses')
+            }); 
+          }
 
         }).every(interval, 'ms').start.now();
       }
@@ -180,6 +223,11 @@
     background-color: #d1d1d1;
   }
 
+  #connecting {
+    text-align: center;
+    line-height: 80vh;
+    font-size: 1.2em;
+  }
   .pending {
     border: 2px solid #7ed35f;
     background-color: transparent;

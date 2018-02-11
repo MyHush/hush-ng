@@ -1,9 +1,11 @@
 <template>
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
-    <ul class="icons menu-sections">
-      <router-link v-for="(item, index) in menuSections" v-bind:class="{ active: item.active }" v-bind:key="item.name" class="icon" tag="li" :to="item.route" v-on:click.native="x(index);" ><img :src="item.path" style="font-color: #fff;" /></router-link>
-    </ul>
+    <div v-if="isEnabled === true">
+      <ul class="icons menu-sections">
+        <router-link v-for="(item, index) in menuSections" v-bind:class="{ active: item.active }" v-bind:key="item.name" class="icon" tag="li" :to="item.route" v-on:click.native="x(index);" ><img :src="item.path" style="font-color: #fff;" /></router-link>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -12,6 +14,12 @@
   export default {
     name: 'side-menu',
     components: {  },
+    props: {
+      isEnabled: {
+        type: Boolean,
+        default: true
+      }
+    },
     data () {
       return {
         menuSections: [

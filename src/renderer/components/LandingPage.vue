@@ -1,8 +1,8 @@
 <template>
   <div id="wrapper">
     <close-button></close-button>
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
-    <span id="logo-text">HushNG</span>
+      <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
+      <span id="logo-text">HushNG</span>
     <main>
       <div class="left-side">
         <span class="title">
@@ -51,7 +51,7 @@
     },
     mounted: function() {
       if (store.get('setupComplete') == true) {
-        this.$router.push('/wallet/addresses')
+        this.$router.push('/wallet')
        
       }
     }
