@@ -8,7 +8,7 @@
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
       </el-row>
-      <el-table :data="zAddresses" height="200" style="width: 100%">
+      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None">
         <el-table-column prop="balance" label="Amount" width="100"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
       </el-table>        
@@ -19,7 +19,7 @@
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
       </el-row>   
-      <el-table :data="tAddresses" height="200" style="width: 100%">
+      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None">
         <el-table-column prop="balance" label="Amount" width="120" class-name="balance"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
       </el-table>       
