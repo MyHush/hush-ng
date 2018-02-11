@@ -12,6 +12,7 @@ export default new Vuex.Store({
   modules,
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    selectedMainMenuEntry: 'wallet',
     addresses: [],
     transactions: [],
     totalBalance: 0,
@@ -38,6 +39,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setSelectedMainMenuEntry (state, name) {            
+      state.selectedMainMenuEntry = name;
+    },
     addAddress (state, newAddress) {
       if(state.addresses.find( a => a.address == newAddress.address) == null) {
         state.addresses.push(newAddress)

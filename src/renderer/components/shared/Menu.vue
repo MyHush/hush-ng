@@ -2,12 +2,16 @@
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
     <ul class="icons menu-sections">
-      <li v-for="(item, index) in menuSections" v-bind:class="{ active: item.active }" class="icon" v-on:click="x(index);" >{{ item.active }}<img :src="item.path" style="font-color: #fff;" /></li>
+      <li v-for="(item, index) in menuSections" v-bind:class="{ active: item.name == selectedMainMenuEntry }" class="icon" v-on:click="switchTo(item);" >
+        <img :src="item.path" style="font-color: #fff;" />
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
 
   export default {
     name: 'side-menu',
@@ -22,21 +26,15 @@
         ]
       }
     },
+    computed: { 
+      ...mapState([
+          'selectedMainMenuEntry'                
+        ]), 
+    },
     methods: { 
-      x(item) {
-        
-        var self = this;
-        var item  = item;
-        for (var i = 0; i < self.menuSections.length; i++) {
-          if (i == item) {
-            console.log("selectedIndex" + i) ;            
-            self.menuSections[i].active = true
-          } else {
-            self.menuSections[i].active = false
-          }
-        }
-        console.log(this.menuSections[item].route);
-         this.$router.push({path:this.menuSections[item].route});
+      switchTo(item) {
+        this.$store.commit('setSelectedMainMenuEntry', item.name);
+        this.$router.push({path: item.route});
       }
     },
     mounted: function() {
