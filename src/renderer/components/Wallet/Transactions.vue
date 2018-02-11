@@ -19,7 +19,19 @@
         </el-select>
         </el-form-item>
         <el-form-item label="To">
-          <el-input v-model="transactionForm.destinationAddress"></el-input>
+          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create placeholder="put address here or choose from your contacts" style="width:100%;">
+            <el-option-group v-for="group in groupedDestinationAddresses" :key="group.label" :label="group.label">
+              <el-option
+                v-for="item in group.addresses"
+                :key="item.address"
+                :label="item.nickName"
+                :value="item.address">
+                  <span style="float: left;width:100px;">{{ item.nickName }}</span>
+                  <span class="address" style="float: left">{{ item.address }}</span>
+                  <span style="float: right; font-size: 13px">{{ item.balance }}</span>
+              </el-option>
+            </el-option-group>
+          </el-select>
         </el-form-item>
         <el-form-item label="Amount">
           <el-col :span="11">
@@ -65,7 +77,7 @@
        return {
          transactionForm : {
           from: null,
-          destinationAddress: null,
+          destinationAddresses: [],
           amount: 0.0,
           fee: 0.0001
         },
@@ -77,29 +89,17 @@
         'addresses',       
         'transactions',
         'availableBalance',  
+        'contacts',
+        'groupedDestinationAddresses'
       ]),        
          // mix the getters into computed with object spread operator
       ...mapGetters([
-        'tAddresses',
+        'tAddresses'
       ])           
     },
     methods: {
-      createTransaction () {        
-        // ["t1gDpRTxxxxx",[{"address":"t1gDpRTxxxxxx","amount":0.01}],#confs,#fee ]
-        var receivers = [];                
-        receivers.push({"address":this.transactionForm.destinationAddress, "amount": this.transactionForm.amount});
-        var receivers = [{"address":"tmHuYijNNGm3zUmKdf8crJ35MQDjbJyjNnh","amount":1.11}];
-        
-        var params = [];
-        params.push("tmDuXLxoKhaYoaWEsH15b91f9B79KwBt4qo");
-        params.push(receivers);
-        var requestJSON = {
-          id:  Date.now(),
-          method: "z_sendmany",
-          params: params
-        };
-        console.log(JSON.stringify(requestJSON));
-        this.$store.dispatch('sendToMany',params);    
+      createTransaction () {                     
+        this.$store.dispatch('sendToMany',this.transactionForm);  
       }
       
     },
@@ -114,6 +114,15 @@
   * {
     font-family: 'Poppins', sans-serif;
     color: #2d2d2d;
+  }
+
+.address {
+    font-family: 'Courier', sans-serif;
+    font-size:8pt;  }
+
+
+  .el-select-dropdown.is-multiple .el-select-dropdown__item.selected::after {
+    left: 3px;
   }
 
 </style>

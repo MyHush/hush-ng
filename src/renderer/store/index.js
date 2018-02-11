@@ -28,7 +28,17 @@ export default new Vuex.Store({
       password : "",
       port : 0
     },
-    contacts:[]
+    contacts:[
+      {
+        address: "tmXuXLx1KhaYoaWEsH15b91f9B79KwBt4qo",
+        nickName:"Cryptopia"
+      },
+      {
+        address: "ztDn7cf579FQ72ijdXSm5fuJirM4dJt2DzAtjZwZx1LAgkLrwVrG75VzDGi5GiZNzVtrKkXzr81LkcgtYvuqVVNQngrrZps",
+        nickName:"Dukeleto"
+      }
+    ],
+    groupedDestinationAddresses:[]
   },
   getters: {   
     tAddresses: state => {
@@ -82,6 +92,31 @@ export default new Vuex.Store({
     },
     setContacts (state, contacts) {      
       state.contacts = contacts;
+    },
+    updateGroupedDestinationAddresses (state) {      
+      var groups = [];
+      var ownAddresses = {
+        label: "Own addresses",
+        addresses : []
+      };
+
+      var contacts = {
+        label: "contacts",
+        addresses : []
+      };
+
+      for (let contact of state.contacts) {
+        contacts.addresses.push(contact);
+      }
+
+      for (let address of state.addresses) {
+        ownAddresses.addresses.push(address);
+      }
+      groups.push(contacts);
+      groups.push(ownAddresses);
+
+
+      state.groupedDestinationAddresses = groups;
     }
   },
   actions : {
@@ -101,6 +136,7 @@ export default new Vuex.Store({
         for (var i = 0; i < data.length; i++) {
            commit('addAddress', {address: data[i], balance: 0, type: 't'});
         }
+        commit("updateGroupedDestinationAddresses");
       });
 
       // Get Z-Addresses
@@ -110,7 +146,11 @@ export default new Vuex.Store({
         for (var i = 0; i < data.length; i++) {
            commit('addAddress', {address: data[i], balance: 0, type: 'z'});
         }
+
+        commit("updateGroupedDestinationAddresses");
       });
+
+     
     },    
 
     refreshBalances({ commit }) {
@@ -202,13 +242,7 @@ export default new Vuex.Store({
         commit('addAddress', {address: data, balance: 0, type: 'z'});
       });
     },
-    sendToMany({ commit },payload) {
-      var client = new bitcoin.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
+    sendToMany({ commit },transactionForm) {
 
       var client = new hush.RpcClient({
         port: this.state.rpcCredentials.port,
@@ -216,14 +250,26 @@ export default new Vuex.Store({
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
-      console.log(payload);
+
+      var receivers = [];         
+      for(let receiver of transactionForm.destinationAddresses) {
+        receivers.push({"address":receiver, "amount": transactionForm.amount});
+      }       
+
+       // ["t1gDpRTxxxxx",[{"address":"t1gDpRTxxxxxx","amount":0.01},..],#confs,#fee ]       
+      var params = [];
+      params.push(transactionForm.from);
+      params.push(receivers);
+      params.push(1); 
+      params.push(transactionForm.fee);
     
-      client.post( 'z_sendmany', payload, function(err, data) {
+      console.log(params);
+      client.post( 'z_sendmany', params, function(err, data) {
         if (err != null) {
             console.log('Error: ' + e.message);
         } 
         else {
-            //console.log('Sent', amount);
+            console.log('Sent', data);
 
         }
         });      
