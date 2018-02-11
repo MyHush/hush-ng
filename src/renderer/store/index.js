@@ -1,4 +1,5 @@
 const bitcoin = require('bitcoin')
+const hush = require('hush')
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -25,7 +26,8 @@ export default new Vuex.Store({
       user : "",
       password : "",
       port : 0
-    }
+    },
+    contacts:[]
   },
   getters: {   
     tAddresses: state => {
@@ -73,6 +75,9 @@ export default new Vuex.Store({
     }, 
     setRpcCredentials (state, credentials) {      
       state.rpcCredentials = credentials;
+    },
+    setContacts (state, contacts) {      
+      state.contacts = contacts;
     }
   },
   actions : {
@@ -192,6 +197,33 @@ export default new Vuex.Store({
         console.log(data);   
         commit('addAddress', {address: data, balance: 0, type: 'z'});
       });
+    },
+    sendToMany({ commit },payload) {
+      var client = new bitcoin.Client({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
+      });
+
+      var client = new hush.RpcClient({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
+      });
+      console.log(payload);
+    
+      client.post( 'z_sendmany', payload, function(err, data) {
+        if (err != null) {
+            console.log('Error: ' + e.message);
+        } 
+        else {
+            //console.log('Sent', amount);
+
+        }
+        });      
     }
+         
   }
 })

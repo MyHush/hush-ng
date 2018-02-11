@@ -22,7 +22,7 @@
   const bitcoin = require('bitcoin') 
  
   export default {
-    name: 'addressbook',
+    name: 'contacts',
     components: { ContactsMenu, SideMenu, Contacts },
     data () {
       return {        

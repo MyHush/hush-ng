@@ -20,7 +20,7 @@
   var cmd = require('node-cmd')
   const bitcoin = require('bitcoin')
   var hush = require('hush')
- 
+
   export default {
     name: 'wallet',
     components: { WalletMenu, SideMenu, Addresses },
@@ -57,7 +57,7 @@
 
           }
         )
-
+ 
         var rpcuser = 'rpcuser'
         var rpcpassword = 'rpcpassword'
         var rpcport = 8822

@@ -67,7 +67,7 @@
           from: null,
           destinationAddress: null,
           amount: 0.0,
-          fee: 0.0
+          fee: 0.0001
         },
         fakeBalance: 0.0
       }
@@ -84,8 +84,22 @@
       ])           
     },
     methods: {
-      createTransaction () {
-        alert('TODO');
+      createTransaction () {        
+        // ["t1gDpRTxxxxx",[{"address":"t1gDpRTxxxxxx","amount":0.01}],#confs,#fee ]
+        var receivers = [];                
+        receivers.push({"address":this.transactionForm.destinationAddress, "amount": this.transactionForm.amount});
+        var receivers = [{"address":"tmHuYijNNGm3zUmKdf8crJ35MQDjbJyjNnh","amount":1.11}];
+        
+        var params = [];
+        params.push("tmDuXLxoKhaYoaWEsH15b91f9B79KwBt4qo");
+        params.push(receivers);
+        var requestJSON = {
+          id:  Date.now(),
+          method: "z_sendmany",
+          params: params
+        };
+        console.log(JSON.stringify(requestJSON));
+        this.$store.dispatch('sendToMany',params);    
       }
       
     },

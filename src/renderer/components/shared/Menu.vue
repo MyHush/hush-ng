@@ -2,7 +2,7 @@
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
     <ul class="icons menu-sections">
-      <router-link v-for="(item, index) in menuSections" v-bind:class="{ active: item.active }" v-bind:key="item.name" class="icon" tag="li" :to="item.route" v-on:click.native="x(index);" ><img :src="item.path" style="font-color: #fff;" /></router-link>
+      <li v-for="(item, index) in menuSections" v-bind:class="{ active: item.active }" class="icon" v-on:click="x(index);" >{{ item.active }}<img :src="item.path" style="font-color: #fff;" /></li>
     </ul>
   </div>
 </template>
@@ -13,10 +13,11 @@
     name: 'side-menu',
     components: {  },
     data () {
+      console.log("data wallet");
       return {
         menuSections: [
           { 'name': 'wallet', 'route': '/wallet/addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
-          { 'name': 'contacts', 'route': '/Contacts/contacts', 'path' : '/static/icons/addressbook.svg','active': false },
+          { 'name': 'contacts', 'route': '/contacts/contacts', 'path' : '/static/icons/addressbook.svg','active': false },
           { 'name': 'transactions', 'route': '/wallet/transactions', 'path' : '/static/icons/comment.svg','active': false },
         ]
       }
@@ -28,15 +29,18 @@
         var item  = item;
         for (var i = 0; i < self.menuSections.length; i++) {
           if (i == item) {
+            console.log("selectedIndex" + i) ;            
             self.menuSections[i].active = true
           } else {
             self.menuSections[i].active = false
           }
         }
+        console.log(this.menuSections[item].route);
+         this.$router.push({path:this.menuSections[item].route});
       }
     },
     mounted: function() {
-    
+     console.log("mounted menu");
     }
   }
 </script>
