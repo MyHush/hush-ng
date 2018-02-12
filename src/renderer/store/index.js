@@ -20,7 +20,7 @@ export default new Vuex.Store({
     tBalance: 0,
     zBalance: 0,
     blockHeight: 'Scanning',
-    peerCount:0,
+    peerCount: 'None',
     walletPolling: false,
     rpcCredentials : {
       user : "",
@@ -183,7 +183,11 @@ export default new Vuex.Store({
 
 
       client.getInfo(function(err, data, resHeaders) {
-        if (err) return console.log(err);
+        if (err) {
+          commit('setPeerCount', 'None');
+          commit('setBlockheight', 'Scanning');
+          return console.log(err);
+        } 
         
         commit('setPeerCount', data.connections);
         commit('setBlockheight', data.blocks);

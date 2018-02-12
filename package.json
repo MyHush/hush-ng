@@ -55,6 +55,7 @@
     "bitcoin": "^3.0.1",
     "copy-to-clipboard": "^3.0.8",
     "element-ui": "^2.1.0",
+    "filepath": "^1.1.0",
     "hush": "file:lib/hush",
     "node-cmd": "^3.0.0",
     "repeat": "^0.0.6",

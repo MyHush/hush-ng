@@ -1,11 +1,13 @@
 <template>
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
-    <ul class="icons menu-sections">
-      <li v-for="(item, index) in menuSections" v-bind:class="{ active: item.name == selectedMainMenuEntry }" class="icon" v-on:click="switchTo(item);" >
-        <img :src="item.path" style="font-color: #fff;" />
-      </li>
-    </ul>
+      <div v-if="isEnabled === true">
+        <ul class="icons menu-sections">
+          <li v-for="(item, index) in menuSections" v-bind:class="{ active: item.name == selectedMainMenuEntry }" class="icon" v-on:click="switchTo(item);" >
+            <img :src="item.path" style="font-color: #fff;" />
+          </li>
+        </ul>
+      </div>
   </div>
 </template>
 
@@ -16,6 +18,12 @@
   export default {
     name: 'side-menu',
     components: {  },
+    props: {
+      isEnabled: {
+        type: Boolean,
+        default: true
+      }
+    },
     data () {
       console.log("data wallet");
       return {
@@ -54,6 +62,7 @@
   img#logo {
     height: 80px;
     padding: 15px;
+    -webkit-app-region: drag;
   }
 
   .icons {    

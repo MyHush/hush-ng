@@ -6,9 +6,11 @@
         <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
         <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
       </ul>
-      <ul class="wallet-sections">
-        <router-link v-for="(item, index) in walletSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
-      </ul>
+      <div v-if="isEnabled === true">
+        <ul class="wallet-sections">
+          <router-link v-for="(item, index) in walletSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
+        </ul>
+      </div>
     </div>
     <close-button></close-button>
   </div>
@@ -21,6 +23,12 @@
   export default {
     name: 'wallet-menu',
     components: { CloseButton },
+    props: {
+      isEnabled: {
+        type: Boolean,
+        default: true
+      }
+    },
     data () {
       return {
         walletSections: [

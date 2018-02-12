@@ -53,9 +53,9 @@
         <el-col :span="24" >click on a row to open block explorer</el-col>
       </el-row>
 
-      <el-table :data="transactions" height="280" style="width: 100%">
+      <el-table :data="transactions" height="280" style="width: 100%" empty-text="None">
         <el-table-column prop="category" label="Category" width="100"> </el-table-column>
-        <el-table-column prop="0" label="Amount" width="180"> </el-table-column>
+        <el-table-column prop="amount" label="Amount" width="180"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address"> </el-table-column>
         <el-table-column prop="confirmations" label="Conf" width="60"> </el-table-column>
       </el-table>
