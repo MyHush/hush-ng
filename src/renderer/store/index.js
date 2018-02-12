@@ -1,5 +1,4 @@
 const bitcoin = require('bitcoin')
-const hush = require('hush')
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -115,7 +114,6 @@ export default new Vuex.Store({
       groups.push(contacts);
       groups.push(ownAddresses);
 
-
       state.groupedDestinationAddresses = groups;
     }
   },
@@ -148,9 +146,7 @@ export default new Vuex.Store({
         }
 
         commit("updateGroupedDestinationAddresses");
-      });
-
-     
+      });     
     },    
 
     refreshBalances({ commit }) {
@@ -243,36 +239,23 @@ export default new Vuex.Store({
       });
     },
     sendToMany({ commit },transactionForm) {
-
-      var client = new hush.RpcClient({
+      var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
-
+     
       var receivers = [];         
       for(let receiver of transactionForm.destinationAddresses) {
-        receivers.push({"address":receiver, "amount": transactionForm.amount});
+        receivers.push({"address":receiver.toString(), "amount": transactionForm.amount});
       }       
 
-       // ["t1gDpRTxxxxx",[{"address":"t1gDpRTxxxxxx","amount":0.01},..],#confs,#fee ]       
-      var params = [];
-      params.push(transactionForm.from);
-      params.push(receivers);
-      params.push(1); 
-      params.push(transactionForm.fee);
-    
-      console.log(params);
-      client.post( 'z_sendmany', params, function(err, data) {
-        if (err != null) {
-            console.log('Error: ' + e.message);
-        } 
-        else {
-            console.log('Sent', data);
-
-        }
-        });      
+      client.cmd( 'z_sendmany',transactionForm.from,receivers,1,transactionForm.fee , function(err, data, resHeaders) {
+        if (err) return console.log(err);              
+        console.log(data);   
+        
+      });   
     }
          
   }

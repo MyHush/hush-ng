@@ -91,8 +91,7 @@
         'availableBalance',  
         'contacts',
         'groupedDestinationAddresses'
-      ]),        
-         // mix the getters into computed with object spread operator
+      ]),                 
       ...mapGetters([
         'tAddresses'
       ])           

@@ -71,8 +71,7 @@
         'tBalance',
         'zBalance',
         'totalBalance'
-      ]),
-      // mix the getters into computed with object spread operator
+      ]),     
       ...mapGetters([
         'zAddresses',
         'tAddresses',
