@@ -1,32 +1,41 @@
 <template>
-  <div id="wrapper" style="-webkit-app-region: drag">
-    <side-menu></side-menu>
-    <wallet-menu></wallet-menu>
-    <div class="inner-content">
+  <div id="wrapper" >
+    <div v-if="true || connectedToDeamon === true">
+      <side-menu></side-menu>
       <router-view></router-view>
+    </div>
+    <div v-else>
+      <div class="inner-content">
+        <div id="connecting">{{ connStatus }}</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import WalletMenu from './Wallet/WalletMenu'
+  import { mapState } from 'vuex'
   import SideMenu from './shared/Menu'
-  import Addresses from './Wallet/Addresses'
-
+  
   const Repeat = require('repeat')
   var request = require('request')
   var store = require('store')
   var cmd = require('node-cmd')
   const bitcoin = require('bitcoin')
+  var hush = require('hush')
 
   export default {
-    name: 'wallet',
-    components: { WalletMenu, SideMenu, Addresses },
+    name: 'main-page',
+    components: {SideMenu },
+   
+    computed: { 
+      ...mapState([
+          'walletPolling'                
+        ]), 
+    },
     data () {
       return {
-        tAddresses: [],
-        zAddresses: [],
-        blockHeight: 0,
+        connStatus: 'Connecting...',
+        connectedToDeamon: false
       }
     },
     methods: {
@@ -34,7 +43,7 @@
         this.$electron.shell.openExternal(link)
       },
       startPolling (interval) {
-        var self = this
+        
         var execPath = store.get('execPath')
 
         // Start Hushd
@@ -56,99 +65,60 @@
 
           }
         )
+ 
+        var rpcuser = 'rpcuser'
+        var rpcpassword = 'rpcpassword'
+        var rpcport = 8822
 
-        var client = new bitcoin.Client({
-          port: 8822,
-          user: store.get('connection').rpcuser,
-          pass: store.get('connection').rpcpassword,
-          timeout: 60000
-        });
+        var config = new hush.Config()
+        rpcuser = config.rpcuser()
+        rpcpassword = config.rpcpassword()
+        rpcport = config.rpcport()
 
-        // Get T-Addresses
-        client.getAddressesByAccount('', function(err, data, resHeaders) {
-          if (err) return console.log(err);
-          var tAddr = []
-          for (var i = 0; i < data.length; i++) {
-            tAddr.push({"address": data[i], "balance": 0})
-          }
-          console.log('Scanning for T-Addrs... Found: ' + tAddr.length + '\n' + JSON.stringify(tAddr))
-          store.set('tAddresses', tAddr)
-        });
+        this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
+        this.$store.commit('setWalletPolling', true);  
+        this.$store.dispatch('refreshAddresses');
 
-        // Get Z-Addresses
-        client.cmd('z_listaddresses', function(err, data, resHeaders){
-          if (err) return console.log(err);
-          var zAddr = []
-          for (var i = 0; i < data.length; i++) {
-            zAddr.push({"address": data[i], "balance": 0})
-          }
-          console.log('Scanning for Z-Addrs... Found: ' + zAddr.length + '\n' + JSON.stringify(zAddr))
-          store.set('zAddresses', zAddr)
-        });
-
+        var self = this
         Repeat(function() {
-          var hushData = {}
-          // Get Baseline Info
-          client.getInfo(function(err, data, resHeaders) {
-            if (err) {
-              var getInfo = {}
-              getInfo.connections = 0
-              getInfo.blocks = 'Scanning...'
-              store.set('getInfo', getInfo)
-              console.log(err);
-            } else {
-              store.set('getInfo', data)
-              console.log('Blockchain data:',  JSON.stringify(data));
-            }
-          });
 
-          // Get Wallet Info
-          client.getWalletInfo(function(err, data, resHeaders) {
-            if (err) return console.log(err);
-            store.set('getWalletInfo', data)
-            console.log('Wallet data:',  JSON.stringify(data));
-          });
-
-          //Get Z Balance
-          client.cmd('z_gettotalbalance', function(err, balance, resHeaders){
-            if (err) return console.log(err);
-            store.set('z_balance', balance)
-          });
-
-          client.getWalletInfo(function(err, data, resHeaders) {
-            if (err) return console.log(err);
-            store.set('getWalletInfo', data)
-            self.fullBalance = store.get('getInfo').balance
-          });
-
-          // Get transactions
-          client.listTransactions(function(err, data, resHeaders) {
-            if (err) return console.log(err);
-            store.set('transactions', data)
-          });
-
-          // Refresh T-Balances
-          var taddr = store.get('tAddresses')
-          for (let i = 0; i < taddr.length; i++) {
-            client.getReceivedByAddress(taddr[i].address, function(err, data, resHeaders) {
-              taddr[i].balance = data
-              store.set('tAddresses', taddr)
+          if (self.connectedToDeamon) {
+            self.$store.dispatch('refreshBalances');    
+            self.$store.dispatch('refreshTransactions'); 
+          }
+          else {
+            var client = new bitcoin.Client({
+              port: rpcport,
+              user: rpcuser,
+              pass: rpcpassword,
+              timeout: 60000
             });
+
+            client.getInfo(function(err, data, resHeaders) {
+              if (err) {
+                console.log(err)
+                if (err.code == "ECONNREFUSED") {
+                  self.connStatus = "Connecting..."
+                }
+                else {
+                  self.connStatus = err.message
+                }
+                return
+              } 
+              
+              self.connectedToDeamon = true
+              self.$store.dispatch('refreshAddresses');
+              self.$router.push('/wallet/addresses')
+            }); 
           }
 
-          // Refresh Z-Balances
-          var zaddr = store.get('zAddresses')
-          for (let i = 0; i < zaddr.length; i++) {
-            client.cmd('z_getbalance', zaddr[i].address, function(err, data, resHeaders) {
-              zaddr[i].balance = data
-              store.set('zAddresses', zaddr)
-            });
-          }
         }).every(interval, 'ms').start.now();
       }
     },
     mounted: function() {
-      this.startPolling(2500)
+      if(!this.walletPolling) {
+        this.startPolling(5000)
+      }
     }
   }
 </script>
@@ -246,6 +216,11 @@
     background-color: #d1d1d1;
   }
 
+  #connecting {
+    text-align: center;
+    line-height: 80vh;
+    font-size: 1.2em;
+  }
   .pending {
     border: 2px solid #7ed35f;
     background-color: transparent;
@@ -343,5 +318,97 @@
   .bottom-row .box li {
     font-weight: 500;
     color: #fff;
+  }
+
+  .container {    
+    width: 100%;
+    margin-top: 10px;
+    padding: 15px 25px 15px 30px;
+    background-color: #eaeaea;
+    border-radius: 11px;
+  }
+  
+  .caption {
+    font-weight: 700;
+    font-size: 12pt
+  }
+  
+  .caption .balance {
+    font-weight: 400;
+  }
+
+  .caption span {
+    font-weight: 400;
+    color: #2f77f7;
+  }
+
+  .intro {
+    font-weight: 400;
+    font-size: 10pt
+  }
+  .copy {    
+    font-weight: 400;
+    font-size: 11pt;
+    color: #5e5e5e;
+  }
+
+  .el-table__row .address .cell {
+    font-family: 'Courier', sans-serif;
+  }
+
+  .el-table__row .balance .cell {
+    font-family: 'Courier', sans-serif;
+    color: #2f77f7;
+  }
+
+  .el-table td, .el-table th {
+    padding: 4px 0;
+  }
+
+  .el-table__body-wrapper, .el-table__footer-wrapper, .el-table__header-wrapper {
+    background-color:#eaeaea;
+  }
+
+  el-table__body, .el-table__footer, .el-table__header {    
+      background-color:#eaeaea;
+  }
+
+  .el-table .gutter {
+        background-color:#eaeaea;
+  }
+
+  .el-table td, .el-table th.is-leaf {
+      background-color:#eaeaea;
+      border: none;
+  }
+
+  .button {
+    font-size: 11pt;
+    cursor: pointer;
+    outline: none;
+    padding: 5px 15px 5px 15px;
+    border-radius: 4px;
+    display: inline-block;
+    color: #fff;
+    background-color: #2F77F7;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    border: 1px solid #2F77F7;
+    text-decoration: none;
+    -webkit-app-region: no-drag;
+  }
+
+  .button:hover {
+    background-color: #2262d6;
+  }
+
+  .button-alt {
+    color: #3e3e3e;
+    margin-right: 5px;
+    background-color: transparent;
+  }
+
+  .button-alt:hover {
+    background-color: #e2e2e2;
   }
 </style>

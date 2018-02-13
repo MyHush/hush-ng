@@ -23,13 +23,13 @@
             <router-link class="button primary" to="/wallet" style="font-weight: 600;">Launch HushNG</router-link><br><br>
           </div>
           <div v-else>
-            <button class="button button-info">Cancel setup</button><br><br>
+            <button class="button button-info" @click="cancelsetup()">Cancel setup</button><br><br>
           </div>
         </div>
         <div class="doc">
           <div class="title alt">Get Involved</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://discord.gg/VfaZjyR')">Discord</button>
+          <button class="button button-alt" @click="open('https://discord.gg/DNGndGY')">Discord</button>
         </div>
       </div>
     </main>
@@ -45,6 +45,7 @@
   var path = require('path')
   var cmd = require('node-cmd')
   var store = require('store')
+  var filepath = require('filepath')
 
   export default {
     name: 'install',
@@ -63,17 +64,21 @@
           { 'component': 'hush-cli', 'url': 'https://build.madbuda.me/job/hush-rc/lastSuccessfulBuild/artifact/src/hush-cli', 'finished': false }
         ],
         downloadsWindows: [
-          { 'component': 'hushd', 'url': 'https://build.madbuda.me/job/hush-windows/lastSuccessfulBuild/artifact/src/hushd.exe' },
-          { 'component': 'hush-cli', 'url': 'https://build.madbuda.me/job/hush-windows/lastSuccessfulBuild/artifact/src/hush-cli.exe' },
-          { 'component': 'hush-tx', 'url': 'https://build.madbuda.me/job/hush-windows/lastSuccessfulBuild/artifact/src/hush-tx.exe' }
+          { 'component': 'hushd.exe', 'url': 'https://build.madbuda.me/job/hush-windows/lastSuccessfulBuild/artifact/src/hushd.exe', 'finished': false },
+          { 'component': 'hush-cli.exe', 'url': 'https://build.madbuda.me/job/hush-windows/lastSuccessfulBuild/artifact/src/hush-cli.exe', 'finished': false },
+          { 'component': 'hush-tx.exe', 'url': 'https://build.madbuda.me/job/hush-windows/lastSuccessfulBuild/artifact/src/hush-tx.exe', 'finished': false }
         ],
-        complete: -1,
+        downloads: [ ],
+        complete: 0,
         installDone: false
       }
     },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
+      },
+      cancelsetup() {
+
       },
       checkComplete () {
         // Mark Install complete
@@ -84,8 +89,18 @@
         }
       },
       download (url, dest, platform, count) {
-        var file = fs.createWriteStream(dest, {encoding: 'binary'})
         var self = this
+        if (fs.existsSync(dest)) {
+          console.log('Skipping download of ' + url)
+          self.complete++
+          if (self.downloads.length == self.complete) {
+            self.installSteps[1].success = true
+            self.checkComplete()
+          }
+          return
+        }
+
+        var file = fs.createWriteStream(dest, {encoding: 'binary'})
         var request = https.get(url, function(response) {
           response.pipe(file)
           file.on('finish', function() {
@@ -95,45 +110,31 @@
           })
         }).on('close', function() {
           console.log('Downloaded:' + url)
-          cmd.get(
-              `chmod 774 ` + dest,
-              function(err, data, stderr){
-                  if (!err) {
-                     console.log('HushNG Install: CHMOD SUCCESS')
-                  } else {
-                     console.log('HushNG Install: CHMOD FAIL')
-                  }
-
-              }
-          )
           if (platform == 'linux') {
-            self.downloadsLinux[count].finished = true
-            console.log(self.downloadsLinux[count].finished)
-            for (var i = 0; i < self.downloadsLinux.length; i++) {
-              if (self.downloadsLinux[i].finished == true) {
-                self.complete++
-                console.log(self.complete);
-                if (self.downloadsLinux.length == self.complete) {
-                  self.installSteps[1].success = true
-                  self.checkComplete()
+            cmd.get(
+                `chmod 774 ` + dest,
+                function(err, data, stderr){
+                    if (!err) {
+                      console.log('HushNG Install: CHMOD SUCCESS')
+                    } else {
+                      console.log('HushNG Install: CHMOD FAIL')
+                    }
+
                 }
-              }
-            }
-          } else if (platform == "win32") {
-            self.downloadsWindows[count].finished = true
-            console.log(self.downloadsWindows[count].finished)
-            for (var i = 0; i < self.downloadsWindows.length; i++) {
-              if (self.downloadsWindows[i].finished == true) {
-                self.complete++
-                console.log(self.complete);
-                if (self.downloadsWindows.length == self.complete) {
-                  self.installSteps[1].success = true
-                  self.checkComplete()
-                }
+            )
+          }
+          self.downloads[count].finished = true
+          console.log(self.downloads[count].finished)
+          for (var i = 0; i < self.downloads.length; i++) {
+            if (self.downloads[i].finished == true) {
+              self.complete++
+              console.log(self.complete);
+              if (self.downloads.length == self.complete) {
+                self.installSteps[1].success = true
+                self.checkComplete()
               }
             }
           }
-
         }).on('error', function(err) { // Handle errors
           fs.unlink(dest); // Delete the file async. (But we don't check the result)
           self.installSteps[1].pending = false
@@ -163,6 +164,7 @@
 
               }
           )
+          self.downloads = self.downloadsLinux;
         } else if (require('os').platform() == 'win32') {
           const path = require('path')
           const targetDir = require('os').homedir() + '\\hush-ng\\bin'
@@ -177,26 +179,21 @@
             self.installSteps[0].success = true
             return curDir
           }, initDir)
-
+          self.downloads = self.downloadsWindows;
         }
 
         // Download binaries
+        self.complete = 0
         self.installSteps[1].pending = true
         var platform = require('os').platform()
-        if (platform == "linux") {
-          var path = require('os').homedir() + '/hush-ng/bin'
-          store.set('execPath', path)
-          for (var i = 0; i < self.downloadsLinux.length; i++) {
-            self.download(self.downloadsLinux[i].url, path + '/' + self.downloadsLinux[i].component, platform, i)
-          }
-        } else if (platform == "win32") {
-          var path = require('os').homedir() + '\\hush-ng\\bin'
-          store.set('execPath', path)
-          for (var i = 0; i < self.downloadsWindows.length; i++) {
-            self.download(self.downloadsWindows[i].url, path + '\\' + self.downloadsWindows[i].component + '.exe', platform, i)
-          }
+        var path = require('filepath').create(require('os').homedir())
+        path = path.append('hush-ng', 'bin')
+        store.set('execPath', path.toString())
+        for (var i = 0; i < self.downloads.length; i++) {
+          var dpath = require('filepath').create(path).append(self.downloads[i].component)
+          self.download(self.downloads[i].url, dpath.toString(), platform, i)
         }
-
+    
         // Initiate Hush.conf
         self.installSteps[2].pending = true
         var currentdate = new Date();
@@ -208,43 +205,49 @@
               + currentdate.getSeconds()
         if (platform == "linux") {
           var path = require('os').homedir() + '/.hush/'
-          var stream = fs.createWriteStream(path + "hush.conf")
-          var rpcpassword = Math.random().toString(36).slice(2)
+          var conffile = path + "hush.conf" 
+          if (!fs.existsSync(conffile)) {
+            var stream = fs.createWriteStream(conffile)
+            var rpcpassword = Math.random().toString(36).slice(2)
 
-          store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
+            store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
 
-          stream.once('open', function(fd) {
-            stream.write("# HUSH Configuration File\n\n")
-            stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
-            stream.write("# Creation date: " + compileTime + "\n\n")
-            stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\n\n")
-            stream.write("# Start Hush Configuration\n\n")
-            stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
-            stream.end();
-          });
+            stream.once('open', function(fd) {
+              stream.write("# HUSH Configuration File\n\n")
+              stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
+              stream.write("# Creation date: " + compileTime + "\n\n")
+              stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\n\n")
+              stream.write("# Start Hush Configuration\n\n")
+              stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
+              stream.end();
+            });
+          }
           self.installSteps[2].success = true
         } else if (platform == "win32") {
           if (!fs.existsSync(process.env.APPDATA + '\\Hush')) {
             fs.mkdirSync(process.env.APPDATA + '\\Hush')
           }
           var path = process.env.APPDATA + '\\Hush'
-          var stream = fs.createWriteStream(path + "\\hush.conf")
-          var rpcpassword = Math.random().toString(36).slice(2)
+          var conffile = path + "\\hush.conf"
+          if (!fs.existsSync(conffile)) {
+            var stream = fs.createWriteStream(conffile)
+            var rpcpassword = Math.random().toString(36).slice(2)
 
-          store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
+            store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
 
-          stream.once('open', function(fd) {
-            stream.write("# HUSH Configuration File\r\n")
-            stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
-            stream.write("# Creation date: " + compileTime + "\r\n")
-            stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\r\n")
-            stream.write("# Start Hush Configuration\r\n")
-            stream.write("daemon=1\r\nserver=0\r\nrpcallowip=127.0.0.1\r\nrpcuser=rpcuser\r\nrpcpassword=" + rpcpassword + "\r\n\nshowmetrics=1\r\naddnode=explorer.myhush.org\r\naddnode=node.myhush.network")
-            stream.end();
-          });
+            stream.once('open', function(fd) {
+              stream.write("# HUSH Configuration File\r\n")
+              stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
+              stream.write("# Creation date: " + compileTime + "\r\n")
+              stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\r\n")
+              stream.write("# Start Hush Configuration\r\n")
+              stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
+              stream.end();
+            });
+          }
           self.installSteps[2].success = true
-          self.checkComplete()
         }
+        self.checkComplete()
       }
     },
     mounted: function() {

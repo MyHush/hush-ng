@@ -1,46 +1,47 @@
 <template>
-  <div id="addresses">
-    <p id="intro">
+  <div>
       Below is a list of your addresses<br />
-      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs) </span>
-    </p>
-    <a class="button" id="generate-address">New address</a>
-    <div class="address-list" id="z-addr">
-      <div class="type">zaddr</div>
-      <div class="copy">click on an address to copy it</div>
-      <ul class="address-details">
-        <li v-for="address in zAddresses">
-          <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
-        </li>
-      </ul>
+      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs)</span>
+    <div class="container" >
+      <el-row class="caption">
+        <el-col :span="2" >zaddr</el-col>
+        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
+        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
+      </el-row>
+      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None">
+        <el-table-column prop="balance" label="Amount" width="100"> </el-table-column>
+        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
+      </el-table>        
     </div>
-    <div class="address-list" id="t-addr">
-      <div class="type">taddr</div>
-      <div class="copy">click on an address to copy it</div>
-      <ul class="address-details">
-        <li v-for="address in tAddresses">
-          <div class="balance" style="clear: both;">{{ address.balance }}</div>
-          <div class="address" v-on:click="copy(address.address)">{{ address.address }}</div>
-        </li>
-      </ul>
+    <div class="container" >
+      <el-row class="caption">
+        <el-col :span="2" >taddr</el-col>
+        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
+        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
+      </el-row>   
+      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None">
+        <el-table-column prop="balance" label="Amount" width="120" class-name="balance"> </el-table-column>
+        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
+      </el-table>       
+
     </div>
     <div class="bottom-row">
       <div class="box">
         <ul id="texts">
-          <li>Transparent (taddr):</li>
-          <li>Shielded (zaddr):</li>
+          <li>Transparent:</li>
+          <li>Shielded:</li>
           <li>TOTAL:</li>
         </ul>
         <ul id="balances">
           <li>{{ tBalance }} HUSH</li>
           <li>{{ zBalance }} HUSH</li>
-          <li>{{ fullBalance }} HUSH</li>
+          <li>{{ totalBalance }} HUSH</li>
         </ul>
       </div>
       <div class="box alt">
         <p>For more on shielded and transparent addresses, visit the following links:</p>
         <div class="links">
+          <a @click="open('https://discord.gg/DNGndGY')">MyHush.org</a>
           <a @click="open('https://www.myhush.org')">MyHush.org</a>
         </div>
       </div>
@@ -49,46 +50,45 @@
 </template>
 
 <script>
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  const bitcoin = require('bitcoin')
-  import copy from 'copy-to-clipboard';
+  import { mapState,mapGetters, mapActions } from 'vuex'
 
-  export default {
+  export default { 
     name: 'addresses',
     components: {  },
-    data () {
+    data() {
       return {
-        fullBalance: 0,
-        tBalance: 0,
-        zBalance: 0,
-        tAddresses: [],
-        zAddresses: []
+        polling :false,
+        'hoverAddress': null
       }
+    },
+    computed:{
+      ...mapState([       
+        'tBalance',
+        'zBalance',
+        'totalBalance'
+      ]),     
+      ...mapGetters([
+        'zAddresses',
+        'tAddresses',
+      ])
     },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
       },
+      mouseover (address) {
+        this.$data.hoverAddress = address;
+      },
+      ...mapActions([
+        'addTAddress',
+        'addZAddress', 
+      ]),
       copy (value) {
         copy(value)
         alert('Copied ' + value + ' to clipboard.')
-      },
-      startPolling (interval) {
-        var self = this
-
-        Repeat(function() {
-          self.tAddresses = store.get('tAddresses')
-          self.zAddresses = store.get('zAddresses')
-          self.fullBalance = store.get('z_balance').total
-          self.tBalance = store.get('z_balance').transparent
-          self.zBalance = store.get('z_balance').private
-        }).every(interval, 'ms').start.now();
-      }
+      }     
     },
-    mounted: function() {
-      this.startPolling(1000)
+    mounted: function() {     
     }
   }
 </script>
@@ -101,86 +101,66 @@
     color: #2d2d2d;
   }
 
-  #addresses {
-    width: 100%;
-  }
-
-  #addresses #intro {
-    float: left;
-    font-weight: 500;
-    font-size: 12pt;
-    margin-left: 40px;
-  }
-
-  #addresses #intro span {
-    position: relative;
-    top: -5px;
-    font-weight: 400;
-    font-size: 10pt;
-  }
-
-  #addresses #generate-address {
-    float: right;
-    position: relative;
-    top: 3px;
-    font-weight: 500;
-  }
-
-  .address-list {
-    clear: both;
-    float: left;
+ .container {    
     width: 100%;
     margin-top: 10px;
-    padding: 15px 25px 15px 60px;
+    padding: 15px 25px 15px 30px;
     background-color: #eaeaea;
     border-radius: 11px;
   }
-
-  .address-list .type {
-    float: left;
-    font-weight: 600;
-    font-size: 12pt;
+  
+  .caption {
+    font-weight: 700;
+    font-size: 12pt
+  }
+  
+  .caption .balance {
+    font-weight: 400;
   }
 
-  .address-list .copy {
-    float: left;
-    margin-left: 88px;
+  .caption span {
+    font-weight: 400;
+    color: #2f77f7;
+  }
+
+  .intro {
+    font-weight: 400;
+    font-size: 10pt
+  }
+  .copy {    
     font-weight: 400;
     font-size: 11pt;
     color: #5e5e5e;
   }
 
-  .address-list .address-details {
-    clear: left;
-    float: left;
-    margin-top: 20px;
-    font-size: 11pt;
-    list-style-type: none;
-    width: 100%;
-    padding: 10px 0px 10px 0px;
-    overflow: auto;
-    -webkit-app-region: no-drag;
+  .el-table__row .address .cell {
+    font-family: 'Courier', sans-serif;
   }
 
-  .address-details .balance {
-    width: 25px;
+  .el-table__row .balance .cell {
+    font-family: 'Courier', sans-serif;
+    color: #2f77f7;
   }
 
-  .address-list .address-details .address {
-    position: static;
-    margin-left: 120px;
-    max-width: 80%;
-    padding: 0px 5px 0px 5px;
-    word-break: break-all;
-    line-height: 12px;
-    cursor: pointer;
-    -webkit-app-region: no-drag;
+  .el-table td, .el-table th {
+    padding: 4px 0;
   }
 
-  .address-list .address-details .balance, .address-list .address-details .address  {
-    float: left;
-    font-weight: 400;
-    color: #5e5e5e;
+  .el-table__body-wrapper, .el-table__footer-wrapper, .el-table__header-wrapper {
+    background-color:#eaeaea;
+  }
+
+  el-table__body, .el-table__footer, .el-table__header {    
+      background-color:#eaeaea;
+  }
+
+  .el-table .gutter {
+        background-color:#eaeaea;
+  }
+
+  .el-table td, .el-table th.is-leaf {
+      background-color:#eaeaea;
+      border: none;
   }
 
   .button {
@@ -212,4 +192,5 @@
   .button-alt:hover {
     background-color: #e2e2e2;
   }
+
 </style>

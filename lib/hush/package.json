@@ -1,0 +1,7 @@
+{
+    "name": "hush",
+    "description": "Hush helpers",
+    "private": true,
+    "version": "0.0.2",
+    "main": "index.js"
+  }
