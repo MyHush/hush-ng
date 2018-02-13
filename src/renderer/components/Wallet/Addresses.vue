@@ -50,11 +50,6 @@
 </template>
 
 <script>
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  const bitcoin = require('bitcoin')
-  import copy from 'copy-to-clipboard';
   import { mapState,mapGetters, mapActions } from 'vuex'
 
   export default { 

@@ -13,7 +13,6 @@
   import CloseButton from '../shared/CloseButton'
   import { mapState } from 'vuex'
 
- 
   export default {
     name: 'messenger-menu',
     components: { CloseButton },

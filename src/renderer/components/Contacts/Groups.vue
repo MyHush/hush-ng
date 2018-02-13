@@ -19,8 +19,7 @@
   </div>
 </template>
 
-<script>
-  
+<script>  
   import copy from 'copy-to-clipboard';
   import { mapState,mapGetters, mapActions } from 'vuex'
 

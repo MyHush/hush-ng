@@ -22,10 +22,8 @@
 </template>
 
 <script>
-  import CloseButton from '../shared/CloseButton'
-  import Addresses from './Addresses'
-  import Groups from './Groups'
   import { mapState } from 'vuex'
+  import CloseButton from '../shared/CloseButton'
  
   export default {
     name: 'contacts-menu',
