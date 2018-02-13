@@ -6,12 +6,12 @@ import Vuex from 'vuex'
 import modules from './modules'
 
 Vue.use(Vuex)
+let vue = new Vue()
 
 export default new Vuex.Store({
   modules,
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    selectedMainMenuEntry: 'wallet',
     addresses: [],
     transactions: [],
     totalBalance: 0,
@@ -29,12 +29,16 @@ export default new Vuex.Store({
     },
     contacts:[
       {
-        address: "tmXuXLx1KhaYoaWEsH15b91f9B79KwBt4qo",
+        address: "DUMMY ADDRESS",
         nickName:"Cryptopia"
       },
       {
-        address: "ztDn7cf579FQ72ijdXSm5fuJirM4dJt2DzAtjZwZx1LAgkLrwVrG75VzDGi5GiZNzVtrKkXzr81LkcgtYvuqVVNQngrrZps",
-        nickName:"Dukeleto"
+        address: "Bobs Address",
+        nickName:"Bob"
+      },
+      {
+        address: "Alice's Address",
+        nickName:"Alice"
       }
     ],
     groupedDestinationAddresses:[]
@@ -48,9 +52,6 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    setSelectedMainMenuEntry (state, name) {            
-      state.selectedMainMenuEntry = name;
-    },
     addAddress (state, newAddress) {
       if(state.addresses.find( a => a.address == newAddress.address) == null) {
         state.addresses.push(newAddress)
@@ -196,7 +197,7 @@ export default new Vuex.Store({
     },
 
     refreshTransactions({ commit }) {
-      console.log("scanning for addresses");
+      console.log("refreshing transactions");
 
       var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
@@ -243,6 +244,7 @@ export default new Vuex.Store({
       });
     },
     sendToMany({ commit },transactionForm) {
+      var self = this;
       var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
@@ -257,8 +259,19 @@ export default new Vuex.Store({
 
       client.cmd( 'z_sendmany',transactionForm.from,receivers,1,transactionForm.fee , function(err, data, resHeaders) {
         if (err) return console.log(err);              
-        console.log(data);   
-        
+        var operationids =[data.toString()];
+        client.cmd( 'z_getoperationstatus', operationids , function(err, opData, resHeaders) {
+          console.log(opData);
+          if (err || opData[0].status == "failed") {
+            console.log()
+            vue.$message.error(opData[0].error.message);
+            return 
+          }
+                 
+          if( opData[0].status == "success") {
+            vue.$message.success('Transaction was created successfully. Transaction id is:' + opData[0].result.txid, 5000 );            
+          }          
+        });
       });   
     }
          

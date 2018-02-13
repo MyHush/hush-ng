@@ -1,131 +1,68 @@
 <template>
-  <div id="wrapper" >
-    <div v-if="connectedToDeamon === true">
-      <side-menu></side-menu>
-      <wallet-menu></wallet-menu>
-      <div class="inner-content">
-        <router-view></router-view>
+  <div>
+    <div>
+      <div>
+        <div id="wallet-menu">
+          <div class="menu-title">Wallet</div>
+          <ul class="block-text chain-data">
+            <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
+            <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
+          </ul>
+          <ul class="wallet-sections">
+            <router-link v-for="(item, index) in walletSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
+          </ul>
+        </div>
+        <close-button></close-button>
       </div>
     </div>
-    <div v-else>
-      <side-menu v-bind:is-enabled="connectedToDeamon"></side-menu>
-      <wallet-menu v-bind:is-enabled="connectedToDeamon"></wallet-menu>
-      <div class="inner-content">
-        <div id="connecting">{{ connStatus }}</div>
-      </div>
+    <div class="inner-content">
+      <router-view></router-view>
     </div>
-  </div>
+  </div>    
 </template>
 
 <script>
-  import WalletMenu from './Wallet/WalletMenu'
-  import SideMenu from './shared/Menu'
-  import Addresses from './Wallet/Addresses'
-   import { mapState } from 'vuex'
+  import CloseButton from '../shared/CloseButton'
+  import Addresses from './Addresses'
+  import { mapState } from 'vuex'
 
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  var cmd = require('node-cmd')
-  const bitcoin = require('bitcoin')
-  var hush = require('hush')
-
+ 
   export default {
     name: 'wallet',
-    components: { WalletMenu, SideMenu, Addresses },
-   
+    components: { CloseButton, Addresses },
     computed: { 
-      ...mapState([
-          'walletPolling'                
+      ...mapState([         
+          'blockHeight',
+          'peerCount'                
         ]), 
     },
     data () {
       return {
         connStatus: 'Connecting...',
-        connectedToDeamon: false
+        connectedToDeamon: false,
+        walletSections: [
+          { 'name': 'addresses', 'path': '/wallet/addresses', 'active': true },
+          { 'name': 'transactions', 'path': '/wallet/transactions', 'active': false }
+        ]
       }
     },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
       },
-      startPolling (interval) {
-        
-        var execPath = store.get('execPath')
-
-        // Start Hushd
-        var exec = ''
-        if (require('os').platform() == 'linux') {
-          exec = 'cd ' + execPath + '&& ./hushd'
-        } else if (require('os').platform() == 'win32') {
-          exec = execPath + '\\hushd.exe'
-          console.log(exec)
-        }
-        cmd.get(
-          exec,
-          function(err, data, stderr){
-              if (!err) {
-                 console.log('HushNG: Could not start hushd!')
-              } else {
-                 console.log('HushNG: Started hushd')
-              }
-
-          }
-        )
- 
-        var rpcuser = 'rpcuser'
-        var rpcpassword = 'rpcpassword'
-        var rpcport = 8822
-
-        var config = new hush.Config()
-        rpcuser = config.rpcuser()
-        rpcpassword = config.rpcpassword()
-        rpcport = config.rpcport()
-
-        this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
-        this.$store.commit('setWalletPolling', true);  
-        this.$store.dispatch('refreshAddresses');
-
+      toggle (item) {
         var self = this
-        Repeat(function() {
-
-          if (self.connectedToDeamon) {
-            self.$store.dispatch('refreshBalances');    
-            self.$store.dispatch('refreshTransactions'); 
+        var item  = item
+        for (var i = 0; i < self.walletSections.length; i++) {
+          if (i == item) {
+            self.walletSections[i].active = true
+          } else {
+            self.walletSections[i].active = false
           }
-          else {
-            var client = new bitcoin.Client({
-              port: rpcport,
-              user: rpcuser,
-              pass: rpcpassword,
-              timeout: 60000
-            });
-
-            client.getInfo(function(err, data, resHeaders) {
-              if (err) {
-                console.log(err)
-                if (err.code == "ECONNREFUSED") {
-                  self.connStatus = "Connecting..."
-                }
-                else {
-                  self.connStatus = err.message
-                }
-                return
-              } 
-              
-              self.connectedToDeamon = true
-              self.$store.dispatch('refreshAddresses');
-              self.$router.push('/wallet/addresses')
-            }); 
-          }
-
-        }).every(interval, 'ms').start.now();
+        }     
       }
     },
-    mounted: function() {
-      if(!this.walletPolling) {
-        this.startPolling(5000)
-      }
+    mounted: function() {    
     }
   }
 </script>
@@ -417,5 +354,104 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  } 
+  
+  div#wallet-menu {
+    position: absolute;
+    width: 100vw;
+    background-color: #fff;
+    padding: 10px 10px 10px 88.3px;
+    border-bottom: 2px solid #e3e3e3;
+    z-index: 1;
+  }
+
+  .menu-title {
+    float: left;
+    margin-top: 3px;
+    font-size: 15pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .block-text {
+    position: fixed;
+    right: 40px;
+    margin: 4px 15px 0px 0px;
+  }
+
+  .chain-data {
+    float: right;
+    margin-top: 4px;
+    margin-right: 40px;
+    font-size: 12pt;
+    font-weight: 300;
+    text-transform: uppercase;
+    list-style-type: none;
+  }
+  
+  div#wallet-menu {
+    position: absolute;
+    width: 100vw;
+    background-color: #fff;
+    padding: 10px 10px 10px 88.3px;
+    border-bottom: 2px solid #e3e3e3;
+    z-index: 1;
+  }
+
+  .menu-title {
+    float: left;
+    margin-top: 3px;
+    font-size: 15pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .block-text {
+    position: fixed;
+    right: 40px;
+    margin: 4px 15px 0px 0px;
+  }
+
+  .chain-data {
+    float: right;
+    margin-top: 4px;
+    margin-right: 40px;
+    font-size: 12pt;
+    font-weight: 300;
+    text-transform: uppercase;
+    list-style-type: none;
+  }
+
+  .chain-data li {
+    margin-left: 15px;
+    display: inline;
+  }
+
+  .wallet-sections {
+    float: left;
+    margin-left: 30px;
+    margin-top: -10px;
+    margin-bottom: -11px;
+    height: 56px;
+    -webkit-app-region: no-drag;
+  }
+
+  .wallet-sections li {
+    list-style-type: none;
+    display: inline-block;
+    font-size: 12pt;
+    font-weight: 500;
+    text-transform: uppercase;
+    height: 100%;
+    line-height: 56px;
+  }
+
+  .wallet-sections li:hover {
+    cursor: pointer;
+    background-color: #e2e2e2;
+  }
+
+  .wallet-sections .active {
+    border-bottom: 4px solid #cacaca;
   }
 </style>

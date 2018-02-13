@@ -25,7 +25,7 @@
   import { mapState,mapGetters, mapActions } from 'vuex'
 
   export default {
-    name: 'contacts',
+    name: 'addresses',
     components: {  },
     
     computed:{      

@@ -53,7 +53,7 @@
     },
     mounted: function() {
       if (store.get('setupComplete') == true) {
-        this.$router.push('/wallet')
+        this.$router.push('/mainpage')
        
       }
     }

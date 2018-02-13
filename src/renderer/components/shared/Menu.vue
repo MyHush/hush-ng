@@ -1,20 +1,15 @@
 <template>
   <div id="side-menu">
     <img id="logo" src="~@/assets/hush-icon-white.png" alt="HushNG Logo" />
-      <div v-if="isEnabled === true">
         <ul class="icons menu-sections">
-          <li v-for="(item, index) in menuSections" v-bind:class="{ active: item.name == selectedMainMenuEntry }" class="icon" v-on:click="switchTo(item);" >
+          <li v-for="(item, index) in menuSections" v-bind:class="{ active: index == activeItemIndex }" class="icon" v-on:click="switchTo(index);" >
             <img :src="item.path" style="font-color: #fff;" />
           </li>
         </ul>
-      </div>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-
-
   export default {
     name: 'side-menu',
     components: {  },
@@ -24,25 +19,20 @@
         default: true
       }
     },
-    data () {
-      console.log("data wallet");
+    data () {      
       return {
         menuSections: [
-          { 'name': 'wallet', 'route': '/wallet/addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
-          { 'name': 'contacts', 'route': '/contacts/contacts', 'path' : '/static/icons/addressbook.svg','active': false },
-          { 'name': 'transactions', 'route': '/wallet/transactions', 'path' : '/static/icons/comment.svg','active': false },
-        ]
+          { 'name': 'wallet', 'route': '/wallet/Addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
+          { 'name': 'contacts', 'route': '/contacts/Addresses', 'path' : '/static/icons/addressbook.svg','active': false },
+          { 'name': 'messenger', 'route': '/messenger', 'path' : '/static/icons/comment.svg','active': false },
+        ],
+        activeItemIndex : 0
       }
-    },
-    computed: { 
-      ...mapState([
-          'selectedMainMenuEntry'                
-        ]), 
-    },
+    },   
     methods: { 
       switchTo(item) {
-        this.$store.commit('setSelectedMainMenuEntry', item.name);
-        this.$router.push({path: item.route});
+        this.activeItemIndex = item;
+        this.$router.push({path: this.menuSections[item].route});
       }
     },
     mounted: function() {

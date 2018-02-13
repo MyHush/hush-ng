@@ -1,41 +1,62 @@
 <template>
-  <div id="wrapper" >
-    <side-menu></side-menu>
-    <contacts-menu></contacts-menu>
+  <div>
+    <div>
+      <div>
+        <div id="sub-menu">
+          <div class="menu-title">Contacts</div>
+          <ul class="block-text chain-data">
+            <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
+            <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
+          </ul>          
+          <ul class="submenu-sections">
+            <router-link v-for="(item, index) in addressBookSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
+          </ul>
+        </div>
+        <close-button></close-button>
+      </div>
+    </div>
     <div class="inner-content">
       <router-view></router-view>
     </div>
-  </div>
+  </div>   
 </template>
 
 <script>
-  import ContactsMenu from './Contacts/ContactsMenu'
-  import SideMenu from './shared/Menu'
-  import Contacts from './Contacts/Contacts'
-  import Groups from './Contacts/Groups'
+  import CloseButton from '../shared/CloseButton'
+  import Addresses from './Addresses'
+  import Groups from './Groups'
   import { mapState } from 'vuex'
-
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  var cmd = require('node-cmd')
-  const bitcoin = require('bitcoin') 
  
   export default {
-    name: 'contacts',
-    components: { ContactsMenu, SideMenu, Contacts },
+    name: 'contacts-menu',
+    components: { CloseButton },
+    
     data () {
-      return {        
-        zAddresses: [],
-        blockHeight: 0,
+      return {
+        addressBookSections: [
+          { 'name': 'addresses', 'path': '/contacts/Addresses', 'active': true },
+          { 'name': 'groups', 'path': '/contacts/Groups', 'active': false }
+        ]
       }
     },
-    computed: mapState({
-      count: state => state.count,
-      tAddresses: state => state.tAddresses
-    }),
+    computed:{
+      ...mapState([       
+        'blockHeight',
+        'peerCount'
+      ]),
+    },
     methods: {
-      
+      toggle (item) {
+        var self = this
+        var item  = item
+        for (var i = 0; i < self.addressBookSections.length; i++) {
+          if (i == item) {
+            self.addressBookSections[i].active = true
+          } else {
+            self.addressBookSections[i].active = false
+          }
+        }     
+      }
     },
     mounted: function() {
      
@@ -233,5 +254,66 @@
   .bottom-row .box li {
     font-weight: 500;
     color: #fff;
+  }
+
+div#sub-menu {
+    position: absolute;
+    width: 100vw;
+    background-color: #fff;
+    padding: 10px 10px 10px 88.3px;
+    border-bottom: 2px solid #e3e3e3;
+    z-index: 1;
+  }
+
+  .menu-title {
+    float: left;
+    margin-top: 3px;
+    font-size: 15pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .block-text {
+    position: fixed;
+    right: 40px;
+    margin: 4px 15px 0px 0px;
+  }
+
+  .chain-data {
+    float: right;
+    margin-top: 4px;
+    margin-right: 40px;
+    font-size: 12pt;
+    font-weight: 300;
+    text-transform: uppercase;
+    list-style-type: none;
+  }  
+
+    .submenu-sections {
+    float: left;
+    margin-left: 30px;
+    margin-top: -10px;
+    margin-bottom: -11px;
+    height: 56px;
+    -webkit-app-region: no-drag;
+  }
+
+  .submenu-sections li {
+    list-style-type: none;
+    display: inline-block;
+    font-size: 12pt;
+    font-weight: 500;
+    text-transform: uppercase;
+    height: 100%;
+    line-height: 56px;
+  }
+
+  .submenu-sections li:hover {
+    cursor: pointer;
+    background-color: #e2e2e2;
+  }
+
+  .submenu-sections .active {
+    border-bottom: 4px solid #cacaca;
   }
 </style>

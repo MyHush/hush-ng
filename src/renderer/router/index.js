@@ -16,24 +16,36 @@ export default new Router({
       component: require('@/components/Install').default
     },
     {
-      path: '/contacts',
-      name: 'contacts',
-      component: require('@/components/Contacts').default,
-      children: [
-        { path: 'contacts', component: require('@/components/Contacts/Contacts').default },
-        { path: 'groups', component: require('@/components/Contacts/Groups').default }
+      path: '/mainpage',
+      name: 'main-page',
+      component: require('@/components/MainPage').default,
+      children : [
+        {
+          path: '/contacts',
+          name: 'contacts-menu',
+          component: require('@/components/Contacts/Menu').default,
+          children: [
+            { path: 'addresses', component: require('@/components/Contacts/Addresses').default },
+            { path: 'groups', component: require('@/components/Contacts/Groups').default }
+          ]
+        },                
+        {
+          path: '/wallet',
+          name: 'wallet-menu',
+          component: require('@/components/Wallet/Menu').default,
+          children: [
+            { path: 'addresses', component: require('@/components/Wallet/Addresses').default },
+            { path: 'transactions', component: require('@/components/Wallet/Transactions').default }
+          ]
+        },
+        {
+          path: '/messenger',
+          name: 'messenger',
+          component: require('@/components/Messenger/Menu').default         
+        }
+
       ]
-    },
-    {
-      path: '/wallet',
-      name: 'wallet',
-      component: require('@/components/Wallet').default,
-      children: [
-        { path: 'addresses', component: require('@/components/Wallet/Addresses').default },
-        { path: 'transactions', component: require('@/components/Wallet/Transactions').default }
-      ]
-    },
-        
+    },        
     { 
       path: '*',
       redirect: '/'
