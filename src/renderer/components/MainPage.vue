@@ -85,6 +85,7 @@
           if (self.connectedToDeamon) {
             self.$store.dispatch('refreshBalances');    
             self.$store.dispatch('refreshTransactions'); 
+            self.$store.dispatch('refreshOperationStatus'); 
           }
           else {
             var client = new bitcoin.Client({
@@ -251,20 +252,6 @@
     -webkit-app-region: no-drag;
   }
 
-  .doc .button:hover {
-    background-color: #2262d6;
-  }
-
-  .doc .button-alt {
-    color: #3e3e3e;
-    margin-right: 5px;
-    background-color: transparent;
-  }
-
-  .doc .button-alt:hover {
-    background-color: #e2e2e2;
-  }
-
   .inner-content {
     position: absolute;
     width: 100%;
@@ -306,17 +293,24 @@
 
   .bottom-row .box #texts {
     float: left;
-    list-style-type: none;
+    display: list-item;
+    list-style-type:none;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .bottom-row .box #texts li{   
+    color: #fff;
   }
 
   .bottom-row .box #balances {
     float: right;
     text-align: right;
     list-style-type: none;
+    color: #fff;
+    display: list-item;
   }
-
-  .bottom-row .box li {
-    font-weight: 500;
+  .bottom-row .box #balances li {   
     color: #fff;
   }
 

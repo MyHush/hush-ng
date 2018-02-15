@@ -33,9 +33,9 @@
           <li>TOTAL:</li>
         </ul>
         <ul id="balances">
-          <li>{{ tBalance }} HUSH</li>
-          <li>{{ zBalance }} HUSH</li>
-          <li>{{ totalBalance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !tBalance.valid }" >{{ tBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !zBalance.valid }" >{{ zBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !totalBalance.valid }">{{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
       <div class="box alt">
@@ -133,36 +133,6 @@
     color: #5e5e5e;
   }
 
-  .el-table__row .address .cell {
-    font-family: 'Courier', sans-serif;
-  }
-
-  .el-table__row .balance .cell {
-    font-family: 'Courier', sans-serif;
-    color: #2f77f7;
-  }
-
-  .el-table td, .el-table th {
-    padding: 4px 0;
-  }
-
-  .el-table__body-wrapper, .el-table__footer-wrapper, .el-table__header-wrapper {
-    background-color:#eaeaea;
-  }
-
-  el-table__body, .el-table__footer, .el-table__header {    
-      background-color:#eaeaea;
-  }
-
-  .el-table .gutter {
-        background-color:#eaeaea;
-  }
-
-  .el-table td, .el-table th.is-leaf {
-      background-color:#eaeaea;
-      border: none;
-  }
-
   .button {
     font-size: 11pt;
     cursor: pointer;
@@ -191,6 +161,10 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  .unconfirmed {
+    color: red !important;
   }
 
 </style>

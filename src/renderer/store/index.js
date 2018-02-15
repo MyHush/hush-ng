@@ -13,12 +13,22 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     addresses: [],
+    operations: [],
     transactions: [],
-    totalBalance: 0,
+    totalBalance: { 
+      balance :0, 
+      valid :true
+    },    
+    tBalance: { 
+      balance :0, 
+      valid :true
+    },
+    zBalance: { 
+      balance :0, 
+      valid :true
+    },
     unconfirmedBalance: 0,
     availableBalance :0,
-    tBalance: 0,
-    zBalance: 0,
     blockHeight: 'Scanning',
     peerCount: 'None',
     walletPolling: false,
@@ -49,9 +59,39 @@ export default new Vuex.Store({
     },
     zAddresses: state => {
       return state.addresses.filter(address => address.type == 'z')
+    },
+    pendingOperations: state => {
+      return state.operations.filter(op => op.status === 'queued' || op.status === 'executing')
+                             .sort(function(a, b) {
+                              return a.date < b.date; 
+                            });
+    },
+    failedOperations: state => {
+      return state.operations.filter(op => op.status === 'failed' )
+                             .sort(function(a, b) {
+                              return a.date < b.date; 
+                            });
     }
   },
   mutations: {
+    addOperation (state, newOperation) {
+      if(state.operations.find( op => op.id == newOperation.id) == null) {
+        state.operations.push({
+            id : newOperation.id,
+            status: newOperation.status,
+            error : "",
+            date: Date.now()
+          }
+        )
+      }
+    },
+    updateOperationStatus (state, op) {
+      var operation = this.state.operations.find( a => a.id == op.id)
+      if(operation != null)  {        
+        operation.status = op.status
+        console.log(op);
+      }
+    },
     addAddress (state, newAddress) {
       if(state.addresses.find( a => a.address == newAddress.address) == null) {
         state.addresses.push(newAddress)
@@ -60,6 +100,10 @@ export default new Vuex.Store({
     setBalance (state, b) {      
       state.addresses.find( a => a.address == b.address).balance = b.balance;
     },
+    setIsValid (state, b) {      
+      state.addresses.find( a => a.address == b.address).isvalid = b.isvalid;
+    },
+
     setTotalBalance (state, b) {            
       state.totalBalance = b;
     },    
@@ -82,7 +126,9 @@ export default new Vuex.Store({
       state.blockHeight = height;
     },
     setTransactions (state, transactions) {      
-      state.transactions = transactions;
+      state.transactions = transactions.sort(function(a, b) {
+        return a.time < b.time; 
+      });;
     },
     setWalletPolling (state, flag) {      
       state.walletPolling = flag;
@@ -160,7 +206,7 @@ export default new Vuex.Store({
       });
 
       for (let address of this.state.addresses) {            
-        client.cmd('z_getbalance',address.address, function(err, balance, resHeaders) {
+        client.cmd('z_getbalance',address.address,0, function(err, balance, resHeaders) {
           var a = {
             address: address.address,
             balance: balance
@@ -169,19 +215,25 @@ export default new Vuex.Store({
         });
       }
 
-      client.cmd('z_gettotalbalance', function(err, data, resHeaders){
+      //confirmed balance
+      client.cmd('z_gettotalbalance', function(err, confirmedBalance, resHeaders){
         if (err) return console.log(err);
-        commit('setZBalance', data.private);        
-        commit('setTBalance', data.transparent);        
+       
+         //unconfirmed balance (conf= 0)
+        client.cmd('z_gettotalbalance', 0, function(err, unconfirmedBalance, resHeaders){
+          if (err) return console.log(err);
+          commit('setZBalance', { balance: unconfirmedBalance.private, valid: confirmedBalance.private == unconfirmedBalance.private });        
+          commit('setTBalance', { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
+          commit('setTotalBalance', { balance: unconfirmedBalance.total, valid: confirmedBalance.total == unconfirmedBalance.total });   
+        });
       });
 
       client.getWalletInfo(function(err, data, resHeaders) {
         if (err) return console.log(err);
-        commit('setTotalBalance', data.balance);   
+        
         commit('setUnconfirmedBalance', data.unconfirmed_balance);   
         commit('setAvailableBalance', data.balance - data.unconfirmed_balance);   
       });
-
 
       client.getInfo(function(err, data, resHeaders) {
         if (err) {
@@ -210,8 +262,46 @@ export default new Vuex.Store({
         if (err) return console.log(err);
         commit('setTransactions', data)
       });
-    },      
+    },     
 
+    refreshOperations({ commit }) {
+      console.log("refreshing transactions");
+
+      var client = new bitcoin.Client({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
+      });
+
+      // removes failed, success, cancelled ops  after beeing called
+      client.cmd('z_getoperationresult',function(err, data, resHeaders) {
+        if (err) return console.log(err);
+        for(let operationStatus of data) {
+          commit('updateOperationStatus', operationStatus)
+        } 
+        
+      });
+    }, 
+
+    refreshOperationStatus({ commit }) {
+      console.log("refreshing pending operations");
+
+      var client = new bitcoin.Client({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
+      });
+
+      client.cmd('z_getoperationstatus',function(err, data, resHeaders) {
+        if (err) return console.log(err);
+        for(let operationStatus of data) {
+          commit('updateOperationStatus', operationStatus)
+        } 
+        
+      });
+    },  
     addTAddress({ commit }) {
       var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
@@ -258,20 +348,41 @@ export default new Vuex.Store({
       }       
 
       client.cmd( 'z_sendmany',transactionForm.from,receivers,1,transactionForm.fee , function(err, data, resHeaders) {
-        if (err) return console.log(err);              
-        var operationids =[data.toString()];
-        client.cmd( 'z_getoperationstatus', operationids , function(err, opData, resHeaders) {
-          console.log(opData);
-          if (err || opData[0].status == "failed") {
-            console.log()
-            vue.$message.error(opData[0].error.message);
-            return 
-          }
-                 
-          if( opData[0].status == "success") {
-            vue.$message.success('Transaction was created successfully. Transaction id is:' + opData[0].result.txid, 5000 );            
-          }          
+        if (err) {
+          vue.$message.error(err.message);
+          return ;              
+        }
+        else {
+          var operationid =[data.toString()];
+
+          client.cmd( 'z_getoperationstatus', operationid , function(err, opData, resHeaders) {
+            console.log(opData);
+
+            if (err || opData[0].status == "failed") {
+              vue.$message.error(opData[0].error.message);
+              return 
+            }
+
+            if( opData[0].status === "cancelled") {
+              vue.$message.warning('Operation was cancelled.', 5000 );            
+            }
+
+            if( opData[0].status === "queued") {
+              vue.$message.warning('Operation was queued. Check the pending operation list for further information', 5000 );     
+              commit("addOperation",opData[0])       
+              
+            }
+
+            if( opData[0].status === "executing") {
+              vue.$message.warning('Operation is executing. Check the pending operation list for further information', 5000 );    
+              commit("addOperation",opData[0])           
+            }
+                  
+            if( opData[0].status === "success" ) {
+              vue.$message.success('Transaction was created successfully. Transaction id is:' + opData[0].result.txid, 5000 );            
+            }          
         });
+      }
       });   
     }
          

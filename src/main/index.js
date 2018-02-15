@@ -24,6 +24,7 @@ function createWindow () {
     frame: false
   })
 
+  //mainWindow.webContents.session.clearCache(function(){}) 
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
