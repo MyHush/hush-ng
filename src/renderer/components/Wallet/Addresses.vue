@@ -94,12 +94,6 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
-
-  * {
-    font-family: 'Poppins', sans-serif;
-    color: #2d2d2d;
-  }
 
  .container {    
     width: 100%;

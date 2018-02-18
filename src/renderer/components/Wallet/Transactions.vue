@@ -1,6 +1,6 @@
 <template>
   <div>
-    Transactions can be sent </br> from a zaddr or taddr depending on your preference
+    Transactions can be sent <br/> from a zaddr or taddr depending on your preference
     <div class="container" >
       <el-row class="caption">
         <el-col :span="12" >Create a transaction</el-col>
@@ -9,7 +9,6 @@
           Spendable Balance: <span>{{ availableBalance }}</span>
         </div>
         </el-col>
-
       </el-row>
       
       <el-form ref="form" :model="transactionForm" label-width="60px" >
@@ -19,7 +18,10 @@
               v-for="address in addresses"
               :key="address.address"
               :label="address.address"
-              :value="address.address">             
+              :value="address.address"
+              :disabled="!address.isConfirmed">  
+                  <span class="address" style="float: left">{{ address.address }}</span>
+                  <span style="float: right; font-size: 13px">{{ address.balance }}</span>            
           </el-option>
         </el-select>
         </el-form-item>
@@ -29,7 +31,7 @@
               <el-option
                 v-for="item in group.addresses"
                 :key="item.address"
-                :label="item.nickName"
+                :label="item.nickName" 
                 :value="item.address">
                   <span style="float: left;width:100px;">{{ item.nickName }}</span>
                   <span class="address" style="float: left">{{ item.address }}</span>
@@ -55,7 +57,11 @@
         <el-col :span="8" class="caption">Transaction History</el-col>
         <el-col :span="8" class="info" >click on a row to open block explorer</el-col>
         <el-col :span="8" class="balance"> 
-          <div v-on:click="showHistory" style="float:right">Pending Operations: <span class="pendingOperation" >{{ pendingOperations.length }}</span>
+          <div v-on:click="showPendingOperations" style="float:right;margin-left:10px;"> 
+            <icon name="exclamation-triangle" /> <span class="ops" >{{ failedOperations.length }}</span>
+          </div>
+          <div v-on:click="showFailedOperations" style="float:right">
+            <icon name="history" flip="horizontal" /> <span class="ops" >{{ pendingOperations.length }}</span> 
           </div>
         </el-col>
       </el-row>
@@ -63,7 +69,12 @@
       <el-table :data="transactions" height="280" style="width: 100%" empty-text="None">
         <el-table-column prop="category" label="Category" width="100"> </el-table-column>
         <el-table-column prop="amount" label="Amount" width="180"> </el-table-column>
-        <el-table-column prop="address" label="Address" width="*" > </el-table-column>
+        <el-table-column prop="address" label="Destination address" width="*" >
+          <template slot-scope="scope">
+            <i class="el-icon-time"></i>
+            <span style="margin-left: 10px">{{ scope.row.address }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="confirmations" label="Conf" width="60"> </el-table-column> 
       </el-table>
     </div>
@@ -78,6 +89,18 @@
       </el-table>
       <span slot="footer" class="dialog-footer">        
         <el-button type="primary" @click="operationsDialogVisible = false">Close</el-button>
+      </span>
+    </el-dialog>
+        <el-dialog title="Failed operations" :visible.sync="failedOperationsDialogVisible" width="60%" >
+      <span>This is a message</span>
+      <el-table :data="failedOperations" height="280" style="width: 100%" empty-text="None">
+        <el-table-column prop="date" label="Last Updated" > </el-table-column>
+        <el-table-column prop="id" label="Id" > </el-table-column>
+        <el-table-column prop="status" label="Status" > </el-table-column>
+        <el-table-column prop="error" label="Error" width="*" class-name="address"> </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">        
+        <el-button type="primary" @click="failedOperationsDialogVisible = false">Close</el-button>
       </span>
     </el-dialog>
 
@@ -102,32 +125,34 @@
           amount: 0.0,
           fee: 0.0001
         },
-        operationsDialogVisible: false
+        operationsDialogVisible: false,
+        failedOperationsDialogVisible: false
       }
     },
     computed:{
       ...mapState([
-        'addresses',       
+        'addresses',
         'transactions',
         'availableBalance',  
         'contacts',
         'groupedDestinationAddresses'
-        
-      ]),                 
+      ]),                         
       ...mapGetters([
         'tAddresses',
-        'pendingOperations'
+        'pendingOperations',
+        'failedOperations'
       ])           
     },
     methods: {
       createTransaction () {                     
         this.$store.dispatch('sendToMany',this.transactionForm);  
       },
-      showHistory () {                     
+      showPendingOperations () {                     
         this.operationsDialogVisible = true;
-      }
-      
-      
+      },
+      showFailedOperations () {                     
+        this.failedOperationsDialogVisible = true;
+      }          
     },
     mounted: function() {
      
@@ -138,21 +163,21 @@
 <style>
   @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
 
-  * {
-    font-family: 'Poppins', sans-serif;
-    color: #2d2d2d;
-  }
-
   .info {
     font-size:10pt;
     padding: 4px 0px;
   }
+
+  .is-disabled .address {
+    color: #c0c4cc;
+  }
+
   .address {
     font-family: 'Courier', sans-serif;
     font-size:8pt;  
   }
 
-  .pendingOperation {
+  .ops {
     cursor: pointer;
   }
 

@@ -1,21 +1,7 @@
 <template>
-  <div id="addresses">
-    <p id="intro">
-      Below is a list of your known addresses<br />
-      <span>Z-ADDRs are private while T-ADDRs are public</span>
-    </p>
-    <a class="button" id="add-addressbookentry" v-on:click="generateAddress()">New address</a>
-    <div class="address-list" id="z-addr">
-      <div class="type">Z-ADDR</div>
-      <div class="copy">click on an address to copy it</div>
-      <ul class="address-details">
-        <li>
-          <div class="balance" style="clear: both;"></div>
-          <div class="address" v-on:click="copy(address.address)"></div>
-        </li>
-      </ul>
-    </div>
-       
+  <div>
+
+
   </div>
 </template>
 
@@ -42,13 +28,7 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
-
-  * {
-    font-family: 'Poppins', sans-serif;
-    color: #2d2d2d;
-  }
-
+ 
   #addresses {
     width: 100%;
   }

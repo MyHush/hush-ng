@@ -83,9 +83,10 @@
         Repeat(function() {
 
           if (self.connectedToDeamon) {
+            self.$store.dispatch('refreshNetworkStats');                
             self.$store.dispatch('refreshBalances');    
             self.$store.dispatch('refreshTransactions'); 
-            self.$store.dispatch('refreshOperationStatus'); 
+            self.$store.dispatch('refreshOperations'); 
           }
           else {
             var client = new bitcoin.Client({
@@ -125,7 +126,7 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
+ @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
 
   * {
     font-family: 'Poppins', sans-serif;
@@ -375,6 +376,11 @@
       background-color:#eaeaea;
       border: none;
   }
+
+  .el-select-dropdown__item.is-disabled {
+    color: #c0c4cc;
+    cursor: not-allowed;
+}
 
   .button {
     font-size: 11pt;
