@@ -63,16 +63,20 @@ export default new Vuex.Store({
       return state.addresses.filter(address => address.type == 'z')
     },
     pendingOperations: state => {
-      return state.operations.filter(op => op.status === 'queued' || op.status === 'executing')
-                             .sort(function(a, b) {
-                              return a.date < b.date; 
-                            });
+      return state.operations.filter(op => op.status === 'queued' ||  op.status === 'executing')
+                              .sort(function(a, b) {
+                                if( a.date < b.date) return 1;
+                                if( a.date > b.date) return -1;
+                                return 0
+                              });
     },
     failedOperations: state => {
       return state.operations.filter(op => op.status === 'failed' )
-                             .sort(function(a, b) {
-                              return a.date < b.date; 
-                            });
+                              .sort(function(a, b) {
+                                if( a.date < b.date) return 1;
+                                if( a.date > b.date) return -1;
+                                return 0
+                              });
     }
   },
   mutations: {    
@@ -91,8 +95,7 @@ export default new Vuex.Store({
           vue.$message.success('Transaction was created successfully. Transaction id is:' + op.result.txid, 5000 );            
         }    
 
-        operation.status = op.status
-        operation.date = Date.now;
+        operation.date = Date.now();
         operation.status = op.status;
         if(op.error) {
           operation.error = op.error.message;
@@ -146,8 +149,12 @@ export default new Vuex.Store({
     },
     setTransactions (state, transactions) {      
       state.transactions = transactions.sort(function(a, b) {
-        return a.time < b.time; 
-      });;
+        if( a.time < b.time) return 1;
+        if( a.time > b.time) return -1;
+        if(a.category == "send" && b.category == "receive") return 1;  
+        if(a.category == "receive" && b.category == "send") return -1;  
+        return 0
+      });
     },
 
     addZTransaction (state, transaction) {      
@@ -291,13 +298,13 @@ export default new Vuex.Store({
         var walletInfo = client.getWalletInfo();
         commit('setTransactionCount', walletInfo.txcount);
 
-        var tTransactions = await  client.listTransactions();
+        var tTransactions = await  client.listTransactions("",100,0);
         var allZTransactionResults=[];
         var zTransactions= [];
 
         var zAddresses = this.state.addresses.filter(a => a.type === "z");
         for(let zAddress of zAddresses) {        
-          var transactionResults = await client.z_listReceivedByAddress(zAddress.address);
+          var transactionResults = await client.z_listReceivedByAddress(zAddress.address,0);
           for(let transactionResult of transactionResults) {
             transactionResult.address = zAddress.address;
             allZTransactionResults.push(transactionResult);
@@ -392,8 +399,9 @@ export default new Vuex.Store({
       }       
 
         var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
-        vue.$message.success('Transaction queued successfully.' );          
-        commit('addOrUpdateOperationStatus', {id: result[0].toString(), status: "queued"});           
+        vue.$message.success('Transaction queued successfully.' );         
+        console.log(result);
+        commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});           
       }
       catch(err) {
         console.log(err);
