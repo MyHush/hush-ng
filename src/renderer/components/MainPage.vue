@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper" >
-    <div v-if="true || connectedToDeamon === true">
+    <div v-if="true || connectedToDeamon === true" style="height:100%">
       <side-menu></side-menu>
       <router-view></router-view>
     </div>
@@ -83,6 +83,7 @@
         Repeat(function() {
 
           if (self.connectedToDeamon) {
+            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshNetworkStats');                
             self.$store.dispatch('refreshBalances');    
             self.$store.dispatch('refreshTransactions'); 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:95%">
     Transactions can be sent <br/> from a zaddr or taddr depending on your preference
     <div class="container" >
       <el-row class="caption">
@@ -52,52 +52,85 @@
       </el-form>         
       <el-button type="primary" @click="createTransaction">Create</el-button>
     </div>
-    <div class="container" >
+    <div class="container" style="height:calc(100% - 300px);" >
       <el-row >
         <el-col :span="8" class="caption">Transaction History</el-col>
         <el-col :span="8" class="info" >click on a row to open block explorer</el-col>
         <el-col :span="8" class="balance"> 
-          <div v-on:click="showPendingOperations" style="float:right;margin-left:10px;"> 
+          <div v-on:click="showFailedOperations" style="float:right;margin-left:10px;"> 
             <icon name="exclamation-triangle" /> <span class="ops" >{{ failedOperations.length }}</span>
           </div>
-          <div v-on:click="showFailedOperations" style="float:right">
+          <div v-on:click="showPendingOperations" style="float:right">
             <icon name="history" flip="horizontal" /> <span class="ops" >{{ pendingOperations.length }}</span> 
           </div>
         </el-col>
       </el-row>
 
-      <el-table :data="transactions" height="280" style="width: 100%" empty-text="None">
-        <el-table-column prop="category" label="Category" width="100"> </el-table-column>
-        <el-table-column prop="amount" label="Amount" width="180"> </el-table-column>
-        <el-table-column prop="address" label="Destination address" width="*" >
-          <template slot-scope="scope">
-            <i class="el-icon-time"></i>
-            <span style="margin-left: 10px">{{ scope.row.address }}</span>
+      <el-table :data="transactions" height="95%" style="width: 100%" empty-text="None">
+        <el-table-column prop="confirmations" label="" width="30"> 
+          <template slot-scope="scope">           
+            <div v-if="scope.row.confirmations > 0" ><icon name="check" class="confirmed" /> </div>
           </template>
         </el-table-column>
-        <el-table-column prop="confirmations" label="Conf" width="60"> </el-table-column> 
+       
+        <el-table-column prop="category" label="Direction" width="90"> 
+           <template slot-scope="scope">          
+             <div v-if="scope.row.category == 'receive'"> Incoming </div>
+             <div v-if="scope.row.category == 'send'"> Outgoing </div>
+             <div v-if="scope.row.category == 'generate'"> Mined </div>
+          </template>
+        </el-table-column>
+         <el-table-column prop="time" width="180"> 
+          <template slot-scope="scope">           
+            <div> {{ new Date(scope.row.time*1000).toLocaleString('en-US') }} </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="amount" label="Amount" width="120"> 
+          <template slot-scope="scope">          
+             <div style="float:right"> {{ Math.abs(scope.row.amount) }} HUSH </div>           
+          </template>
+        </el-table-column>
+        <el-table-column prop="address" label="Destination address" width="*" >
+          <template slot-scope="scope">            
+            <span class="address">{{ scope.row.address }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
-    <el-dialog title="Pending operations" :visible.sync="operationsDialogVisible" width="60%" >
-      <span>This is a message</span>
-      <el-table :data="pendingOperations" height="280" style="width: 100%" empty-text="None">
-        <el-table-column prop="date" label="Last Updated" > </el-table-column>
-        <el-table-column prop="id" label="Id" > </el-table-column>
-        <el-table-column prop="status" label="Status" > </el-table-column>
-        <el-table-column prop="error" label="Error" width="*" class-name="address"> </el-table-column>
+    <el-dialog title="Pending operations" :visible.sync="operationsDialogVisible" width="75%" >
+      <el-table :data="pendingOperations" height="320" style="width: 100%" empty-text="None">
+        <el-table-column prop="date" label="Last Updated" width="160" >
+          <template slot-scope="scope">           
+            <div> {{ new Date(scope.row.date*1000).toLocaleString('en-US') }} </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" label="Id" width="*"> </el-table-column>
+        <el-table-column prop="status" label="Status" width="80"> </el-table-column>
+        <el-table-column prop="error" label="Error" width="260" > 
+          <template slot-scope="scope">           
+            <div style="text-overflow: ellipsis;"> {{ scope.row.error }} </div>
+          </template>
+        </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">        
         <el-button type="primary" @click="operationsDialogVisible = false">Close</el-button>
       </span>
     </el-dialog>
-        <el-dialog title="Failed operations" :visible.sync="failedOperationsDialogVisible" width="60%" >
-      <span>This is a message</span>
-      <el-table :data="failedOperations" height="280" style="width: 100%" empty-text="None">
-        <el-table-column prop="date" label="Last Updated" > </el-table-column>
-        <el-table-column prop="id" label="Id" > </el-table-column>
-        <el-table-column prop="status" label="Status" > </el-table-column>
-        <el-table-column prop="error" label="Error" width="*" class-name="address"> </el-table-column>
+    <el-dialog title="Failed operations" :visible.sync="failedOperationsDialogVisible" width="75%" >
+      <el-table :data="failedOperations" height="320" style="width: 100%" empty-text="None">
+        <el-table-column prop="date" label="Date" width="160"> 
+          <template slot-scope="scope" >           
+            <div> {{ new Date(scope.row.date*1000).toLocaleString('en-US') }} </div> 
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" label="Id" width="*" > </el-table-column>
+        <el-table-column prop="status" label="Status" width="80"> </el-table-column>
+        <el-table-column prop="error" label="Error" width="260" > 
+          <template slot-scope="scope">           
+            <div style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;"> {{ scope.row.error }} </div>
+          </template>
+        </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">        
         <el-button type="primary" @click="failedOperationsDialogVisible = false">Close</el-button>
@@ -175,6 +208,11 @@
   .address {
     font-family: 'Courier', sans-serif;
     font-size:8pt;  
+  }
+
+  svg.confirmed  {
+    stroke: green;
+    fill: green;
   }
 
   .ops {
