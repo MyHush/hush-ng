@@ -75,6 +75,7 @@
         rpcpassword = config.rpcpassword()
         rpcport = config.rpcport()
 
+        this.$store.dispatch('loadContacts');
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
         this.$store.commit('setWalletPolling', true);  
         this.$store.dispatch('refreshAddresses');
@@ -235,23 +236,6 @@
 
   .error {
     background-color: #ef4049;
-  }
-
-  .doc .button {
-    font-size: .9em;
-    cursor: pointer;
-    outline: none;
-    padding: 0.75em 2em;
-    border-radius: 2em;
-    display: inline-block;
-    color: #fff;
-    background-color: #2F77F7;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-    border: 1px solid #2F77F7;
-    margin-top: 10px;
-    text-decoration: none;
-    -webkit-app-region: no-drag;
   }
 
   .inner-content {

@@ -1,9 +1,9 @@
 {
   "name": "hush-ng",
   "version": "0.0.0",
-  "author": "Matthew Reichardt <me@matthewreichardt.com>",
+  "author": "Rafael Janetzek <rjanetzek@gmx.de>",
   "description": "Hush Next-generation",
-  "license": null,
+  "license": "The HUSH Team",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",

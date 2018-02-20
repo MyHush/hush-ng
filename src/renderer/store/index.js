@@ -1,10 +1,12 @@
 const bitcoin = require('bitcoin')
-var hushrpc = require( 'hushrpc' ) ;
+const  hushrpc = require( 'hushrpc' ) ;
 
 import Vue from 'vue'
 import Vuex from 'vuex'
 
 import modules from './modules'
+import os from 'os'
+import fs from 'fs'
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -158,7 +160,7 @@ export default new Vuex.Store({
     },
 
     addZTransaction (state, transaction) {      
-      state.transactions.push(transaction);
+      state.transactions.push(transaction); 
     },
 
     setTransactionCount (state, count) {      
@@ -172,6 +174,23 @@ export default new Vuex.Store({
     },
     setContacts (state, contacts) {      
       state.contacts = contacts;
+    },
+    addOrUpdate (state, contact) {
+      var c = state.contacts.find( a => a.id == contact.id) 
+      console.log(c);
+      if(c) {
+        c.nickName = contact.nickName;
+        c.address = contact.address;
+      }
+      else {
+        contact.id + Date.now();
+        state.contacts.push(contact)
+      }
+
+    },
+    removeContact (state, contact) {
+      var index = state.contacts.indexOf(contact);
+      state.contacts.splice(index, 1);   
     },
     updateGroupedDestinationAddresses (state) {      
       var groups = [];
@@ -406,7 +425,52 @@ export default new Vuex.Store({
       catch(err) {
         console.log(err);
       }     
-    }
-         
+    },
+
+    loadContacts({ commit }) {
+      var platform = os.platform();
+      var contactsFile = null;
+
+      if (platform == "win32") {                
+        contactsFile = os.homedir() + "/hush-ng/contacts.json";
+      }
+      else if(platform == "linux") {
+        contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
+      }
+
+      if (fs.existsSync(contactsFile)) {
+        var data = '';
+        var stream = fs.createReadStream(contactsFile)       
+        stream.on('data', function(chunk) {  
+          data += chunk;
+        })
+        .on('end', function() {
+          var contacts = JSON.parse(data);
+          commit("setContacts",contacts);
+        });
+      }    
+    },
+
+    saveContacts() {
+      var self = this;
+      var platform = os.platform();
+      var contactsFile = null;
+     
+      if (platform == "win32") {                
+        contactsFile = os.homedir() + "/hush-ng/contacts.json";
+      }
+      else if(platform == "linux") {
+        contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
+      }
+
+      var data = '';
+      var stream = fs.createWriteStream(contactsFile)  
+        
+      stream.once('open', function(fd) {
+        stream.write(JSON.stringify(self.state.contacts));        
+        stream.end();
+      });
+          
+    }  
   }
 })

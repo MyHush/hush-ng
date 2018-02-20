@@ -85,7 +85,7 @@
             <div> {{ new Date(scope.row.time*1000).toLocaleString('en-US') }} </div>
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="Amount" width="120"> 
+        <el-table-column prop="amount" label="Amount" width="160"> 
           <template slot-scope="scope">          
              <div style="float:right"> {{ Math.abs(scope.row.amount) }} HUSH </div>           
           </template>
