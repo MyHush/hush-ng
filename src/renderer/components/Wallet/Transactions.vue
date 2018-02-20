@@ -26,7 +26,7 @@
         </el-select>
         </el-form-item>
         <el-form-item label="To">
-          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create placeholder="put address here or choose from your contacts" style="width:100%;">
+          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create  default-first-option placeholder="put address here or choose from your contacts" style="width:100%;">
             <el-option-group v-for="group in groupedDestinationAddresses" :key="group.label" :label="group.label">
               <el-option
                 v-for="item in group.addresses"
@@ -66,7 +66,7 @@
         </el-col>
       </el-row>
 
-      <el-table :data="transactions" height="95%" style="width: 100%" empty-text="None">
+      <el-table :data="transactions" height="95%" style="width: 100%" empty-text="None" @row-click="openExplorer" >
         <el-table-column prop="confirmations" label="" width="30"> 
           <template slot-scope="scope">           
             <div v-if="scope.row.confirmations > 0" ><icon name="check" class="confirmed" /> </div>
@@ -177,6 +177,10 @@
       ])           
     },
     methods: {
+      openExplorer (row) {
+        var link = "https://explorer.myhush.org/tx/" + row.txid;
+        this.$electron.shell.openExternal(link)
+      },
       createTransaction () {                     
         this.$store.dispatch('sendToMany',this.transactionForm);  
       },
