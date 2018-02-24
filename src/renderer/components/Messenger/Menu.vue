@@ -3,28 +3,42 @@
       <el-aside width="300px" >
         <div class="hushlist-title"> HushList</div>
         <div>
-          <div class="subtitle"> Contacts </div>
-          <div class="subtitle"> Lists </div>
-          <div class="subtitle"> Conversations </div>
+          <div class="subtitle"> Contacts </div>  
+          <div class="subtitle"> Lists </div> 
+          <div class="subtitle"> Conversations <div style="float:right" @click="startConversation" > <icon name="plus"  /> </div> </div> 
         </div>
       </el-aside>
       <el-main> 
         <router-view></router-view>
       </el-main>
+
+      <el-dialog title="Start a conversation" :visible.sync="startConversationDialogVisible" width="60%" >
+        <el-form :model="receiverAddressForm">
+          <el-form-item label="Name" label-width="100px">
+           
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">         
+          <el-button @click="startConversationDialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="startConversation">Ok</el-button>
+        </span>
+      </el-dialog>
     </el-container>    
 </template>
 
 <script>
   import CloseButton from '../shared/CloseButton'
-  import { mapState } from 'vuex'
+  import { mapState,mapActions } from 'vuex'
 
   export default {
     name: 'hushlist-menu',
     components: { CloseButton },
-     props: {
-      isEnabled: {
-        type: Boolean,
-        default: true
+    data () {
+       return {   
+        receiverAddressForm: {
+          adress: null
+        },    
+        startConversationDialogVisible: false
       }
     },
     computed: { 
@@ -32,18 +46,11 @@
           'blockHeight',
           'peerCount'                
         ]), 
-    },
-    data () {
-      return {
-        connStatus: 'Connecting...',
-        connectedToDeamon: false,
-        walletSections: [
-          { 'name': 'addresses', 'path': '/wallet/addresses', 'active': true },
-          { 'name': 'transactions', 'path': '/wallet/transactions', 'active': false }
-        ]
-      }
-    },
-    methods: {
+    },    
+    methods: {        
+      startConversation() {
+         this.startConversationDialogVisible = true;
+      },
       open (link) {
         this.$electron.shell.openExternal(link)
       },

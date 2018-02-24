@@ -1,21 +1,41 @@
 <template>
-  <div id="addresses">
-    <p id="intro">
-      Below is a list of your known addresses<br />
-      <span>Z-ADDRs are private while T-ADDRs are public</span>
-    </p>
-    <a class="button" id="add-addressbookentry" v-on:click="generateAddress()">New address</a>
-    <div class="address-list" id="z-addr">
-      <div class="type">Z-ADDR</div>
-      <div class="copy">click on an address to copy it</div>
-      <ul class="address-details">
-        <li>
-          <div class="balance" style="clear: both;"></div>
-          <div class="address" v-on:click="copy(address.address)"></div>
-        </li>
-      </ul>
-    </div>
-       
+  <div style="height:100%">
+      Below is a list of your contacts<br />
+    <div class="container" style="height:95%">
+      <el-row class="caption">
+        <el-col :span="2" >zaddr</el-col>
+        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
+        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addContact()">New contact</a></el-col>
+      </el-row>
+      <el-table :data="contacts" height="90%" style="width: 100%" empty-text="None">
+        <el-table-column prop="nickName" label="Amount" width="100"> </el-table-column>
+        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
+        <el-table-column
+          fixed="right"
+          label=""
+          width="120">
+          <template slot-scope="scope">
+            <el-button @click="editContact(scope.row)" type="text" size="small">Edit</el-button>
+            <el-button type="text" @click="removeContact(scope.row)" size="small">Delete</el-button>
+          </template>
+        </el-table-column>        
+      </el-table>        
+    </div>    
+
+    <el-dialog title="Edit contact" :visible.sync="contactDialogVisible" width="60%" >
+      <el-form :model="contactForm">
+        <el-form-item label="Name" label-width="100px">
+          <el-input v-model="contactForm.nickName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Address" label-width="100px">
+         <el-input v-model="contactForm.address" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">         
+        <el-button @click="contactDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="saveContact">Save</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -26,14 +46,49 @@
   export default {
     name: 'addresses',
     components: {  },
+    data () {
+       return {
+         contactForm : {
+          id: null,
+          nickName: "",
+          address: ""
+        },
+        contactDialogVisible: false
+      }
+    },
     
-    computed:{      
+    computed:{
+      ...mapState([       
+        'contacts'
+      ])                         
+           
     },
     methods: {
       copy (value) {
         copy(value)
         alert('Copied ' + value + ' to clipboard.')
-      }     
+      },
+      addContact (value) {
+        this.contactForm.id = null;
+         this.contactForm.nickName = "";
+         this.contactForm.address = "";
+         this.contactDialogVisible = true;   
+      },
+      editContact (contact) {
+         this.contactForm.id = contact.id;
+         this.contactForm.nickName = contact.nickName;
+         this.contactForm.address = contact.address;
+         this.contactDialogVisible = true;   
+      },         
+      removeContact (contact) {
+        this.$store.commit('removeContact',contact );          
+        this.$store.dispatch('saveContacts');      
+      },
+      saveContact () {         
+         this.$store.commit('addOrUpdate',this.contactForm);    
+         this.$store.dispatch('saveContacts');     
+         this.contactDialogVisible = false; 
+      }      
     },
     mounted: function() {
      
@@ -42,13 +97,7 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
-
-  * {
-    font-family: 'Poppins', sans-serif;
-    color: #2d2d2d;
-  }
-
+ 
   #addresses {
     width: 100%;
   }

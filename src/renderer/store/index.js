@@ -1,24 +1,41 @@
 const bitcoin = require('bitcoin')
+const  hushrpc = require( 'hushrpc' ) ;
 
 import Vue from 'vue'
 import Vuex from 'vuex'
 
 import modules from './modules'
+import hushlist from './modules/hushlist';
+import os from 'os'
+import fs from 'fs'
 
 Vue.use(Vuex)
 let vue = new Vue()
 
 export default new Vuex.Store({
-  modules,
+  modules: {
+    hushlist:hushlist
+  },
   strict: process.env.NODE_ENV !== 'production',
   state: {
     addresses: [],
+    operations: [],
     transactions: [],
-    totalBalance: 0.0,
+    transactionCount:0,
+    totalBalance: { 
+      balance :0.0, 
+      valid :true
+    },    
+    tBalance: { 
+      balance :0.0, 
+      valid :true
+    },
+    zBalance: { 
+      balance :0.0, 
+      valid :true
+    },
     unconfirmedBalance: 0.0,
-    availableBalance: 0.0,
-    tBalance: 0.0,
-    zBalance: 0.0,
+    availableBalance :0.0,
     blockHeight: 'Scanning',
     peerCount: 'None',
     walletPolling: false,
@@ -45,17 +62,71 @@ export default new Vuex.Store({
     },
     zAddresses: state => {
       return state.addresses.filter(address => address.type == 'z')
+    },
+    pendingOperations: state => {
+      return state.operations.filter(op => op.status === 'queued' ||  op.status === 'executing')
+                              .sort(function(a, b) {
+                                if( a.date < b.date) return 1;
+                                if( a.date > b.date) return -1;
+                                return 0
+                              });
+    },
+    failedOperations: state => {
+      return state.operations.filter(op => op.status === 'failed' )
+                              .sort(function(a, b) {
+                                if( a.date < b.date) return 1;
+                                if( a.date > b.date) return -1;
+                                return 0
+                              });
     }
   },
-  mutations: {
+  mutations: {    
+    addOrUpdateOperationStatus (state, op) {
+      var operation = this.state.operations.find( a => a.id == op.id)
+      if(operation != null)  {        
+        if (operation.status != op.status && op.status == "failed") {
+          vue.$message.error(op.error.message);           
+        }
+
+        if (operation.status != op.status && op.status === "executing") {
+          vue.$message.warning('Operation is executing. Check the pending operation list for further information', 5000 );     
+        }
+              
+        if (operation.status != op.status && op.status === "success" ) {
+          vue.$message.success('Transaction was created successfully. Transaction id is:' + op.result.txid, 5000 );            
+        }    
+
+        operation.date = Date.now();
+        operation.status = op.status;
+        if(op.error) {
+          operation.error = op.error.message;
+        }
+
+      }
+      else {       
+        state.operations.push({
+          id : op.id,
+          status: op.status,
+          error : "",
+          date: Date.now()
+        });
+      }
+    },
+    clearFailedOperations (state) {
+      //TODO Implement clearing of list
+    },
     addAddress (state, newAddress) {
       if(state.addresses.find( a => a.address == newAddress.address) == null) {
         state.addresses.push(newAddress)
       }
     }, 
     setBalance (state, b) {      
-      state.addresses.find( a => a.address == b.address).balance = b.balance;
-    },
+      var address = state.addresses.find( a => a.address == b.address);
+      if(address) {
+        address.balance = b.balance;
+        address.isConfirmed = b.isConfirmed;
+      }
+    },  
     setTotalBalance (state, b) {            
       state.totalBalance = b;
     },    
@@ -78,7 +149,21 @@ export default new Vuex.Store({
       state.blockHeight = height;
     },
     setTransactions (state, transactions) {      
-      state.transactions = transactions;
+      state.transactions = transactions.sort(function(a, b) {
+        if( a.time < b.time) return 1;
+        if( a.time > b.time) return -1;
+        if(a.category == "send" && b.category == "receive") return 1;  
+        if(a.category == "receive" && b.category == "send") return -1;  
+        return 0
+      });
+    },
+
+    addZTransaction (state, transaction) {      
+      state.transactions.push(transaction); 
+    },
+
+    setTransactionCount (state, count) {      
+      state.transactionCount = count;
     },
     setWalletPolling (state, flag) {      
       state.walletPolling = flag;
@@ -88,6 +173,23 @@ export default new Vuex.Store({
     },
     setContacts (state, contacts) {      
       state.contacts = contacts;
+    },
+    addOrUpdate (state, contact) {
+      var c = state.contacts.find( a => a.id == contact.id) 
+      console.log(c);
+      if(c) {
+        c.nickName = contact.nickName;
+        c.address = contact.address;
+      }
+      else {
+        contact.id + Date.now();
+        state.contacts.push(contact)
+      }
+
+    },
+    removeContact (state, contact) {
+      var index = state.contacts.indexOf(contact);
+      state.contacts.splice(index, 1);   
     },
     updateGroupedDestinationAddresses (state) {      
       var groups = [];
@@ -115,142 +217,203 @@ export default new Vuex.Store({
     }
   },
   actions : {
-    refreshAddresses({ commit }) {
+    async refreshAddresses({ commit }) {
       console.log("scanning for addresses");
 
-      var client = new bitcoin.Client({
+      var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+      try {
+        var tAddresses = await client.listReceivedByAddress(0,true);
+        var unspentUTXOs = await client.listUnspent();
 
-      client.getAddressesByAccount('', function(err, data, resHeaders) {
-        if (err) return console.log(err);
-        console.log('t-addrs... Found: ' + data.length )
-        for (var i = 0; i < data.length; i++) {
-           commit('addAddress', {address: data[i], balance: 0, type: 't'});
-        }
-        commit("updateGroupedDestinationAddresses");
-      });
-
-      // TODO: listunspent must be called to get all addresses
-      // Get Z-Addresses
-      client.cmd('z_listaddresses', function(err, data, resHeaders){
-        if (err) return console.log(err);
-        console.log('z-addrs... Found: ' + data.length );
-        for (var i = 0; i < data.length; i++) {
-           commit('addAddress', {address: data[i], balance: 0, type: 'z'});
+        for (let item of tAddresses.concat(unspentUTXOs)) {       
+          var result = await client.validateAddress(item.address);
+          if(result.isvalid && !result.iswatchonly ) {
+            commit('addAddress', {address: item.address, balance: 0, type: 't', isConfirmed: false});
+          }
         }
 
+        var zAddresses = await client.z_listaddresses();
+        console.log('z-addrs... Found: ' + zAddresses.length );
+        
+        for (let item of zAddresses) {      
+          commit('addAddress', {address: item, balance: 0, type: 'z', isConfirmed: false});
+        }
+
         commit("updateGroupedDestinationAddresses");
-      });     
+      }
+      catch(err) {
+        if(err) console.log(err);
+      }
     },    
 
-    refreshBalances({ commit }) {
+    async refreshBalances({ commit }) {
       console.log("updating address balances");
-      var client = new bitcoin.Client({
+      var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+      try {
+        for (let address of this.state.addresses) {            
+          var confirmeAddressBalance = await client.z_getbalance(address.address,1);
+          var unconfirmedAddressBalance = await client.z_getbalance(address.address,0);
 
-      for (let address of this.state.addresses) {
-        client.cmd('z_getbalance',address.address, function(err, balance, resHeaders) {
          var taddr = address.address;
-         console.log("balance of " + taddr + "=" + balance)
+         console.log("balance of " + taddr + "=" + confirmeAddressBalance)
+         console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
+
           var a = {
             address: address.address,
-            balance: balance
+            balance: unconfirmedAddressBalance,
+            isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
           };
-            commit('setBalance', a);
-        });
+          
+          commit('setBalance', a);   
+        }
+
+        var confirmedBalance = await client.z_gettotalbalance();
+        var unconfirmedBalance = await client.z_gettotalbalance(0);
+        
+        commit('setZBalance', { balance: unconfirmedBalance.private, valid: confirmedBalance.private == unconfirmedBalance.private });        
+        commit('setTBalance', { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
+        commit('setTotalBalance', { balance: unconfirmedBalance.total, valid: confirmedBalance.total == unconfirmedBalance.total });   
+        commit('setAvailableBalance', confirmedBalance.total);  
       }
+      catch(err) { 
+        if(err) console.log(err);
+      }
+    },
 
-      client.cmd('z_gettotalbalance', function(err, data, resHeaders){
-        console.log("getting total shielded balance, data=" + data)
-        console.log(resHeaders);
-        // err and data are null for a 500
-        if (err) return console.log(err);
-        if (data) {
-            commit('setZBalance', data.private);
-            console.log("setting zaddr balance");
-            commit('setTBalance', data.transparent);
-            console.log("setting taddr balance");
-        }
+    async refreshNetworkStats({ commit }) {
+      
+      var client = new hushrpc.Client({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
       });
 
-      client.getWalletInfo(function(err, data, resHeaders) {
-        if (err) return console.log(err);
-        if (data) {
-            commit('setTotalBalance', data.balance);
-            commit('setUnconfirmedBalance', data.unconfirmed_balance);
-            commit('setAvailableBalance', data.balance - data.unconfirmed_balance);
-        }
-      });
-
-
-      client.getInfo(function(err, data, resHeaders) {
-        if (err) {
-          commit('setPeerCount', '0');
-          commit('setBlockheight', 'Syncing...');
-          return console.log(err);
-        }
+      try {
+        var data = await client.getInfo();        
         commit('setPeerCount', data.connections);
         commit('setBlockheight', data.blocks);
-      }); 
+
+      } catch(err) {
+        commit('setPeerCount', '0');
+        commit('setBlockheight', 'Scanning');
+      }
     },
 
-    refreshTransactions({ commit }) {
+    async refreshTransactions({ commit }) {
       console.log("refreshing transactions");
-
-      var client = new bitcoin.Client({
+      var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
 
-      client.listTransactions(function(err, data, resHeaders) {
-        if (err) return console.log(err);
-        commit('setTransactions', data)
-      });
-      console.log("finished refreshing transactions");
-    },
+      try {
+        var walletInfo = client.getWalletInfo();
+        commit('setTransactionCount', walletInfo.txcount);
 
-    addTAddress({ commit }) {
+        var tTransactions = await  client.listTransactions("",100,0);
+        var allZTransactionResults=[];
+        var zTransactions= [];
+
+        var zAddresses = this.state.addresses.filter(a => a.type === "z");
+        for(let zAddress of zAddresses) {        
+          var transactionResults = await client.z_listReceivedByAddress(zAddress.address,0);
+          for(let transactionResult of transactionResults) {
+            transactionResult.address = zAddress.address;
+            allZTransactionResults.push(transactionResult);
+          }
+        }
+
+        for(let transactionResult of allZTransactionResults) {
+          var zTransaction = await client.getTransaction(transactionResult.txid);
+          zTransactions.push( {
+            category: "receive", 
+            amount: zTransaction.amount,
+            txid: zTransaction.txid,
+            confirmations: zTransaction.confirmations,
+            address:transactionResult.address,
+            time: zTransaction.time
+          })
+        }
+        commit('setTransactions',tTransactions.concat(zTransactions));
+        console.log("finished refreshing transactions");
+      }
+      catch(err) {
+        if(err) console.log(err);
+      }
+    },     
+
+    async refreshOperations({ commit }) {
+      console.log("refreshing operations");
+
+      var client = new hushrpc.Client({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
+      });
+
+      try {      
+        // removes failed, success, cancelled ops  after beeing called
+        var operationStates = await client.z_getoperationresult();
+        for(let operationStatus of operationStates) {
+            commit('addOrUpdateOperationStatus', operationStatus)
+        } 
+      } 
+      catch(err) {
+        if(err) console.log(err);
+      }
+    }, 
+ 
+    async addTAddress({ commit }) {
       console.log("adding taddr");
+      
+      var client = new hushrpc.Client({
+        port: this.state.rpcCredentials.port,
+        user: this.state.rpcCredentials.user,
+        pass: this.state.rpcCredentials.password,
+        timeout: 60000
+      });
+      
+      try {
+        var result = await client.z_getnewaddress();
+        console.log(result); 
+        commit('addAddress', {address: result, balance: 0, type: 't'});
+      }
+      catch(err) {
+        if(err) console.log(err);
+      }  
+    },
+
+    async addZAddress({ commit }) {
       var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
-
-      client.getNewAddress('', function(err, data, resHeaders) {
-        if (err) return console.log(err);      
-        console.log(data);   
-        commit('addAddress', {address: data, balance: 0, type: 't'});
-      });
+      try {
+        var result = await client.z_getnewaddress();
+        commit('addAddress', {address: result, balance: 0, type: 'z'});
+      }
+      catch(err) {
+        console.log(err);
+      }     
     },
 
-    addZAddress({ commit }) {
-      var client = new bitcoin.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
-
-      // Get T-Addresses
-      client.cmd('z_getnewaddress', function(err, data, resHeaders) {
-        if (err) return console.log(err);      
-        console.log(data);   
-        commit('addAddress', {address: data, balance: 0, type: 'z'});
-      });
-    },
-    sendToMany({ commit },transactionForm) {
+    async sendToMany({ commit },transactionForm) {
       var self = this;
       var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
@@ -258,29 +421,67 @@ export default new Vuex.Store({
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
-     
+      
+      try {
       var receivers = [];         
       for(let receiver of transactionForm.destinationAddresses) {
         receivers.push({"address":receiver.toString(), "amount": transactionForm.amount});
       }       
 
-      client.cmd( 'z_sendmany',transactionForm.from,receivers,1,transactionForm.fee , function(err, data, resHeaders) {
-        if (err) return console.log(err);              
-        var operationids =[data.toString()];
-        client.cmd( 'z_getoperationstatus', operationids , function(err, opData, resHeaders) {
-          console.log(opData);
-          if (err || opData[0].status == "failed") {
-            console.log()
-            vue.$message.error(opData[0].error.message);
-            return 
-          }
-                 
-          if( opData[0].status == "success") {
-            vue.$message.success('Transaction was created successfully. Transaction id is:' + opData[0].result.txid, 5000 );            
-          }          
+        var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
+        vue.$message.success('Transaction queued successfully.' );         
+        console.log(result);
+        commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});           
+      }
+      catch(err) {
+        if(err) console.log(err);
+      }     
+    },
+
+    loadContacts({ commit }) {
+      var platform = os.platform();
+      var contactsFile = null;
+
+      if (platform == "linux") {                
+        contactsFile = os.homedir() + "/hush-ng/contacts.json";
+      }
+      else if(platform == "win32") {
+        contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
+      }
+
+      if (fs.existsSync(contactsFile)) {
+        var data = '';
+        var stream = fs.createReadStream(contactsFile)       
+        stream.on('data', function(chunk) {  
+          data += chunk;
+        })
+        .on('end', function() {
+          var contacts = JSON.parse(data);
+          commit("setContacts",contacts);
         });
-      });   
-    }
-         
+      }    
+    },
+
+    saveContacts() {
+      var self = this;
+      var platform = os.platform();
+      var contactsFile = null;
+     
+      if (platform == "linux") {                
+        contactsFile = os.homedir() + "/hush-ng/contacts.json";
+      }
+      else if(platform == "win32") {
+        contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
+      }
+
+      var data = '';
+      var stream = fs.createWriteStream(contactsFile)  
+        
+      stream.once('open', function(fd) {
+        stream.write(JSON.stringify(self.state.contacts));        
+        stream.end();
+      });
+          
+    }  
   }
 })

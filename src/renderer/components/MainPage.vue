@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper" >
-    <div v-if="true || connectedToDeamon === true">
+    <div v-if="true || connectedToDeamon === true" style="height:100%">
       <side-menu></side-menu>
       <router-view></router-view>
     </div>
@@ -74,6 +74,7 @@
         rpcpassword     = config.rpcpassword()
         rpcport         = config.rpcport()
 
+        this.$store.dispatch('loadContacts');
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
         this.$store.commit('setWalletPolling', true);
         this.$store.dispatch('refreshAddresses');
@@ -82,8 +83,11 @@
         Repeat(function() {
 
           if (self.connectedToDeamon) {
+            self.$store.dispatch('refreshAddresses');
+            self.$store.dispatch('refreshNetworkStats');                
             self.$store.dispatch('refreshBalances');    
             self.$store.dispatch('refreshTransactions'); 
+            self.$store.dispatch('refreshOperations'); 
           }
           else {
             var client = new bitcoin.Client({
@@ -124,7 +128,7 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
+ @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
 
   * {
     font-family: 'Poppins', sans-serif;
@@ -234,37 +238,6 @@
     background-color: #ef4049;
   }
 
-  .doc .button {
-    font-size: .9em;
-    cursor: pointer;
-    outline: none;
-    padding: 0.75em 2em;
-    border-radius: 2em;
-    display: inline-block;
-    color: #fff;
-    background-color: #2F77F7;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-    border: 1px solid #2F77F7;
-    margin-top: 10px;
-    text-decoration: none;
-    -webkit-app-region: no-drag;
-  }
-
-  .doc .button:hover {
-    background-color: #2262d6;
-  }
-
-  .doc .button-alt {
-    color: #3e3e3e;
-    margin-right: 5px;
-    background-color: transparent;
-  }
-
-  .doc .button-alt:hover {
-    background-color: #e2e2e2;
-  }
-
   .inner-content {
     position: absolute;
     width: 100%;
@@ -306,17 +279,24 @@
 
   .bottom-row .box #texts {
     float: left;
-    list-style-type: none;
+    display: list-item;
+    list-style-type:none;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .bottom-row .box #texts li{   
+    color: #fff;
   }
 
   .bottom-row .box #balances {
     float: right;
     text-align: right;
     list-style-type: none;
+    color: #fff;
+    display: list-item;
   }
-
-  .bottom-row .box li {
-    font-weight: 500;
+  .bottom-row .box #balances li {   
     color: #fff;
   }
 
@@ -381,6 +361,11 @@
       background-color:#eaeaea;
       border: none;
   }
+
+  .el-select-dropdown__item.is-disabled {
+    color: #c0c4cc;
+    cursor: not-allowed;
+}
 
   .button {
     font-size: 11pt;
