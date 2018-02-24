@@ -5,6 +5,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import modules from './modules'
+import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
 
@@ -12,7 +13,9 @@ Vue.use(Vuex)
 let vue = new Vue()
 
 export default new Vuex.Store({
-  modules,
+  modules: {
+    hushlist:hushlist
+  },
   strict: process.env.NODE_ENV !== 'production',
   state: {
     addresses: [],
