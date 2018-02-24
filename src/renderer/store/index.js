@@ -23,7 +23,7 @@ export default new Vuex.Store({
     transactions: [],
     transactionCount:0,
     totalBalance: { 
-      balance :0,.0 
+      balance :0.0, 
       valid :true
     },    
     tBalance: { 
@@ -238,7 +238,7 @@ export default new Vuex.Store({
         }
 
         var zAddresses = await client.z_listaddresses();
-        console.log('z-addrs... Found: ' + data.length );
+        console.log('z-addrs... Found: ' + zAddresses.length );
         
         for (let item of zAddresses) {      
           commit('addAddress', {address: item, balance: 0, type: 'z', isConfirmed: false});
