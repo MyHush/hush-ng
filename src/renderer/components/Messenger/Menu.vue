@@ -1,11 +1,11 @@
 <template>
     <el-container>
       <el-aside width="300px" >
-        <div class="messenger-title"> Messenger</div>
+        <div class="hushlist-title"> HushList</div>
         <div>
-          <div class="subtitle"> Lists </div>  
-          <div class="subtitle"> Groups </div> 
-          <div class="subtitle"> Conversations </div> 
+          <div class="subtitle"> Contacts </div>
+          <div class="subtitle"> Lists </div>
+          <div class="subtitle"> Conversations </div>
         </div>
       </el-aside>
       <el-main> 
@@ -19,7 +19,7 @@
   import { mapState } from 'vuex'
 
   export default {
-    name: 'messenger-menu',
+    name: 'hushlist-menu',
     components: { CloseButton },
      props: {
       isEnabled: {
@@ -72,7 +72,7 @@
     color: #2d2d2d;
   }
     
-  .messenger-title {
+  .hushlist-title {
     margin-top: 3px;
     font-size: 15pt;
     font-weight: 700;

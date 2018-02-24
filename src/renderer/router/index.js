@@ -39,8 +39,8 @@ export default new Router({
           ]
         },
         {
-          path: '/messenger',
-          name: 'messenger',
+          path: '/hushlist',
+          name: 'hushlist',
           component: require('@/components/Messenger/Menu').default         
         }
 

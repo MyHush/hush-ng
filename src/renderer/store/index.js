@@ -220,7 +220,6 @@ export default new Vuex.Store({
         timeout: 60000
       });
 
-      // Get T-Addresses
       client.getNewAddress('', function(err, data, resHeaders) {
         if (err) return console.log(err);      
         console.log(data);   
