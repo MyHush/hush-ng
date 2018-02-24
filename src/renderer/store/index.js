@@ -442,10 +442,10 @@ export default new Vuex.Store({
       var platform = os.platform();
       var contactsFile = null;
 
-      if (platform == "win32") {                
+      if (platform == "linux") {                
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
       }
-      else if(platform == "linux") {
+      else if(platform == "win32") {
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
@@ -467,10 +467,10 @@ export default new Vuex.Store({
       var platform = os.platform();
       var contactsFile = null;
      
-      if (platform == "win32") {                
+      if (platform == "linux") {                
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
       }
-      else if(platform == "linux") {
+      else if(platform == "win32") {
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
