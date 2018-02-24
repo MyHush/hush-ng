@@ -10,13 +10,19 @@
         <div class="name">Node:</div>
         <div class="value">{{ node }}</div>
       </div>
+      <!--
       <div class="item">
         <div class="name">Platform:</div>
         <div class="value">{{ platform }} {{ arch }}</div>
       </div>
+      -->
       <div class="item">
-        <div class="name">Install location:</div>
-        <div class="value">{{ homedir }}</div>
+        <div class="name">Electron:</div>
+        <div class="value">{{ electron }}</div>
+      </div>
+      <div class="item">
+        <div class="name">VueJS:</div>
+        <div class="value">{{ vue }}</div>
       </div>
     </div>
   </div>
@@ -30,6 +36,7 @@
         name: 'landing-page',
         node: process.versions.node,
         version: 0.1,
+        // TODO: ask git
         branch: 'alpha',
         platform: require('os').platform(),
         arch: require('os').release() + ' ' + require('os').arch(),
