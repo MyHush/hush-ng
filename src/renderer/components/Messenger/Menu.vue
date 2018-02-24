@@ -1,10 +1,10 @@
 <template>
     <el-container>
       <el-aside width="300px" >
-        <div class="messenger-title"> Messenger</div>
+        <div class="hushlist-title"> HushList</div>
         <div>
-          <div class="subtitle"> Lists </div>  
-          <div class="subtitle"> Groups </div> 
+          <div class="subtitle"> Contacts </div>  
+          <div class="subtitle"> Lists </div> 
           <div class="subtitle"> Conversations <div style="float:right" @click="startConversation" > <icon name="plus"  /> </div> </div> 
         </div>
       </el-aside>
@@ -31,7 +31,7 @@
   import { mapState,mapActions } from 'vuex'
 
   export default {
-    name: 'messenger-menu',
+    name: 'hushlist-menu',
     components: { CloseButton },
     data () {
        return {   
@@ -79,7 +79,7 @@
     color: #2d2d2d;
   }
     
-  .messenger-title {
+  .hushlist-title {
     margin-top: 3px;
     font-size: 15pt;
     font-weight: 700;

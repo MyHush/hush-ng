@@ -19,17 +19,13 @@
               <div class="progress" v-bind:class="{ pending: step.pending, error: step.error, success: step.success }"></div> {{ step.title }}
             </li>
           </ul>
-          <div v-if="installDone === true">
             <router-link class="button primary" to="/wallet" style="font-weight: 600;">Launch HushNG</router-link><br><br>
-          </div>
-          <div v-else>
             <button class="button button-info" @click="cancelsetup()">Cancel setup</button><br><br>
-          </div>
         </div>
         <div class="doc">
           <div class="title alt">Get Involved</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://discord.gg/DNGndGY')">Discord</button>
+          <button class="button button-alt" @click="open('https://myhush.org/discord')">Discord</button>
         </div>
       </div>
     </main>

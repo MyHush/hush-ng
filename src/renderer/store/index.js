@@ -23,19 +23,19 @@ export default new Vuex.Store({
     transactions: [],
     transactionCount:0,
     totalBalance: { 
-      balance :0, 
+      balance :0,.0 
       valid :true
     },    
     tBalance: { 
-      balance :0, 
+      balance :0.0, 
       valid :true
     },
     zBalance: { 
-      balance :0, 
+      balance :0.0, 
       valid :true
     },
-    unconfirmedBalance: 0,
-    availableBalance :0,
+    unconfirmedBalance: 0.0,
+    availableBalance :0.0,
     blockHeight: 'Scanning',
     peerCount: 'None',
     walletPolling: false,
@@ -46,17 +46,13 @@ export default new Vuex.Store({
     },
     contacts:[
       {
-        address: "DUMMY ADDRESS",
-        nickName:"Cryptopia"
+        address: "t123...",
+        nickName:"Alice"
       },
       {
-        address: "Bobs Address",
+        address: "t143...",
         nickName:"Bob"
       },
-      {
-        address: "Alice's Address",
-        nickName:"Alice"
-      }
     ],
     groupedDestinationAddresses:[]
   },
@@ -117,7 +113,7 @@ export default new Vuex.Store({
       }
     },
     clearFailedOperations (state) {
-
+      //TODO Implement clearing of list
     },
     addAddress (state, newAddress) {
       if(state.addresses.find( a => a.address == newAddress.address) == null) {
@@ -240,8 +236,10 @@ export default new Vuex.Store({
             commit('addAddress', {address: item.address, balance: 0, type: 't', isConfirmed: false});
           }
         }
-      
+
         var zAddresses = await client.z_listaddresses();
+        console.log('z-addrs... Found: ' + data.length );
+        
         for (let item of zAddresses) {      
           commit('addAddress', {address: item, balance: 0, type: 'z', isConfirmed: false});
         }
@@ -249,7 +247,7 @@ export default new Vuex.Store({
         commit("updateGroupedDestinationAddresses");
       }
       catch(err) {
-        console.log(err);
+        if(err) console.log(err);
       }
     },    
 
@@ -266,11 +264,16 @@ export default new Vuex.Store({
           var confirmeAddressBalance = await client.z_getbalance(address.address,1);
           var unconfirmedAddressBalance = await client.z_getbalance(address.address,0);
 
+         var taddr = address.address;
+         console.log("balance of " + taddr + "=" + confirmeAddressBalance)
+         console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
+
           var a = {
             address: address.address,
             balance: unconfirmedAddressBalance,
             isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
           };
+          
           commit('setBalance', a);   
         }
 
@@ -282,8 +285,8 @@ export default new Vuex.Store({
         commit('setTotalBalance', { balance: unconfirmedBalance.total, valid: confirmedBalance.total == unconfirmedBalance.total });   
         commit('setAvailableBalance', confirmedBalance.total);  
       }
-      catch(err) {
-        console.log(err);
+      catch(err) { 
+        if(err) console.log(err);
       }
     },
 
@@ -302,7 +305,7 @@ export default new Vuex.Store({
         commit('setBlockheight', data.blocks);
 
       } catch(err) {
-        commit('setPeerCount', 'None');
+        commit('setPeerCount', '0');
         commit('setBlockheight', 'Scanning');
       }
     },
@@ -345,9 +348,10 @@ export default new Vuex.Store({
           })
         }
         commit('setTransactions',tTransactions.concat(zTransactions));
+        console.log("finished refreshing transactions");
       }
       catch(err) {
-        console.log(err);
+        if(err) console.log(err);
       }
     },     
 
@@ -369,23 +373,27 @@ export default new Vuex.Store({
         } 
       } 
       catch(err) {
-        console.log(err);
+        if(err) console.log(err);
       }
     }, 
  
     async addTAddress({ commit }) {
+      console.log("adding taddr");
+      
       var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+      
       try {
         var result = await client.z_getnewaddress();
+        console.log(result); 
         commit('addAddress', {address: result, balance: 0, type: 't'});
       }
       catch(err) {
-        console.log(err);
+        if(err) console.log(err);
       }  
     },
 
@@ -426,7 +434,7 @@ export default new Vuex.Store({
         commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});           
       }
       catch(err) {
-        console.log(err);
+        if(err) console.log(err);
       }     
     },
 
