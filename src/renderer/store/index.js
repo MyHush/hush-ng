@@ -14,11 +14,11 @@ export default new Vuex.Store({
   state: {
     addresses: [],
     transactions: [],
-    totalBalance: 0,
-    unconfirmedBalance: 0,
-    availableBalance :0,
-    tBalance: 0,
-    zBalance: 0,
+    totalBalance: 0.0,
+    unconfirmedBalance: 0.0,
+    availableBalance: 0.0,
+    tBalance: 0.0,
+    zBalance: 0.0,
     blockHeight: 'Scanning',
     peerCount: 'None',
     walletPolling: false,
@@ -29,17 +29,13 @@ export default new Vuex.Store({
     },
     contacts:[
       {
-        address: "DUMMY ADDRESS",
-        nickName:"Cryptopia"
+        address: "t123...",
+        nickName:"Alice"
       },
       {
-        address: "Bobs Address",
+        address: "t143...",
         nickName:"Bob"
       },
-      {
-        address: "Alice's Address",
-        nickName:"Alice"
-      }
     ],
     groupedDestinationAddresses:[]
   },
@@ -138,6 +134,7 @@ export default new Vuex.Store({
         commit("updateGroupedDestinationAddresses");
       });
 
+      // TODO: listunspent must be called to get all addresses
       // Get Z-Addresses
       client.cmd('z_listaddresses', function(err, data, resHeaders){
         if (err) return console.log(err);
@@ -159,41 +156,50 @@ export default new Vuex.Store({
         timeout: 60000
       });
 
-      for (let address of this.state.addresses) {            
+      for (let address of this.state.addresses) {
         client.cmd('z_getbalance',address.address, function(err, balance, resHeaders) {
+         var taddr = address.address;
+         console.log("balance of " + taddr + "=" + balance)
           var a = {
             address: address.address,
             balance: balance
           };
-          commit('setBalance', a);              
+            commit('setBalance', a);
         });
       }
 
       client.cmd('z_gettotalbalance', function(err, data, resHeaders){
+        console.log("getting total shielded balance, data=" + data)
+        console.log(resHeaders);
+        // err and data are null for a 500
         if (err) return console.log(err);
-        commit('setZBalance', data.private);        
-        commit('setTBalance', data.transparent);        
+        if (data) {
+            commit('setZBalance', data.private);
+            console.log("setting zaddr balance");
+            commit('setTBalance', data.transparent);
+            console.log("setting taddr balance");
+        }
       });
 
       client.getWalletInfo(function(err, data, resHeaders) {
         if (err) return console.log(err);
-        commit('setTotalBalance', data.balance);   
-        commit('setUnconfirmedBalance', data.unconfirmed_balance);   
-        commit('setAvailableBalance', data.balance - data.unconfirmed_balance);   
+        if (data) {
+            commit('setTotalBalance', data.balance);
+            commit('setUnconfirmedBalance', data.unconfirmed_balance);
+            commit('setAvailableBalance', data.balance - data.unconfirmed_balance);
+        }
       });
 
 
       client.getInfo(function(err, data, resHeaders) {
         if (err) {
-          commit('setPeerCount', 'None');
-          commit('setBlockheight', 'Scanning');
+          commit('setPeerCount', '0');
+          commit('setBlockheight', 'Syncing...');
           return console.log(err);
-        } 
-        
+        }
         commit('setPeerCount', data.connections);
         commit('setBlockheight', data.blocks);
       }); 
-
     },
 
     refreshTransactions({ commit }) {
@@ -210,9 +216,11 @@ export default new Vuex.Store({
         if (err) return console.log(err);
         commit('setTransactions', data)
       });
-    },      
+      console.log("finished refreshing transactions");
+    },
 
     addTAddress({ commit }) {
+      console.log("adding taddr");
       var client = new bitcoin.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,

@@ -65,18 +65,17 @@
 
           }
         )
- 
-        var rpcuser = 'rpcuser'
-        var rpcpassword = 'rpcpassword'
-        var rpcport = 8822
 
-        var config = new hush.Config()
-        rpcuser = config.rpcuser()
-        rpcpassword = config.rpcpassword()
-        rpcport = config.rpcport()
+        var rpcuser     = 'rpcuser'
+        var rpcpassword = 'rpcpassword'
+        var rpcport     = 8822
+        var config      = new hush.Config()
+        rpcuser         = config.rpcuser()
+        rpcpassword     = config.rpcpassword()
+        rpcport         = config.rpcport()
 
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
-        this.$store.commit('setWalletPolling', true);  
+        this.$store.commit('setWalletPolling', true);
         this.$store.dispatch('refreshAddresses');
 
         var self = this
@@ -117,7 +116,8 @@
     },
     mounted: function() {
       if(!this.walletPolling) {
-        this.startPolling(5000)
+          //TODO: make this configurable
+        this.startPolling(10000)
       }
     }
   }
