@@ -1,7 +1,7 @@
 <template>
   <div>
       Below is a list of your addresses<br />
-      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs)</span>
+      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name. </span>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="2" >zaddr</el-col>
