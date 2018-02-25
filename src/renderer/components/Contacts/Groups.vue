@@ -1,13 +1,17 @@
 <template>
-  <div id="groups">
+  <div id="lists">
     <p id="intro">
-      Below is a list of your known groups<br />
-      <span>Z-ADDRs are private while T-ADDRs are public</span>
+      Below is a list of your private HushLists.
+      Each HushList is a list of Contacts stored locally on this machine,
+      it is not stored in the blockchain.
+      
+      <br />
+      <span>Shielded addresses (zaddrs) are private and anonymous while transparent addresses (taddrs) are public and pseudonymous</span>
     </p>
-    <a class="button" id="add-addressbookentry" v-on:click="generateAddress()">New address</a>
+    <a class="button" id="add-addressbookentry" v-on:click="newHushList()">New HushList</a>
     <div class="address-list" id="z-addr">
-      <div class="type">Z-ADDR</div>
-      <div class="copy">click on an address to copy it</div>
+      <div class="type">HushList Name</div>
+      <div class="copy"># Of Contacts</div>
       <ul class="address-details">
         <li>
           <div class="balance" style="clear: both;"></div>
@@ -24,7 +28,7 @@
   import { mapState,mapGetters, mapActions } from 'vuex'
 
   export default {
-    name: 'groups',
+    name: 'lists',
     components: {  },
     
     computed:{      
@@ -49,25 +53,25 @@
     color: #2d2d2d;
   }
 
-  #groups {
+  #lists {
     width: 100%;
   }
 
-  #groups #intro {
+  #lists #intro {
     float: left;
     font-weight: 500;
     font-size: 12pt;
     margin-left: 40px;
   }
 
-  #groups #intro span {
+  #lists #intro span {
     position: relative;
     top: -5px;
     font-weight: 400;
     font-size: 10pt;
   }
 
-  #groups #generate-address {
+  #lists #generate-address {
     float: right;
     position: relative;
     top: 3px;
