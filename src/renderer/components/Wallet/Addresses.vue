@@ -39,10 +39,9 @@
         </ul>
       </div>
       <div class="box alt">
-        <p>For more on shielded and transparent addresses, visit the following links:</p>
-        <div class="links">
-          <a @click="open('https://discord.gg/DNGndGY')">MyHush.org</a>
-          <a @click="open('https://www.myhush.org')">MyHush.org</a>
+          <b>Network Stats</b><br/>
+          {{ totalBytesRecv }} bytes received<br/>
+          {{ totalBytesSent }} bytes sent<br/>
         </div>
       </div>
     </div>
@@ -63,10 +62,12 @@
       }
     },
     computed:{
-      ...mapState([       
+      ...mapState([
         'tBalance',
         'zBalance',
-        'totalBalance'
+        'totalBalance',
+        'totalBytesRecv',
+        'totalBytesSent',
       ]),     
       ...mapGetters([
         'zAddresses',

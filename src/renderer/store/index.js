@@ -22,6 +22,8 @@ export default new Vuex.Store({
     operations: [],
     transactions: [],
     transactionCount:0,
+    totalBytesRecv:0,
+    totalBytesSent:0,
     totalBalance: { 
       balance :0.0, 
       valid :true
@@ -142,10 +144,16 @@ export default new Vuex.Store({
     setZBalance (state, b) {      
       state.zBalance = b;
     },
-    setPeerCount (state, peerCount) {      
+    setPeerCount (state, peerCount) {
       state.peerCount = peerCount;
     },
-    setBlockheight (state, height) {      
+    setTotalBytesRecv (state, bytes) {
+      state.totalBytesRecv = bytes;
+    },
+    setTotalBytesSent (state, bytes) {
+      state.totalBytesSent = bytes;
+    },
+    setBlockheight (state, height) {
       state.blockHeight = height;
     },
     setTransactions (state, transactions) {      
@@ -300,9 +308,19 @@ export default new Vuex.Store({
       });
 
       try {
-        var data = await client.getInfo();        
+        var data = await client.getInfo();
         commit('setPeerCount', data.connections);
         commit('setBlockheight', data.blocks);
+
+      } catch(err) {
+        commit('setPeerCount', '0');
+        commit('setBlockheight', 'Scanning');
+      }
+
+      try {
+        var data = await client.getNetTotals();
+        commit('setTotalBytesRecv', data.totalbytesrecv);
+        commit('setTotalBytesSent', data.totalbytessent);
 
       } catch(err) {
         commit('setPeerCount', '0');
