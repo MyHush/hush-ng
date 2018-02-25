@@ -85,7 +85,7 @@
         this.$store.dispatch('saveContacts');      
       },
       saveContact () {         
-         this.$store.commit('addOrUpdate',this.contactForm);    
+         this.$store.commit('addOrUpdateContact',this.contactForm);    
          this.$store.dispatch('saveContacts');     
          this.contactDialogVisible = false; 
       }      

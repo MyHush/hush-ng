@@ -15,7 +15,7 @@
         <el-form-item label="From" >
           <el-select v-model="transactionForm.from" placeholder="Select" style="width:100%;">
             <el-option
-              v-for="address in addresses"
+              v-for="address in allAddresses"
               :key="address.address"
               :label="address.address"
               :value="address.address"
@@ -163,15 +163,14 @@
       }
     },
     computed:{
-      ...mapState([
-        'addresses',
+      ...mapState([        
         'transactions',
         'availableBalance',  
         'contacts',
         'groupedDestinationAddresses'
       ]),                         
       ...mapGetters([
-        'tAddresses',
+        'allAddresses',
         'pendingOperations',
         'failedOperations'
       ])           

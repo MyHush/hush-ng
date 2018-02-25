@@ -48,22 +48,42 @@ export default new Vuex.Store({
     },
     contacts:[
       {
+        id: 1,
         address: "t123...",
         nickName:"Alice"
       },
       {
+        id: 2,
         address: "t143...",
         nickName:"Bob"
       },
     ],
     groupedDestinationAddresses:[]
   },
-  getters: {   
+  getters: {  
+    allAddresses: state => {
+      return state.addresses.filter(address => true)
+                            .sort(function(a, b) {
+                              if( a.balance < b.balance) return 1;
+                              if( a.balance > b.balance) return -1;
+                              return 0
+                            });
+    }, 
     tAddresses: state => {
       return state.addresses.filter(address => address.type == 't')
+                            .sort(function(a, b) {
+                              if( a.balance < b.balance) return 1;
+                              if( a.balance > b.balance) return -1;
+                              return 0
+                            });
     },
     zAddresses: state => {
       return state.addresses.filter(address => address.type == 'z')
+                            .sort(function(a, b) {
+                              if( a.balance < b.balance) return 1;
+                              if( a.balance > b.balance) return -1;
+                              return 0
+                            });      
     },
     pendingOperations: state => {
       return state.operations.filter(op => op.status === 'queued' ||  op.status === 'executing')
@@ -80,7 +100,10 @@ export default new Vuex.Store({
                                 if( a.date > b.date) return -1;
                                 return 0
                               });
-    }
+    },
+    transactionsWithMemos: state  => address => {
+      return state.transactions.filter(t  => t.address == address && t.memo != null);
+    },
   },
   mutations: {    
     addOrUpdateOperationStatus (state, op) {
@@ -182,18 +205,17 @@ export default new Vuex.Store({
     setContacts (state, contacts) {      
       state.contacts = contacts;
     },
-    addOrUpdate (state, contact) {
+    addOrUpdateContact (state, contact) {
       var c = state.contacts.find( a => a.id == contact.id) 
-      console.log(c);
+     
       if(c) {
         c.nickName = contact.nickName;
         c.address = contact.address;
       }
       else {
-        contact.id + Date.now();
+        contact.id = Date.now();
         state.contacts.push(contact)
       }
-
     },
     removeContact (state, contact) {
       var index = state.contacts.indexOf(contact);
@@ -356,13 +378,28 @@ export default new Vuex.Store({
 
         for(let transactionResult of allZTransactionResults) {
           var zTransaction = await client.getTransaction(transactionResult.txid);
+          var decodedText = "";
+          if(!transactionResult.memo.startsWith('f60000')) {
+            for (var j = 0; j < transactionResult.memo.length; j += 2) {
+              var  str = transactionResult.memo.substring(j, j + 2);
+              if (!str == "00") {// Zero bytes are empty
+                decodedText = decodedText + String.fromCharCode(parseInt(str, 16));               
+              }
+            }
+          }
+          var memo = null;
+          if(decodedText.length > 0) {
+            memo = decodedText
+          }
+          console.log(memo);
           zTransactions.push( {
             category: "receive", 
             amount: zTransaction.amount,
             txid: zTransaction.txid,
             confirmations: zTransaction.confirmations,
             address:transactionResult.address,
-            time: zTransaction.time
+            time: zTransaction.time,
+            memo: memo
           })
         }
         commit('setTransactions',tTransactions.concat(zTransactions));
@@ -460,7 +497,7 @@ export default new Vuex.Store({
       var platform = os.platform();
       var contactsFile = null;
 
-      if (platform == "linux") {                
+      if (platform == "linux" || platform == "darwin") {                
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
       }
       else if(platform == "win32") {
@@ -485,7 +522,7 @@ export default new Vuex.Store({
       var platform = os.platform();
       var contactsFile = null;
      
-      if (platform == "linux") {                
+      if (platform == "linux" || platform == "darwin") {                
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
       }
       else if(platform == "win32") {
