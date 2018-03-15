@@ -38,10 +38,14 @@
           <li v-bind:class="{ unconfirmed: !totalBalance.valid }">{{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
-      <div class="box alt">
-          <b>Network Stats</b><br/>
-          {{ totalBytesRecv }} bytes received<br/>
-          {{ totalBytesSent }} bytes sent<br/>
+        <div class="box alt">
+            <b>Network Stats</b><br/>
+            {{ totalBytesRecv }} bytes received<br/>
+            {{ totalBytesSent }} bytes sent<br/>
+        </div>
+        <div class="box alt">
+            <b>Funding</b><br/>
+            <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
         </div>
       </div>
     </div>
