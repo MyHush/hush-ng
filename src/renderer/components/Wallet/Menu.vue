@@ -5,6 +5,7 @@
         <div id="wallet-menu">
           <div class="menu-title">Wallet</div>
           <ul class="block-text chain-data">
+            <li><span class="chain-text">{{ magicString }}</span></li>
             <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
             <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
           </ul>
@@ -22,19 +23,19 @@
 </template>
 
 <script>
-  import CloseButton from '../shared/CloseButton'
-  import Addresses from './Addresses'
+  import CloseButton  from '../shared/CloseButton'
+  import Addresses    from './Addresses'
   import { mapState } from 'vuex'
 
- 
   export default {
     name: 'wallet',
     components: { CloseButton, Addresses },
-    computed: { 
-      ...mapState([         
+    computed: {
+      ...mapState([
           'blockHeight',
-          'peerCount'                
-        ]), 
+          'magicString',
+          'peerCount'
+        ]),
     },
     data () {
       return {

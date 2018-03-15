@@ -39,6 +39,7 @@ export default new Vuex.Store({
     unconfirmedBalance: 0.0,
     availableBalance :0.0,
     blockHeight: 'Scanning',
+    magicString: '...',
     peerCount: 'None',
     walletPolling: false,
     rpcCredentials : {
@@ -178,6 +179,9 @@ export default new Vuex.Store({
     },
     setBlockheight (state, height) {
       state.blockHeight = height;
+    },
+    setMagicString (state, string) {
+      state.magicString = string;
     },
     setTransactions (state, transactions) {      
       state.transactions = transactions.sort(function(a, b) {
@@ -347,6 +351,14 @@ export default new Vuex.Store({
       } catch(err) {
         commit('setPeerCount', '0');
         commit('setBlockheight', 'Scanning');
+      }
+
+      try {
+        var data = await client.getNetworkInfo()
+        commit('setMagicString', data.subversion);
+
+      } catch(err) {
+        commit('setMagicString', '...');
       }
     },
 
