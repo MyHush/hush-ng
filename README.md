@@ -12,6 +12,8 @@ exist. This codebase uses the Electron framework to enable cross-platform suppor
 
 ## Build Setup
 
+You must have NodeJS and npm installed: https://nodejs.org/en/download/
+
     # install dependencies
     npm install
 
