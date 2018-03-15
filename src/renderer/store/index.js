@@ -1,5 +1,5 @@
 const bitcoin = require('bitcoin')
-const  hushrpc = require( 'hushrpc' ) ;
+const hushrpc = require( 'hushrpc' ) ;
 
 import Vue from 'vue'
 import Vuex from 'vuex'

@@ -9,7 +9,7 @@
         <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
-        <el-table-column prop="balance" label="Amount" width="100"> </el-table-column>
+        <el-table-column prop="balance" label="Amount" width="140"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
       </el-table>        
     </div>
@@ -20,7 +20,7 @@
         <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
-        <el-table-column prop="balance" label="Amount" width="120" class-name="balance" > </el-table-column>
+        <el-table-column prop="balance" label="Amount" width="140" class-name="balance" nowrap> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
       </el-table>       
 
