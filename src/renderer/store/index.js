@@ -295,19 +295,18 @@ export default new Vuex.Store({
       });
       try {
         for (let address of this.state.addresses) {            
-          var confirmeAddressBalance = await client.z_getbalance(address.address,1);
+          var confirmeAddressBalance    = await client.z_getbalance(address.address,1);
           var unconfirmedAddressBalance = await client.z_getbalance(address.address,0);
 
          var taddr = address.address;
-         console.log("balance of " + taddr + "=" + confirmeAddressBalance)
-         console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
+         //console.log("balance of " + taddr + "=" + confirmeAddressBalance)
+         //console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
 
           var a = {
             address: address.address,
             balance: unconfirmedAddressBalance,
             isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
           };
-          
           commit('setBalance', a);   
         }
 
