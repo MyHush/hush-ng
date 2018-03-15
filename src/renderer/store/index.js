@@ -22,25 +22,25 @@ export default new Vuex.Store({
     operations: [],
     transactions: [],
     transactionCount:0,
-    totalBytesRecv:0,
-    totalBytesSent:0,
+    totalBytesRecv: '...',
+    totalBytesSent: '...',
     totalBalance: { 
-      balance :0.0, 
+      balance :'Calculating...',
       valid :true
-    },    
+    },
     tBalance: { 
-      balance :0.0, 
+      balance : 'Calculating...',
       valid :true
     },
     zBalance: { 
-      balance :0.0, 
+      balance : 'Calculating...',
       valid :true
     },
     unconfirmedBalance: 0.0,
     availableBalance :0.0,
-    blockHeight: 'Scanning',
+    blockHeight: 'Scanning...',
     magicString: '...',
-    peerCount: 'None',
+    peerCount: 'Discovering...',
     walletPolling: false,
     rpcCredentials : {
       user : "",
@@ -312,13 +312,13 @@ export default new Vuex.Store({
 
         var confirmedBalance = await client.z_gettotalbalance();
         var unconfirmedBalance = await client.z_gettotalbalance(0);
-        
-        commit('setZBalance', { balance: unconfirmedBalance.private, valid: confirmedBalance.private == unconfirmedBalance.private });        
-        commit('setTBalance', { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
-        commit('setTotalBalance', { balance: unconfirmedBalance.total, valid: confirmedBalance.total == unconfirmedBalance.total });   
+
+        commit('setZBalance',     { balance: unconfirmedBalance.private,     valid: confirmedBalance.private == unconfirmedBalance.private });        
+        commit('setTBalance',     { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
+        commit('setTotalBalance', { balance: unconfirmedBalance.total,       valid: confirmedBalance.total == unconfirmedBalance.total });   
         commit('setAvailableBalance', confirmedBalance.total);  
       }
-      catch(err) { 
+      catch(err) {
         if(err) console.log(err);
       }
     },
@@ -401,10 +401,10 @@ export default new Vuex.Store({
           var memo = null;
           if(decodedText.length > 0) {
             memo = decodedText
+            console.log(memo);
           }
-          console.log(memo);
           zTransactions.push( {
-            category: "receive", 
+            category: "receive",
             amount: zTransaction.amount,
             txid: zTransaction.txid,
             confirmations: zTransaction.confirmations,
