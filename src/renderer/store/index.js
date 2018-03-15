@@ -273,8 +273,8 @@ export default new Vuex.Store({
 
         var zAddresses = await client.z_listaddresses();
         console.log('z-addrs... Found: ' + zAddresses.length );
-        
-        for (let item of zAddresses) {      
+
+        for (let item of zAddresses) {
           commit('addAddress', {address: item, balance: 0, type: 'z', isConfirmed: false});
         }
 
@@ -455,8 +455,8 @@ export default new Vuex.Store({
       });
       
       try {
-        var result = await client.z_getnewaddress();
-        console.log(result); 
+        var result = await client.getNewAddress();
+        console.log(result);
         commit('addAddress', {address: result, balance: 0, type: 't'});
       }
       catch(err) {
