@@ -41,11 +41,16 @@ export default new Router({
         {
           path: '/hushlist',
           name: 'hushlist',
-          component: require('@/components/Messenger/Menu').default         
+          component: require('@/components/Messenger/Menu').default
+        },
+        {
+          path: '/settings',
+          name: 'settings',
+          component: require('@/components/Settings/Menu').default
         }
 
       ]
-    },        
+    },
     { 
       path: '*',
       redirect: '/'
