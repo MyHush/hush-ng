@@ -390,6 +390,7 @@ export default new Vuex.Store({
         for(let transactionResult of allZTransactionResults) {
           var zTransaction = await client.getTransaction(transactionResult.txid);
           var decodedText = "";
+            // TODO: this does not work
           if(!transactionResult.memo.startsWith('f60000')) {
             for (var j = 0; j < transactionResult.memo.length; j += 2) {
               var  str = transactionResult.memo.substring(j, j + 2);
@@ -401,7 +402,7 @@ export default new Vuex.Store({
           var memo = null;
           if(decodedText.length > 0) {
             memo = decodedText
-            console.log(memo);
+            //console.log(memo);
           }
           zTransactions.push( {
             category: "receive",
