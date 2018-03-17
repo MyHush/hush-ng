@@ -22,6 +22,8 @@
   var cmd = require('node-cmd')
   const bitcoin = require('bitcoin')
   var hush = require('hush')
+  const hushrpc = require( 'hushrpc' )
+  var config      = new hush.Config()
 
   export default {
     name: 'main-page',
@@ -43,33 +45,52 @@
         this.$electron.shell.openExternal(link)
       },
       startPolling (interval) {
-        
+
+        var start_hushd = 1;
+
+        try {
+            // Check to see if an existing hushd is running
+            var client = new hushrpc.Client({
+                port: config.rpcport(),
+                user: config.rpcuser(),
+                pass: config.rpcpassword(),
+                timeout: 60000
+            });
+            var getInfo = client.getInfo();
+            if (getInfo) {
+                // we got a successful response, no need to download binaries
+                console.log(getInfo);
+                start_hushd = 0;
+            }
+        } catch (err) {
+            console.log("Did not detect a local running hushd...");
+            if(err) console.log(err);
+        }
+
         var execPath = store.get('execPath')
 
-        // Start Hushd
-        var exec = ''
-        if (require('os').platform() == 'linux') {
-          exec = 'cd ' + execPath + '&& ./hushd'
-        } else if (require('os').platform() == 'win32') {
-          exec = execPath + '\\hushd.exe'
-          console.log(exec)
+        if (start_hushd) {
+            // Start Hushd
+            var exec = ''
+            if (require('os').platform() == 'linux') {
+                exec = 'cd ' + execPath + '&& ./hushd'
+            } else if (require('os').platform() == 'win32') {
+                exec = execPath + '\\hushd.exe'
+                console.log(exec)
+            }
+            cmd.get( exec,
+                function(err, data, stderr){
+                    if (!err) {
+                        console.log('HushNG: Could not start hushd!')
+                    } else {
+                        console.log('HushNG: Started hushd')
+                    }
+            })
         }
-        cmd.get(
-          exec,
-          function(err, data, stderr){
-              if (!err) {
-                 console.log('HushNG: Could not start hushd!')
-              } else {
-                 console.log('HushNG: Started hushd')
-              }
-
-          }
-        )
 
         var rpcuser     = 'rpcuser'
         var rpcpassword = 'rpcpassword'
         var rpcport     = 8822
-        var config      = new hush.Config()
         rpcuser         = config.rpcuser()
         rpcpassword     = config.rpcpassword()
         rpcport         = config.rpcport()
@@ -84,10 +105,10 @@
 
           if (self.connectedToDeamon) {
             self.$store.dispatch('refreshAddresses');
-            self.$store.dispatch('refreshNetworkStats');                
-            self.$store.dispatch('refreshBalances');    
-            self.$store.dispatch('refreshTransactions'); 
-            self.$store.dispatch('refreshOperations'); 
+            self.$store.dispatch('refreshNetworkStats');
+            self.$store.dispatch('refreshBalances');
+            self.$store.dispatch('refreshTransactions');
+            self.$store.dispatch('refreshOperations');
           }
           else {
             var client = new bitcoin.Client({
