@@ -10,13 +10,19 @@ exist. This codebase uses the Electron framework to enable cross-platform suppor
 
 <img src="https://raw.githubusercontent.com/MyHush/hush-ng/master/static/hush-ng-preview.jpg" alt="Hush-NG preview">
 
-## Build Setup
+## Installing + Running Hush-NG
 
+    # clone repo
+    git clone https://github.com/MyHush/hush-ng
+    cd hush-ng
+    
     # install dependencies
     npm install
 
     # serve with hot reload at localhost:9080
     npm run dev
+
+## Building Electron Binaries
 
     # build electron application for production
     npm run build
