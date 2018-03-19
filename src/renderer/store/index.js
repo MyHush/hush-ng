@@ -1,5 +1,6 @@
 const bitcoin = require('bitcoin')
-const hushrpc = require( 'hushrpc' ) ;
+const hushrpc = require('hushrpc')
+const sprintf = require("sprintf-js").sprintf
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -147,11 +148,11 @@ export default new Vuex.Store({
       }
     }, 
     setBalance (state, b) {      
-      var address = state.addresses.find( a => a.address == b.address);
-      if(address) {
-        address.balance = b.balance;
-        address.isConfirmed = b.isConfirmed;
-      }
+        var address = state.addresses.find( a => a.address == b.address);
+        if(address) {
+		address.balance = b.balance;
+		address.isConfirmed = b.isConfirmed;
+        }
     },  
     setTotalBalance (state, b) {            
       state.totalBalance = b;
@@ -293,7 +294,31 @@ export default new Vuex.Store({
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+
       try {
+        var confirmedBalance   = await client.z_gettotalbalance();
+        var unconfirmedBalance = await client.z_gettotalbalance(0);
+
+	// TODO: GUI option for this
+	var privacy_mode       = 1;
+	var unconfirmedTotal   = unconfirmedBalance.total;
+	console.log(unconfirmedTotal);
+
+	if (privacy_mode) {
+		var tBalance = sprintf("%2.2f", (unconfirmedBalance.transparent / unconfirmedTotal) * 100);
+		var zBalance = sprintf("%2.2f", (unconfirmedBalance.private     / unconfirmedTotal) * 100);
+		commit('setZBalance',     { balance: zBalance + "%",     valid: confirmedBalance.private == unconfirmedBalance.private });
+		commit('setTBalance',     { balance: tBalance + "%",  valid: confirmedBalance.transparent == unconfirmedBalance.transparent });
+		commit('setTotalBalance', { balance: "...",     valid: confirmedBalance.total == unconfirmedBalance.total });
+		commit('setAvailableBalance', "...");
+	} else {
+		commit('setZBalance',     { balance: unconfirmedBalance.private,     valid: confirmedBalance.private == unconfirmedBalance.private });        
+		commit('setTBalance',     { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
+		commit('setTotalBalance', { balance: unconfirmedBalance.total,       valid: confirmedBalance.total == unconfirmedBalance.total });   
+		commit('setAvailableBalance', confirmedBalance.total);  
+	}
+
+
         for (let address of this.state.addresses) {            
           var confirmeAddressBalance    = await client.z_getbalance(address.address,1);
           var unconfirmedAddressBalance = await client.z_getbalance(address.address,0);
@@ -302,21 +327,17 @@ export default new Vuex.Store({
          //console.log("balance of " + taddr + "=" + confirmeAddressBalance)
          //console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
 
+         var addrBalance = sprintf("%2.2f%%", unconfirmedAddressBalance / unconfirmedTotal * 100 );
+
           var a = {
             address: address.address,
-            balance: unconfirmedAddressBalance,
+            balance: privacy_mode ? addrBalance : unconfirmedAddressBalance,
             isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
           };
           commit('setBalance', a);   
         }
 
-        var confirmedBalance = await client.z_gettotalbalance();
-        var unconfirmedBalance = await client.z_gettotalbalance(0);
 
-        commit('setZBalance',     { balance: unconfirmedBalance.private,     valid: confirmedBalance.private == unconfirmedBalance.private });        
-        commit('setTBalance',     { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
-        commit('setTotalBalance', { balance: unconfirmedBalance.total,       valid: confirmedBalance.total == unconfirmedBalance.total });   
-        commit('setAvailableBalance', confirmedBalance.total);  
       }
       catch(err) {
         if(err) console.log(err);
@@ -406,7 +427,7 @@ export default new Vuex.Store({
           }
           zTransactions.push( {
             category: "receive",
-            amount: zTransaction.amount,
+            amount: transactionResult.amount,
             txid: zTransaction.txid,
             confirmations: zTransaction.confirmations,
             address:transactionResult.address,
@@ -492,11 +513,12 @@ export default new Vuex.Store({
       try {
       var receivers = [];         
       for(let receiver of transactionForm.destinationAddresses) {
+	// TODO: allow optional memo
         receivers.push({"address":receiver.toString(), "amount": transactionForm.amount});
       }       
 
         var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
-        vue.$message.success('Transaction queued successfully.' );         
+        vue.$message.success('Transaction queued successfully!' );
         console.log(result);
         commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});           
       }
