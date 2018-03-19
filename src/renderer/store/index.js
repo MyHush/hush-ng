@@ -13,6 +13,9 @@ import fs from 'fs'
 Vue.use(Vuex)
 let vue = new Vue()
 
+// TODO: GUI option for this
+const privacy_mode       = 1;
+
 export default new Vuex.Store({
   modules: {
     hushlist:hushlist
@@ -299,8 +302,6 @@ export default new Vuex.Store({
         var confirmedBalance   = await client.z_gettotalbalance();
         var unconfirmedBalance = await client.z_gettotalbalance(0);
 
-	// TODO: GUI option for this
-	var privacy_mode       = 1;
 	var unconfirmedTotal   = unconfirmedBalance.total;
 	console.log(unconfirmedTotal);
 
@@ -327,7 +328,8 @@ export default new Vuex.Store({
          //console.log("balance of " + taddr + "=" + confirmeAddressBalance)
          //console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
 
-         var addrBalance = sprintf("%2.2f%%", unconfirmedAddressBalance / unconfirmedTotal * 100 );
+         // TODO: config setting for # of decimals
+         var addrBalance = sprintf("%2.4f%%", unconfirmedAddressBalance / unconfirmedTotal * 100 );
 
           var a = {
             address: address.address,
@@ -399,6 +401,14 @@ export default new Vuex.Store({
         var allZTransactionResults=[];
         var zTransactions= [];
 
+        for(let xtn of tTransactions) {
+            //console.log(xtn);
+            // Joinsplits do not have an address
+            if (privacy_mode && xtn.address) {
+                xtn.address = sprintf("%s...", xtn.address.substring(0,8) );
+            }
+        }
+
         var zAddresses = this.state.addresses.filter(a => a.type === "z");
         for(let zAddress of zAddresses) {        
           var transactionResults = await client.z_listReceivedByAddress(zAddress.address,0);
@@ -425,12 +435,19 @@ export default new Vuex.Store({
             memo = decodedText
             //console.log(memo);
           }
+          var address = transactionResult.address;
+          if (privacy_mode) {
+            address = sprintf("%s...", transactionResult.address.substring(0,8) );
+          }
+
           zTransactions.push( {
             category: "receive",
             amount: transactionResult.amount,
             txid: zTransaction.txid,
             confirmations: zTransaction.confirmations,
-            address:transactionResult.address,
+            //address: transactionResult.address,
+            //addressView: sprintf("%6s...", transactionResult.address),
+            address: address,
             time: zTransaction.time,
             memo: memo
           })
