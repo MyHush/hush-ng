@@ -213,6 +213,11 @@
     font-size:8pt;  
   }
 
+  .blurry {
+   color: transparent;
+   text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  }
+
   svg.confirmed  {
     stroke: green;
     fill: green;
