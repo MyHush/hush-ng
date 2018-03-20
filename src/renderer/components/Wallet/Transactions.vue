@@ -80,7 +80,7 @@
              <div v-if="scope.row.category == 'generate'"> Mined </div>
           </template>
         </el-table-column>
-         <el-table-column prop="time" width="180"> 
+         <el-table-column prop="time" width="180" label="Time"> 
           <template slot-scope="scope">           
             <div> {{ new Date(scope.row.time*1000).toLocaleString('en-US') }} </div>
           </template>
