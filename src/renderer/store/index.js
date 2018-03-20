@@ -153,8 +153,9 @@ export default new Vuex.Store({
     setBalance (state, b) {      
         var address = state.addresses.find( a => a.address == b.address);
         if(address) {
-		address.balance = b.balance;
-		address.isConfirmed = b.isConfirmed;
+		  address.balance     = b.balance;
+		  address.isConfirmed = b.isConfirmed;
+		  address.addressView = b.addressView;
         }
     },  
     setTotalBalance (state, b) {            
@@ -271,7 +272,12 @@ export default new Vuex.Store({
         for (let item of tAddresses.concat(unspentUTXOs)) {       
           var result = await client.validateAddress(item.address);
           if(result.isvalid && !result.iswatchonly ) {
-            commit('addAddress', {address: item.address, balance: 0, type: 't', isConfirmed: false});
+		    if (privacy_mode) {
+					var taddr = item.address.substring(0,8);
+					commit('addAddress', {address: item.address, addressView: taddr, balance: '...', type: 't', isConfirmed: false});
+			} else {
+					commit('addAddress', {address: item.address, addressView: item.address, balance: '...', type: 't', isConfirmed: false});
+			}
           }
         }
 
@@ -323,19 +329,29 @@ export default new Vuex.Store({
         for (let address of this.state.addresses) {            
           var confirmeAddressBalance    = await client.z_getbalance(address.address,1);
           var unconfirmedAddressBalance = await client.z_getbalance(address.address,0);
-
-         var taddr = address.address;
+          var taddr = address.address;
          //console.log("balance of " + taddr + "=" + confirmeAddressBalance)
          //console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
 
          // TODO: config setting for # of decimals
          var addrBalance = sprintf("%2.4f%%", unconfirmedAddressBalance / unconfirmedTotal * 100 );
 
-          var a = {
-            address: address.address,
-            balance: privacy_mode ? addrBalance : unconfirmedAddressBalance,
-            isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
-          };
+          var a = {};
+	      if(privacy_mode) {
+	         console.log(taddr);
+		     a = {
+			   address: taddr,
+               addressView:  taddr.substring(0,8) + "...",
+               balance: addrBalance,
+               isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
+		     };
+	      } else {
+		     a = {
+               address: taddr,
+               balance: unconfirmedAddressBalance,
+               isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
+		     };
+	      }
           commit('setBalance', a);   
         }
 

@@ -10,7 +10,7 @@
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
+        <el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>        
       </el-table>        
     </div>
     <div class="container" >
@@ -21,8 +21,8 @@
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
-      </el-table>       
+		<el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>      
+		</el-table>       
 
     </div>
     <div class="bottom-row">
