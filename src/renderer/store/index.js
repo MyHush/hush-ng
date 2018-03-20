@@ -413,24 +413,29 @@ export default new Vuex.Store({
         var walletInfo = client.getWalletInfo();
         commit('setTransactionCount', walletInfo.txcount);
 
-        var tTransactions = await  client.listTransactions("",100,0);
+        var tTransactions = await client.listTransactions("",100,0);
         var allZTransactionResults=[];
-        var zTransactions= [];
+        var zTransactions = [];
 
         for(let xtn of tTransactions) {
             //console.log(xtn);
             // Joinsplits do not have an address
-            if (privacy_mode && xtn.address) {
-                xtn.address = sprintf("%s...", xtn.address.substring(0,8) );
+            if (privacy_mode) {
+				console.log(xtn);
+			 	if(xtn.address) {
+					xtn.address = sprintf("%s...", xtn.address.substring(0,8) );
+				}
+				xtn.time    = 0;
             }
         }
 
         var zAddresses = this.state.addresses.filter(a => a.type === "z");
         for(let zAddress of zAddresses) {        
           var transactionResults = await client.z_listReceivedByAddress(zAddress.address,0);
-          for(let transactionResult of transactionResults) {
-            transactionResult.address = zAddress.address;
-            allZTransactionResults.push(transactionResult);
+          for(let xtn of transactionResults) {
+            xtn.address = zAddress.address;
+			//console.log(xtn);
+            allZTransactionResults.push(xtn);
           }
         }
 
@@ -452,19 +457,21 @@ export default new Vuex.Store({
             //console.log(memo);
           }
           var address = transactionResult.address;
+		  var amount  = transactionResult.amount;
           if (privacy_mode) {
             address = sprintf("%s...", transactionResult.address.substring(0,8) );
+		    amount  = sprintf("%.1f", amount);
           }
 
           zTransactions.push( {
             category: "receive",
-            amount: transactionResult.amount,
+            amount: amount,
             txid: zTransaction.txid,
             confirmations: zTransaction.confirmations,
             //address: transactionResult.address,
             //addressView: sprintf("%6s...", transactionResult.address),
             address: address,
-            time: zTransaction.time,
+            time: privacy_mode ? 0 : zTransaction.time,
             memo: memo
           })
         }
