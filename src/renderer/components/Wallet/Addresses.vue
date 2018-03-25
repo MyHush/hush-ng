@@ -1,15 +1,15 @@
 <template>
   <div>
       Below is a list of your addresses<br />
-      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses are PSEUDONYMOUS (taddrs)</span>
+      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name. </span>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="2" >zaddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
       </el-row>
-      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None">
-        <el-table-column prop="balance" label="Amount" width="100"> </el-table-column>
+      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
+        <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
       </el-table>        
     </div>
@@ -19,8 +19,8 @@
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
       </el-row>   
-      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None">
-        <el-table-column prop="balance" label="Amount" width="120" class-name="balance"> </el-table-column>
+      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
+        <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
       </el-table>       
 
@@ -33,24 +33,27 @@
           <li>TOTAL:</li>
         </ul>
         <ul id="balances">
-          <li>{{ tBalance }} HUSH</li>
-          <li>{{ zBalance }} HUSH</li>
-          <li>{{ totalBalance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !tBalance.valid }" >{{ tBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !zBalance.valid }" >{{ zBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !totalBalance.valid }">{{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
-      <div class="box alt">
-        <p>For more on shielded and transparent addresses, visit the following links:</p>
-        <div class="links">
-          <a @click="open('https://discord.gg/DNGndGY')">MyHush.org</a>
-          <a @click="open('https://www.myhush.org')">MyHush.org</a>
+        <div class="box alt">
+            <b>Network Stats</b><br/>
+            {{ totalBytesRecv }} bytes received<br/>
+            {{ totalBytesSent }} bytes sent<br/>
+        </div>
+        <div class="box alt">
+            <b>Funding</b><br/>
+            <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
   import { mapState,mapGetters, mapActions } from 'vuex'
+  import copy from 'copy-to-clipboard';
 
   export default { 
     name: 'addresses',
@@ -62,10 +65,12 @@
       }
     },
     computed:{
-      ...mapState([       
+      ...mapState([
         'tBalance',
         'zBalance',
-        'totalBalance'
+        'totalBalance',
+        'totalBytesRecv',
+        'totalBytesSent',
       ]),     
       ...mapGetters([
         'zAddresses',
@@ -73,9 +78,6 @@
       ])
     },
     methods: {
-      open (link) {
-        this.$electron.shell.openExternal(link)
-      },
       mouseover (address) {
         this.$data.hoverAddress = address;
       },
@@ -83,9 +85,9 @@
         'addTAddress',
         'addZAddress', 
       ]),
-      copy (value) {
-        copy(value)
-        alert('Copied ' + value + ' to clipboard.')
+      copyToClipboard (row) {        
+        copy(row.address)
+        alert('Copied ' + row.address + ' to clipboard.')
       }     
     },
     mounted: function() {     
@@ -94,12 +96,6 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
-
-  * {
-    font-family: 'Poppins', sans-serif;
-    color: #2d2d2d;
-  }
 
  .container {    
     width: 100%;
@@ -133,36 +129,6 @@
     color: #5e5e5e;
   }
 
-  .el-table__row .address .cell {
-    font-family: 'Courier', sans-serif;
-  }
-
-  .el-table__row .balance .cell {
-    font-family: 'Courier', sans-serif;
-    color: #2f77f7;
-  }
-
-  .el-table td, .el-table th {
-    padding: 4px 0;
-  }
-
-  .el-table__body-wrapper, .el-table__footer-wrapper, .el-table__header-wrapper {
-    background-color:#eaeaea;
-  }
-
-  el-table__body, .el-table__footer, .el-table__header {    
-      background-color:#eaeaea;
-  }
-
-  .el-table .gutter {
-        background-color:#eaeaea;
-  }
-
-  .el-table td, .el-table th.is-leaf {
-      background-color:#eaeaea;
-      border: none;
-  }
-
   .button {
     font-size: 11pt;
     cursor: pointer;
@@ -191,6 +157,10 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  .unconfirmed {
+    color: red !important;
   }
 
 </style>

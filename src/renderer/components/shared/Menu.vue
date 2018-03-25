@@ -24,7 +24,8 @@
         menuSections: [
           { 'name': 'wallet', 'route': '/wallet/Addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
           { 'name': 'contacts', 'route': '/contacts/Addresses', 'path' : '/static/icons/addressbook.svg','active': false },
-          { 'name': 'messenger', 'route': '/messenger', 'path' : '/static/icons/comment.svg','active': false },
+          { 'name': 'hushlist', 'route': '/hushlist', 'path' : '/static/icons/comment.svg','active': false },
+          { 'name': 'settings', 'route': '/settings', 'path' : '/static/icons/comment.svg','active': false },
         ],
         activeItemIndex : 0
       }

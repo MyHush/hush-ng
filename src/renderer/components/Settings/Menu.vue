@@ -1,29 +1,18 @@
 <template>
     <el-container>
       <el-aside width="300px" >
-        <div class="hushlist-title"> HushList</div>
+        <div class="hushlist-title">Hush-NG Settings</div>
         <div>
-          <div class="subtitle"> Contacts </div>  
-          <div class="subtitle"> Lists </div> 
-          <div class="subtitle"> Conversations <div style="float:right" @click="startConversation" > <icon name="plus"  /> </div> </div> 
+          <div class="subtitle"> Contacts </div>
+          <div class="subtitle"> Lists </div>
+          <div class="subtitle"> Conversations </div>
+          <div class="subtitle"> Advanced </div>
         </div>
       </el-aside>
       <el-main> 
         <router-view></router-view>
       </el-main>
-
-      <el-dialog title="Start a conversation" :visible.sync="startConversationDialogVisible" width="60%" >
-        <el-form :model="receiverAddressForm">
-          <el-form-item label="Name" label-width="100px">
-           
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">         
-          <el-button @click="startConversationDialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="startConversation">Ok</el-button>
-        </span>
-      </el-dialog>
-    </el-container>    
+    </el-container>
 </template>
 
 <script>

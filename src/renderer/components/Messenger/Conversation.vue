@@ -1,25 +1,6 @@
 <template>
-  <div id="lists">
-    <p id="intro">
-      Below is a list of your private HushLists.
-      Each HushList is a list of Contacts stored locally on this machine,
-      it is not stored in the blockchain.
-      
-      <br />
-      <span>Shielded addresses (zaddrs) are private and anonymous while transparent addresses (taddrs) are public and pseudonymous</span>
-    </p>
-    <a class="button" id="add-addressbookentry" v-on:click="newHushList()">New HushList</a>
-    <div class="address-list" id="z-addr">
-      <div class="type">HushList Name</div>
-      <div class="copy"># Of Contacts</div>
-      <ul class="address-details">
-        <li>
-          <div class="balance" style="clear: both;"></div>
-          <div class="address" v-on:click="copy(address.address)"></div>
-        </li>
-      </ul>
-    </div>
-       
+  <div>
+         
   </div>
 </template>
 
@@ -28,7 +9,7 @@
   import { mapState,mapGetters, mapActions } from 'vuex'
 
   export default {
-    name: 'lists',
+    name: 'conversation',
     components: {  },
     
     computed:{      
@@ -39,8 +20,10 @@
         alert('Copied ' + value + ' to clipboard.')
       }     
     },
-    mounted: function() {
-     
+    watch: {
+      '$route' (to, from) {
+      // react to route changes...
+      }
     }
   }
 </script>
@@ -53,25 +36,25 @@
     color: #2d2d2d;
   }
 
-  #lists {
+  #groups {
     width: 100%;
   }
 
-  #lists #intro {
+  #groups #intro {
     float: left;
     font-weight: 500;
     font-size: 12pt;
     margin-left: 40px;
   }
 
-  #lists #intro span {
+  #groups #intro span {
     position: relative;
     top: -5px;
     font-weight: 400;
     font-size: 10pt;
   }
 
-  #lists #generate-address {
+  #groups #generate-address {
     float: right;
     position: relative;
     top: 3px;

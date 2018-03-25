@@ -12,10 +12,12 @@ exist. This codebase uses the Electron framework to enable cross-platform suppor
 
 ## Installing + Running Hush-NG
 
+You must have NodeJS and npm installed: https://nodejs.org/en/download/
+
     # clone repo
     git clone https://github.com/MyHush/hush-ng
     cd hush-ng
-    
+
     # install dependencies
     npm install
 

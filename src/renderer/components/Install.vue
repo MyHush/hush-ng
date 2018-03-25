@@ -19,17 +19,13 @@
               <div class="progress" v-bind:class="{ pending: step.pending, error: step.error, success: step.success }"></div> {{ step.title }}
             </li>
           </ul>
-          <div v-if="installDone === true">
             <router-link class="button primary" to="/wallet" style="font-weight: 600;">Launch HushNG</router-link><br><br>
-          </div>
-          <div v-else>
             <button class="button button-info" @click="cancelsetup()">Cancel setup</button><br><br>
-          </div>
         </div>
         <div class="doc">
           <div class="title alt">Get Involved</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://discord.gg/DNGndGY')">Discord</button>
+          <button class="button button-alt" @click="open('https://myhush.org/discord')">Discord</button>
         </div>
       </div>
     </main>
@@ -46,6 +42,9 @@
   var cmd = require('node-cmd')
   var store = require('store')
   var filepath = require('filepath')
+  var hush     = require('hush');
+  const hushrpc = require( 'hushrpc' )
+  var config = new hush.Config()
 
   export default {
     name: 'install',
@@ -182,70 +181,93 @@
           self.downloads = self.downloadsWindows;
         }
 
-        // Download binaries
-        self.complete = 0
-        self.installSteps[1].pending = true
-        var platform = require('os').platform()
-        var path = require('filepath').create(require('os').homedir())
-        path = path.append('hush-ng', 'bin')
-        store.set('execPath', path.toString())
-        for (var i = 0; i < self.downloads.length; i++) {
-          var dpath = require('filepath').create(path).append(self.downloads[i].component)
-          self.download(self.downloads[i].url, dpath.toString(), platform, i)
+        // Check to see if an existing hushd is running
+        var installed = 0;
+        try {
+            var client = new hushrpc.Client({
+                port: config.rpcport(),
+                user: config.rpcuser(),
+                pass: config.rpcpassword(),
+                timeout: 60000
+            });
+
+            var getInfo = client.getInfo();
+            if (getInfo) {
+                console.log(getInfo);
+                console.log("Detected already-running RPC server, skipping download process");
+                installed = 1;
+            }
+        } catch(err) {
+            console.log("Did not detect a local running hushd, will try to download...");
+            if(err) console.log(err);
         }
-    
-        // Initiate Hush.conf
-        self.installSteps[2].pending = true
-        var currentdate = new Date();
-        var compileTime = currentdate.getDate() + "/"
-              + (currentdate.getMonth()+1)  + "/"
-              + currentdate.getFullYear() + " @ "
-              + currentdate.getHours() + ":"
-              + currentdate.getMinutes() + ":"
-              + currentdate.getSeconds()
-        if (platform == "linux") {
-          var path = require('os').homedir() + '/.hush/'
-          var conffile = path + "hush.conf" 
-          if (!fs.existsSync(conffile)) {
-            var stream = fs.createWriteStream(conffile)
-            var rpcpassword = Math.random().toString(36).slice(2)
 
-            store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
+        if (!installed) {
+            // Download binaries
+            self.complete = 0
+            self.installSteps[1].pending = true
+            var platform = require('os').platform()
+            var path = require('filepath').create(require('os').homedir())
+            path = path.append('hush-ng', 'bin')
+            store.set('execPath', path.toString())
+            for (var i = 0; i < self.downloads.length; i++) {
+            var dpath = require('filepath').create(path).append(self.downloads[i].component)
+            self.download(self.downloads[i].url, dpath.toString(), platform, i)
+            }
+        
+            // Initiate Hush.conf
+            self.installSteps[2].pending = true
+            var currentdate = new Date();
+            var compileTime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds()
+            if (platform == "linux") {
+            var path = require('os').homedir() + '/.hush/'
+            var conffile = path + "hush.conf" 
+            if (!fs.existsSync(conffile)) {
+                var stream = fs.createWriteStream(conffile)
+                var rpcpassword = Math.random().toString(36).slice(2)
 
-            stream.once('open', function(fd) {
-              stream.write("# HUSH Configuration File\n\n")
-              stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
-              stream.write("# Creation date: " + compileTime + "\n\n")
-              stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\n\n")
-              stream.write("# Start Hush Configuration\n\n")
-              stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
-              stream.end();
-            });
-          }
-          self.installSteps[2].success = true
-        } else if (platform == "win32") {
-          if (!fs.existsSync(process.env.APPDATA + '\\Hush')) {
-            fs.mkdirSync(process.env.APPDATA + '\\Hush')
-          }
-          var path = process.env.APPDATA + '\\Hush'
-          var conffile = path + "\\hush.conf"
-          if (!fs.existsSync(conffile)) {
-            var stream = fs.createWriteStream(conffile)
-            var rpcpassword = Math.random().toString(36).slice(2)
+                store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
 
-            store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
+                stream.once('open', function(fd) {
+                stream.write("# HUSH Configuration File\n\n")
+                stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
+                stream.write("# Creation date: " + compileTime + "\n\n")
+                stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\n\n")
+                stream.write("# Start Hush Configuration\n\n")
+                stream.write("daemon=1\nserver=1\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
+                stream.end();
+                });
+            }
+            self.installSteps[2].success = true
+            } else if (platform == "win32") {
+            if (!fs.existsSync(process.env.APPDATA + '\\Hush')) {
+                fs.mkdirSync(process.env.APPDATA + '\\Hush')
+            }
+            var path = process.env.APPDATA + '\\Hush'
+            var conffile = path + "\\hush.conf"
+            if (!fs.existsSync(conffile)) {
+                var stream = fs.createWriteStream(conffile)
+                var rpcpassword = Math.random().toString(36).slice(2)
 
-            stream.once('open', function(fd) {
-              stream.write("# HUSH Configuration File\r\n")
-              stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\n\n")
-              stream.write("# Creation date: " + compileTime + "\r\n")
-              stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\r\n")
-              stream.write("# Start Hush Configuration\r\n")
-              stream.write("daemon=1\nserver=0\nrpcallowip=127.0.0.1\nrpcuser=rpcuser\nrpcpassword=" + rpcpassword + "\n\nshowmetrics=1\naddnode=explorer.myhush.org\naddnode=dnsseed.myhush.org\naddnode=stilgar.myhush.org")
-              stream.end();
-            });
-          }
-          self.installSteps[2].success = true
+                store.set('connection', { rpcuser: 'rpcuser', rpcpassword: rpcpassword })
+
+                stream.once('open', function(fd) {
+                stream.write("# HUSH Configuration File\r\n")
+                stream.write("# This file has been automatically generated by Hush Config Generator. It may be further customized by hand only.\r\n")
+                stream.write("# Creation date: " + compileTime + "\r\n")
+                stream.write("# The rpcuser/rpcpassword are used for the local call to hushd. The rpcpassword was randomly set.\r\n")
+                stream.write("# Start Hush Configuration\r\n")
+                stream.write("daemon=1\r\nserver=1\r\nrpcallowip=127.0.0.1\r\nrpcuser=rpcuser\r\nrpcpassword=" + rpcpassword + "\r\nshowmetrics=1\r\naddnode=explorer.myhush.org\r\naddnode=dnsseed.myhush.org\r\naddnode=stilgar.myhush.org")
+                stream.end();
+                });
+            }
+            self.installSteps[2].success = true
+            }
         }
         self.checkComplete()
       }
