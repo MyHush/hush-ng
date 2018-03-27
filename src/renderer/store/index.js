@@ -205,15 +205,33 @@ export default new Vuex.Store({
       state.contacts = contacts;
     },
     addOrUpdateContact (state, contact) {
-      var c = state.contacts.find( a => a.id == contact.id) 
-     
-      if(c) {
-        c.nickName = contact.nickName;
-        c.address = contact.address;
+      console.log("searching for contact " + contact.id);
+      var c = state.contacts.find( a => a.id == contact.id);
+      console.log("found " + c.id);
+
+      if (!contact.nickName) {
+          vue.$message.error("Contacts must have a nickname");
+          return;
       }
-      else {
-        contact.id = Date.now();
-        state.contacts.push(contact)
+      if (!contact.address) {
+          vue.$message.error("Contacts must have an address");
+          return;
+      }
+
+      // TODO: support testnet and other chains
+      if (!contact.address.match(/^zc[a-z0-9]{93}$/i) ) {
+          vue.$message.error("Invalid address for contact");
+          return;
+      }
+
+      if(c) {
+          c.nickName = contact.nickName;
+          c.address  = contact.address;
+      } else {
+          contact.id = Date.now();
+          console.log("about to push contact");
+          console.log(contact);
+          state.contacts.push(contact)
       }
     },
     removeContact (state, contact) {
@@ -513,37 +531,35 @@ export default new Vuex.Store({
 
       if (fs.existsSync(contactsFile)) {
         var data = '';
-        var stream = fs.createReadStream(contactsFile)       
-        stream.on('data', function(chunk) {  
+        var stream = fs.createReadStream(contactsFile)
+        stream.on('data', function(chunk) {
           data += chunk;
         })
         .on('end', function() {
           var contacts = JSON.parse(data);
           commit("setContacts",contacts);
         });
-      }    
+      }
     },
 
     saveContacts() {
       var self = this;
       var platform = os.platform();
       var contactsFile = null;
-     
-      if (platform == "linux" || platform == "darwin") {                
+      console.log("Detected platform " + platform );
+
+      if (platform == "linux" || platform == "darwin") {
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
-      }
-      else if(platform == "win32") {
+      } else if(platform == "win32") {
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
       var data = '';
-      var stream = fs.createWriteStream(contactsFile)  
-        
+      var stream = fs.createWriteStream(contactsFile);
       stream.once('open', function(fd) {
-        stream.write(JSON.stringify(self.state.contacts));        
+        stream.write(JSON.stringify(self.state.contacts));
         stream.end();
       });
-          
-    }  
+    }
   }
 })
