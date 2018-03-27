@@ -50,14 +50,9 @@ export default new Vuex.Store({
     contacts:[
       {
         id: 1,
-        address: "t123...",
-        nickName:"Alice"
-      },
-      {
-        id: 2,
-        address: "t143...",
-        nickName:"Bob"
-      },
+        address: "zcQAMDJbgARwK5QqqXCoQX81iJoyf5sYqNF2dECHtAvhes1ss58hJdJ3TWAMBUZQSknMVo2S3xpu4KuCFYgfTK9FKdzBzY1",
+        nickName:"Duke",
+      }
     ],
     groupedDestinationAddresses:[]
   },
