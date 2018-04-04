@@ -1,5 +1,6 @@
 const bitcoin = require('bitcoin')
-const hushrpc = require( 'hushrpc' ) ;
+const hushrpc = require('hushrpc')
+const sprintf = require("sprintf-js").sprintf
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -11,6 +12,9 @@ import fs from 'fs'
 
 Vue.use(Vuex)
 let vue = new Vue()
+
+// TODO: GUI option for this and read from config file!
+const privacy_mode       = 0;
 
 export default new Vuex.Store({
   modules: {
@@ -142,11 +146,12 @@ export default new Vuex.Store({
       }
     }, 
     setBalance (state, b) {      
-      var address = state.addresses.find( a => a.address == b.address);
-      if(address) {
-        address.balance = b.balance;
-        address.isConfirmed = b.isConfirmed;
-      }
+        var address = state.addresses.find( a => a.address == b.address);
+        if(address) {
+		  address.balance     = b.balance;
+		  address.isConfirmed = b.isConfirmed;
+		  address.addressView = b.addressView;
+        }
     },  
     setTotalBalance (state, b) {            
       state.totalBalance = b;
@@ -280,7 +285,12 @@ export default new Vuex.Store({
         for (let item of tAddresses.concat(unspentUTXOs)) {       
           var result = await client.validateAddress(item.address);
           if(result.isvalid && !result.iswatchonly ) {
-            commit('addAddress', {address: item.address, balance: 0, type: 't', isConfirmed: false});
+		    if (privacy_mode) {
+					var taddr = item.address.substring(0,8);
+					commit('addAddress', {address: item.address, addressView: taddr, balance: '...', type: 't', isConfirmed: false});
+			} else {
+					commit('addAddress', {address: item.address, addressView: item.address, balance: '...', type: 't', isConfirmed: false});
+			}
           }
         }
 
@@ -306,30 +316,59 @@ export default new Vuex.Store({
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+
       try {
+        var confirmedBalance   = await client.z_gettotalbalance();
+        var unconfirmedBalance = await client.z_gettotalbalance(0);
+
+	var unconfirmedTotal   = unconfirmedBalance.total;
+	console.log(unconfirmedTotal);
+
+	if (privacy_mode) {
+		var tBalance = sprintf("%2.2f", (unconfirmedBalance.transparent / unconfirmedTotal) * 100);
+		var zBalance = sprintf("%2.2f", (unconfirmedBalance.private     / unconfirmedTotal) * 100);
+		commit('setZBalance',     { balance: zBalance + "%",     valid: confirmedBalance.private == unconfirmedBalance.private });
+		commit('setTBalance',     { balance: tBalance + "%",  valid: confirmedBalance.transparent == unconfirmedBalance.transparent });
+		commit('setTotalBalance', { balance: "...",     valid: confirmedBalance.total == unconfirmedBalance.total });
+		commit('setAvailableBalance', "...");
+	} else {
+		commit('setZBalance',     { balance: unconfirmedBalance.private,     valid: confirmedBalance.private == unconfirmedBalance.private });        
+		commit('setTBalance',     { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
+		commit('setTotalBalance', { balance: unconfirmedBalance.total,       valid: confirmedBalance.total == unconfirmedBalance.total });   
+		commit('setAvailableBalance', confirmedBalance.total);  
+	}
+
+
         for (let address of this.state.addresses) {            
           var confirmeAddressBalance    = await client.z_getbalance(address.address,1);
           var unconfirmedAddressBalance = await client.z_getbalance(address.address,0);
-
-         var taddr = address.address;
+          var taddr = address.address;
          //console.log("balance of " + taddr + "=" + confirmeAddressBalance)
          //console.log("unconfirmed balance of " + taddr + "=" + unconfirmedAddressBalance)
 
-          var a = {
-            address: address.address,
-            balance: unconfirmedAddressBalance,
-            isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
-          };
+         // TODO: config setting for # of decimals
+         var addrBalance = sprintf("%2.4f%%", unconfirmedAddressBalance / unconfirmedTotal * 100 );
+
+          var a = {};
+	      if(privacy_mode) {
+	         console.log(taddr);
+		     a = {
+			   address: taddr,
+               addressView:  taddr.substring(0,8) + "...",
+               balance: addrBalance,
+               isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
+		     };
+	      } else {
+		     a = {
+               address: taddr,
+               balance: unconfirmedAddressBalance,
+               isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
+		     };
+	      }
           commit('setBalance', a);   
         }
 
-        var confirmedBalance = await client.z_gettotalbalance();
-        var unconfirmedBalance = await client.z_gettotalbalance(0);
 
-        commit('setZBalance',     { balance: unconfirmedBalance.private,     valid: confirmedBalance.private == unconfirmedBalance.private });        
-        commit('setTBalance',     { balance: unconfirmedBalance.transparent, valid: confirmedBalance.transparent == unconfirmedBalance.transparent });        
-        commit('setTotalBalance', { balance: unconfirmedBalance.total,       valid: confirmedBalance.total == unconfirmedBalance.total });   
-        commit('setAvailableBalance', confirmedBalance.total);  
       }
       catch(err) {
         if(err) console.log(err);
@@ -387,16 +426,29 @@ export default new Vuex.Store({
         var walletInfo = client.getWalletInfo();
         commit('setTransactionCount', walletInfo.txcount);
 
-        var tTransactions = await  client.listTransactions("",100,0);
+        var tTransactions = await client.listTransactions("",100,0);
         var allZTransactionResults=[];
-        var zTransactions= [];
+        var zTransactions = [];
+
+        for(let xtn of tTransactions) {
+            //console.log(xtn);
+            // Joinsplits do not have an address
+            if (privacy_mode) {
+				console.log(xtn);
+			 	if(xtn.address) {
+					xtn.address = sprintf("%s...", xtn.address.substring(0,8) );
+				}
+				xtn.time    = 0;
+            }
+        }
 
         var zAddresses = this.state.addresses.filter(a => a.type === "z");
         for(let zAddress of zAddresses) {        
           var transactionResults = await client.z_listReceivedByAddress(zAddress.address,0);
-          for(let transactionResult of transactionResults) {
-            transactionResult.address = zAddress.address;
-            allZTransactionResults.push(transactionResult);
+          for(let xtn of transactionResults) {
+            xtn.address = zAddress.address;
+			//console.log(xtn);
+            allZTransactionResults.push(xtn);
           }
         }
 
@@ -417,13 +469,22 @@ export default new Vuex.Store({
             memo = decodedText
             //console.log(memo);
           }
+          var address = transactionResult.address;
+		  var amount  = transactionResult.amount;
+          if (privacy_mode) {
+            address = sprintf("%s...", transactionResult.address.substring(0,8) );
+		    amount  = sprintf("%.1f", amount);
+          }
+
           zTransactions.push( {
             category: "receive",
-            amount: zTransaction.amount,
+            amount: amount,
             txid: zTransaction.txid,
             confirmations: zTransaction.confirmations,
-            address:transactionResult.address,
-            time: zTransaction.time,
+            //address: transactionResult.address,
+            //addressView: sprintf("%6s...", transactionResult.address),
+            address: address,
+            time: privacy_mode ? 0 : zTransaction.time,
             memo: memo
           })
         }
@@ -505,11 +566,12 @@ export default new Vuex.Store({
       try {
       var receivers = [];         
       for(let receiver of transactionForm.destinationAddresses) {
+	// TODO: allow optional memo
         receivers.push({"address":receiver.toString(), "amount": transactionForm.amount});
       }       
 
         var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
-        vue.$message.success('Transaction queued successfully.' );         
+        vue.$message.success('Transaction queued successfully!' );
         console.log(result);
         commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});           
       }

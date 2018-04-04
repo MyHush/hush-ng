@@ -80,11 +80,13 @@
              <div v-if="scope.row.category == 'generate'"> Mined </div>
           </template>
         </el-table-column>
-         <el-table-column prop="time" width="180"> 
+
+         <el-table-column prop="time" width="180" label="Time"> 
           <template slot-scope="scope">           
-            <div> {{ new Date(scope.row.time*1000).toLocaleString('en-US') }} </div>
+            <div> {{ scope.row.time > 0 ? new Date(scope.row.time*1000).toLocaleString('en-US') : "..." }} </div>
           </template>
         </el-table-column>
+
         <el-table-column prop="amount" label="Amount" width="160"> 
           <template slot-scope="scope">          
              <div style="float:right"> {{ Math.abs(scope.row.amount) }} HUSH </div>           
@@ -121,7 +123,7 @@
       <el-table :data="failedOperations" height="320" style="width: 100%" empty-text="None">
         <el-table-column prop="date" label="Date" width="160"> 
           <template slot-scope="scope" >           
-            <div> {{ new Date(scope.row.date*1000).toLocaleString('en-US') }} </div> 
+            <div> {{ scope.row.date > 0 ? new Date(scope.row.date*1000).toLocaleString('en-US') : "..." }} </div> 
           </template>
         </el-table-column>
         <el-table-column prop="id" label="Id" width="*" > </el-table-column>
@@ -211,6 +213,11 @@
   .address {
     font-family: 'Courier', sans-serif;
     font-size:8pt;  
+  }
+
+  .blurry {
+   color: transparent;
+   text-shadow: 0 0 5px rgba(0,0,0,0.5);
   }
 
   svg.confirmed  {
