@@ -25,6 +25,7 @@
           </el-option>
         </el-select>
         </el-form-item>
+
         <el-form-item label="To">
           <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create  default-first-option placeholder="put address here or choose from your contacts" style="width:100%;">
             <el-option-group v-for="group in groupedDestinationAddresses" :key="group.label" :label="group.label">
@@ -40,13 +41,20 @@
             </el-option-group>
           </el-select>
         </el-form-item>
+
         <el-form-item label="Amount">
           <el-col :span="11">
-            <el-input placeholder="" v-model="transactionForm.amount" style="width: 95%;"></el-input>
+            <el-input placeholder="" v-model="transactionForm.amount" style="width: 75%;"></el-input>
           </el-col>
           <el-col :span="2">Fee</el-col>
           <el-col :span="11">
             <el-input placeholder="" v-model="transactionForm.fee" style="width:100%;"></el-input>
+
+        <el-form-item label="Memo">
+          <el-col :span="100">
+            <el-input placeholder="" v-model="transactionForm.memo" style="width: 100%;"></el-input>
+          </el-col>
+        </el-form-item>
           </el-col>
         </el-form-item>
       </el-form>         
