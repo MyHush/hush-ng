@@ -352,17 +352,18 @@ export default new Vuex.Store({
           var a = {};
 	      if(privacy_mode) {
 	         console.log(taddr);
-		     a = {
-			   address: taddr,
-               addressView:  taddr.substring(0,8) + "...",
-               balance: addrBalance,
-               isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
+		 a = {
+		       address: taddr,
+		       addressView:  taddr.substring(0,8) + "...",
+		       balance: addrBalance,
+		       isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
 		     };
 	      } else {
-		     a = {
-               address: taddr,
-               balance: unconfirmedAddressBalance,
-               isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
+		  a = {
+		       address: taddr,
+		       addressView:  taddr,
+		       balance: unconfirmedAddressBalance,
+		       isConfirmed : confirmeAddressBalance == unconfirmedAddressBalance
 		     };
 	      }
           commit('setBalance', a);   
