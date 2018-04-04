@@ -52,7 +52,7 @@
 
         <el-form-item label="Memo">
           <el-col :span="100">
-            <el-input placeholder="" v-model="transactionForm.memo" style="width: 100%;"></el-input>
+            <el-input placeholder="Optional text..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
           </el-col>
         </el-form-item>
           </el-col>
