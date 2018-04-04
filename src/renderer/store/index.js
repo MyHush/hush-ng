@@ -13,8 +13,8 @@ import fs from 'fs'
 Vue.use(Vuex)
 let vue = new Vue()
 
-// TODO: GUI option for this
-const privacy_mode       = 1;
+// TODO: GUI option for this and read from config file!
+const privacy_mode       = 0;
 
 export default new Vuex.Store({
   modules: {
