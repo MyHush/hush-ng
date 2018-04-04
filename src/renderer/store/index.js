@@ -285,12 +285,12 @@ export default new Vuex.Store({
         for (let item of tAddresses.concat(unspentUTXOs)) {       
           var result = await client.validateAddress(item.address);
           if(result.isvalid && !result.iswatchonly ) {
-		    if (privacy_mode) {
-					var taddr = item.address.substring(0,8);
-					commit('addAddress', {address: item.address, addressView: taddr, balance: '...', type: 't', isConfirmed: false});
-			} else {
-					commit('addAddress', {address: item.address, addressView: item.address, balance: '...', type: 't', isConfirmed: false});
-			}
+	    if (privacy_mode) {
+			var taddr = item.address.substring(0,8);
+			commit('addAddress', {address: item.address, addressView: taddr, balance: '...', type: 't', isConfirmed: false});
+		} else {
+			commit('addAddress', {address: item.address, addressView: item.address, balance: '...', type: 't', isConfirmed: false});
+		}
           }
         }
 
