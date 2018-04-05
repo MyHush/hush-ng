@@ -270,7 +270,7 @@ export default new Vuex.Store({
   },
   actions : {
     async refreshAddresses({ commit }) {
-      console.log("scanning for addresses");
+      //console.log("scanning for addresses");
 
       var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
@@ -309,7 +309,7 @@ export default new Vuex.Store({
     },    
 
     async refreshBalances({ commit }) {
-      console.log("updating address balances");
+      //console.log("updating address balances");
       var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
@@ -322,7 +322,7 @@ export default new Vuex.Store({
         var unconfirmedBalance = await client.z_gettotalbalance(0);
 
 	var unconfirmedTotal   = unconfirmedBalance.total;
-	console.log(unconfirmedTotal);
+	//console.log(unconfirmedTotal);
 
 	if (privacy_mode) {
 		var tBalance = sprintf("%2.2f", (unconfirmedBalance.transparent / unconfirmedTotal) * 100);
@@ -351,7 +351,7 @@ export default new Vuex.Store({
 
           var a = {};
 	      if(privacy_mode) {
-	         console.log(taddr);
+	         //console.log(taddr);
 		 a = {
 		       address: taddr,
 		       addressView:  taddr.substring(0,8) + "...",
@@ -415,7 +415,7 @@ export default new Vuex.Store({
     },
 
     async refreshTransactions({ commit }) {
-      console.log("refreshing transactions");
+      //console.log("refreshing transactions");
       var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
         user: this.state.rpcCredentials.user,
@@ -435,7 +435,7 @@ export default new Vuex.Store({
             //console.log(xtn);
             // Joinsplits do not have an address
             if (privacy_mode) {
-				console.log(xtn);
+				//console.log(xtn);
 			 	if(xtn.address) {
 					xtn.address = sprintf("%s...", xtn.address.substring(0,8) );
 				}
@@ -490,7 +490,7 @@ export default new Vuex.Store({
           })
         }
         commit('setTransactions',tTransactions.concat(zTransactions));
-        console.log("finished refreshing transactions");
+        //console.log("finished refreshing transactions");
       }
       catch(err) {
         if(err) console.log(err);
@@ -498,7 +498,7 @@ export default new Vuex.Store({
     },     
 
     async refreshOperations({ commit }) {
-      console.log("refreshing operations");
+      //console.log("refreshing operations");
 
       var client = new hushrpc.Client({
         port: this.state.rpcCredentials.port,
@@ -566,9 +566,22 @@ export default new Vuex.Store({
       
       try {
       var receivers = [];         
+
+	  var memo = transactionForm.memo;
+
+	  var encoded_memo = "";
+	  for (var j = 0; j < memo.length; j += 1) {
+		encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
+	  }
+	
+	  console.log("encoded memo " + memo + " to " + encoded_memo);
+
       for(let receiver of transactionForm.destinationAddresses) {
-	// TODO: allow optional memo
-        receivers.push({"address":receiver.toString(), "amount": transactionForm.amount});
+        receivers.push({
+		"address": receiver.toString(),
+		"amount":  transactionForm.amount,
+		"memo":    encoded_memo
+		});
       }       
 
         var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
