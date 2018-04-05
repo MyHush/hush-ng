@@ -467,7 +467,7 @@ export default new Vuex.Store({
           }
           var memo = null;
           if(decodedText.length > 0) {
-            memo = decodedText
+            memo = decodedText;
             //console.log(memo);
           }
           var address = transactionResult.address;

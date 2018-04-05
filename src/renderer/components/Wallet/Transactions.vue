@@ -105,6 +105,11 @@
             <span class="address">{{ scope.row.address }}</span>
           </template>
         </el-table-column>
+        <el-table-column prop="memo" label="Memo" width="*" >
+          <template slot-scope="scope">            
+            <span class="memo">{{ scope.row.memo }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
