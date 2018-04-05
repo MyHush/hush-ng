@@ -460,7 +460,7 @@ export default new Vuex.Store({
           if(!transactionResult.memo.startsWith('f60000')) {
             for (var j = 0; j < transactionResult.memo.length; j += 2) {
               var  str = transactionResult.memo.substring(j, j + 2);
-              if (!str == "00") {// Zero bytes are empty
+              if (str != "00") {// Zero bytes are empty
                 decodedText = decodedText + String.fromCharCode(parseInt(str, 16));               
               }
             }
