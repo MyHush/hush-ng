@@ -589,6 +589,16 @@ export default new Vuex.Store({
 
 	  console.log("encoded memo " + memo + " to " + encoded_memo);
 
+      if(!transactionForm.from) {
+        vue.$message.error("You must choose a From address!")
+        return;
+      }
+
+      if(!transactionForm.destinationAddresses.length) {
+        vue.$message.error("You must have at least one recipient in your transaction!");
+        return;
+      }
+
       for(let receiver of transactionForm.destinationAddresses) {
         receivers.push({
 		"address": receiver.toString(),
