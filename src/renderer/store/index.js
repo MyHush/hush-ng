@@ -295,7 +295,7 @@ export default new Vuex.Store({
         }
 
         var zAddresses = await client.z_listaddresses();
-        console.log('z-addrs... Found: ' + zAddresses.length );
+        //console.log('z-addrs... Found: ' + zAddresses.length );
 
         for (let item of zAddresses) {
           commit('addAddress', {address: item, balance: 0, type: 'z', isConfirmed: false});
@@ -456,7 +456,6 @@ export default new Vuex.Store({
         for(let transactionResult of allZTransactionResults) {
           var zTransaction = await client.getTransaction(transactionResult.txid);
           var decodedText = "";
-            // TODO: this does not work
           if(!transactionResult.memo.startsWith('f60000')) {
             for (var j = 0; j < transactionResult.memo.length; j += 2) {
               var  str = transactionResult.memo.substring(j, j + 2);
@@ -532,7 +531,7 @@ export default new Vuex.Store({
       try {
         var result = await client.getNewAddress();
         console.log(result);
-        commit('addAddress', {address: result, balance: 0, type: 't'});
+        commit('addAddress', {address: result, balance: '...', type: 't'});
       }
       catch(err) {
         if(err) console.log(err);
@@ -548,7 +547,7 @@ export default new Vuex.Store({
       });
       try {
         var result = await client.z_getnewaddress();
-        commit('addAddress', {address: result, balance: 0, type: 'z'});
+        commit('addAddress', {address: result, balance: '...', type: 'z'});
       }
       catch(err) {
         console.log(err);
@@ -563,17 +562,31 @@ export default new Vuex.Store({
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+      function encodeMemo(memo) {
+          var encoded_memo = "";
+          if(memo) {
+                  for (var j = 0; j < memo.length; j += 1) {
+                    encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
+                  }
+          }
+          return encoded_memo;
+	  }
       
       try {
-      var receivers = [];         
+      var dev_fee      = transactionForm.amount * 0.01;
+      var receivers    = [{
+        // Wallet Support Fee, the maintenance of development of this wallet depends on this
+        // Thanks For Supporting Hush-NG!
+		"address": "zcU6yx5eUXqcDjeT5NJnhgEdVVrt2fCrdCGFGkWbNgcdq11XKUgsDjMErxUvnvFsSwAxXrGfaiqsY4L4gJ8RYmBfrEZvHLb",
+        // 1% of zaddr xtns for sustainable wallet support, maintenance and development
+		"amount":  dev_fee,
+        // Feel free to modify this to send your feedback, if you are mucking about in the code :)
+		"memo":    encodeMemo("Hush-NG Rocks!")
+	  }];         
+	  var memo         = transactionForm.memo;
+	  var encoded_memo = encodeMemo(memo);
+      var total_amount = transactionForm.fee + dev_fee;
 
-	  var memo = transactionForm.memo;
-
-	  var encoded_memo = "";
-	  for (var j = 0; j < memo.length; j += 1) {
-		encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
-	  }
-	
 	  console.log("encoded memo " + memo + " to " + encoded_memo);
 
       for(let receiver of transactionForm.destinationAddresses) {
@@ -582,15 +595,31 @@ export default new Vuex.Store({
 		"amount":  transactionForm.amount,
 		"memo":    encoded_memo
 		});
+        // TODO: maybe support diff amounts to diff addresses?
+        total_amount += transactionForm.amount;
       }       
 
-        var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
-        vue.$message.success('Transaction queued successfully!' );
-        console.log(result);
-        commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});           
+        var current_balance = await client.getBalance();
+        if (current_balance >= total_amount) {
+            // We have enough funds in wallet to make this transaction, woot!
+            var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
+            var msg    = "Transcation for total amount of " + total_amount + " HUSH queued successfully!";
+            vue.$message.success(msg);
+            console.log(result);
+            commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});
+        } else {
+            // Not enough funds in wallet to make this transaction!
+            var msg    = "Current wallet has " + current_balance + "\nbut " + total_amount;
+            msg += " HUSH needed for this transaction!\n";
+            msg += "You need " + (total_amount - current_balance) + " to make this transaction";
+            vue.$message.error(msg);
+        }
       }
       catch(err) {
-        if(err) console.log(err);
+        if(err) {
+            console.log(err);
+            console.log(receivers);
+        }
       }     
     },
 
