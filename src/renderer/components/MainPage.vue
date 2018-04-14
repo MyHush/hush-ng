@@ -15,15 +15,14 @@
 <script>
   import { mapState } from 'vuex'
   import SideMenu from './shared/Menu'
-  
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  var cmd = require('node-cmd')
+  const Repeat  = require('repeat')
+  var request   = require('request')
+  var store     = require('store')
+  var cmd       = require('node-cmd')
   const bitcoin = require('bitcoin')
-  var hush = require('hush')
+  var hush      = require('hush')
   const hushrpc = require( 'hushrpc' )
-  var config      = new hush.Config()
+  var config    = new hush.Config()
 
   export default {
     name: 'main-page',
@@ -104,8 +103,8 @@
         Repeat(function() {
 
           if (self.connectedToDeamon) {
-            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshNetworkStats');
+            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshBalances');
             self.$store.dispatch('refreshTransactions');
             self.$store.dispatch('refreshOperations');

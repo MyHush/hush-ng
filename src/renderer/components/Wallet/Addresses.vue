@@ -44,7 +44,8 @@
             {{ totalBytesSent }} bytes sent<br/>
         </div>
         <div class="box alt">
-            <b>Funding</b><br/>
+            {{ priceBTC }} BTC per 1 HUSH<br/>
+            {{ priceUSD }} USD per 1 HUSH<br/>
             <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
         </div>
       </div>
@@ -64,6 +65,7 @@
         'hoverAddress': null
       }
     },
+
     computed:{
       ...mapState([
         'tBalance',
@@ -71,12 +73,15 @@
         'totalBalance',
         'totalBytesRecv',
         'totalBytesSent',
+        'priceBTC',
+        'priceUSD',
       ]),     
       ...mapGetters([
         'zAddresses',
         'tAddresses',
       ])
     },
+
     methods: {
       mouseover (address) {
         this.$data.hoverAddress = address;

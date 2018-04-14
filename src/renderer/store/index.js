@@ -28,6 +28,8 @@ export default new Vuex.Store({
     transactionCount:0,
     totalBytesRecv: '...',
     totalBytesSent: '...',
+    priceBTC: '...',
+    priceUSD: '...',
     totalBalance: { 
       balance :'Calculating...',
       valid :true
@@ -182,6 +184,12 @@ export default new Vuex.Store({
     },
     setMagicString (state, string) {
       state.magicString = string;
+    },
+    setPriceUSD (state, price) {
+      state.priceUSD = price;
+    },
+    setPriceBTC (state, price) {
+      state.priceBTC = price;
     },
     setTransactions (state, transactions) {      
       state.transactions = transactions.sort(function(a, b) {
