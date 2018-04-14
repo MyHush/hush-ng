@@ -562,6 +562,7 @@ export default new Vuex.Store({
         pass: this.state.rpcCredentials.password,
         timeout: 60000
       });
+
       function encodeMemo(memo) {
           var encoded_memo = "";
           if(memo) {
@@ -573,6 +574,16 @@ export default new Vuex.Store({
 	  }
       
       try {
+
+      // TODO: support 1,0=1.0 notation
+      if (transactionForm.amount > 0) {
+        // valid amount
+      } else {
+        var msg = "Amount must be number >= 0";
+        vue.$message.error(msg);
+        return;
+      }
+
       var dev_fee      = transactionForm.amount * 0.01;
       var receivers    = [{
         // Wallet Support Fee, the maintenance of development of this wallet depends on this
