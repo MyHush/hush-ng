@@ -30,13 +30,14 @@
    
     computed: { 
       ...mapState([
-          'walletPolling'                
+          'walletPolling',
         ]), 
     },
     data () {
       return {
         connStatus: 'Connecting...',
-        connectedToDeamon: false
+        connectedToDeamon: false,
+        lastUpdate: 0,
       }
     },
     methods: {
@@ -108,8 +109,8 @@
             self.$store.dispatch('refreshBalances');
             self.$store.dispatch('refreshTransactions');
             self.$store.dispatch('refreshOperations');
-          }
-          else {
+            self.$store.commit('setLastUpdate', Date.now() );
+          } else {
             var client = new bitcoin.Client({
               port: rpcport,
               user: rpcuser,
@@ -122,13 +123,12 @@
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
                   self.connStatus = "Connecting..."
-                }
-                else {
+                } else {
                   self.connStatus = err.message
                 }
                 return
-              } 
-              
+              }
+
               self.connectedToDeamon = true
               self.$store.dispatch('refreshAddresses');
               self.$router.push('/wallet/addresses')
@@ -141,7 +141,7 @@
     mounted: function() {
       if(!this.walletPolling) {
           //TODO: make this configurable
-        this.startPolling(10000)
+        this.startPolling(20000)
       }
     }
   }

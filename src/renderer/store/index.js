@@ -54,6 +54,7 @@ export default new Vuex.Store({
       password : "",
       port : 0
     },
+    lastUpdate: 0,
     contacts:[
       {
         id: 1,
@@ -170,6 +171,9 @@ export default new Vuex.Store({
     },  
     setZBalance (state, b) {      
       state.zBalance = b;
+    },
+    setLastUpdate (state, lastUpdate) {
+      state.lastUpdate = lastUpdate;
     },
     setPeerCount (state, peerCount) {
       state.peerCount = peerCount;
@@ -422,14 +426,28 @@ export default new Vuex.Store({
       }
 
       try {
-        axios.get("https://api.coinmarketcap.com/v1/ticker/hush/")
+        var now        = Date.now(); // This Is Now Now
+        var interval   = 60; // seconds
+        var lastUpdate = this.state.lastUpdate;
+        var diff       = Math.abs(lastUpdate - now);
+        // update stats roughly every minute instead of every 20s (polling period)
+        // seconds like most of UI. We don't want to get banned
+        // and a watched coin price doesn't moon.
+       if ( diff > interval ) {
+            axios.get("https://api.coinmarketcap.com/v1/ticker/hush/")
             .then(response => {
                 // todo: better error checking
+                // todo: support arbitrary fiat tickers supplied by user
                 commit('setPriceUSD', response.data[0].price_usd);
                 commit('setPriceBTC', response.data[0].price_btc);
+                //console.log("Updated price stats lastUpdate=" + this.state.lastUpdate + " diff=" + diff );
             }).catch(e => {
+                console.log("Error getting price stats!");
                 console.log(e);
             })
+        } else {
+            console.log("skipping price check");
+        }
       } catch(err) {
         // CMC not returning data should not be considered an import error
         commit('setPriceUSD', '?');

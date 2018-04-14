@@ -79,6 +79,7 @@
       ...mapGetters([
         'zAddresses',
         'tAddresses',
+        'lastUpdate',
       ])
     },
 
