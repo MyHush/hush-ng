@@ -576,7 +576,7 @@ export default new Vuex.Store({
       try {
 
       // TODO: support 1,0=1.0 notation
-      if (transactionForm.amount > 0) {
+      if (transactionForm.amount >= 0) {
         // valid amount
       } else {
         var msg = "Amount must be number >= 0";
