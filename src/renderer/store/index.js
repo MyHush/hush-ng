@@ -9,6 +9,7 @@ import modules from './modules'
 import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
+import axios from 'axios'
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -414,11 +415,25 @@ export default new Vuex.Store({
       }
 
       try {
-        var data = await client.getNetworkInfo()
+        var data = await client.getNetworkInfo();
         commit('setMagicString', data.subversion);
-
       } catch(err) {
         commit('setMagicString', '...');
+      }
+
+      try {
+        axios.get("https://api.coinmarketcap.com/v1/ticker/hush/")
+            .then(response => {
+                // todo: better error checking
+                commit('setPriceUSD', response.data[0].price_usd);
+                commit('setPriceBTC', response.data[0].price_btc);
+            }).catch(e => {
+                console.log(e);
+            })
+      } catch(err) {
+        // CMC not returning data should not be considered an import error
+        commit('setPriceUSD', '?');
+        commit('setPriceBTC', '?');
       }
     },
 
