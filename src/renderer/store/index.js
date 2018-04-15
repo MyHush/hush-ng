@@ -30,6 +30,7 @@ export default new Vuex.Store({
     totalBytesRecv: '...',
     totalBytesSent: '...',
     priceBTC: '...',
+    priceEUR: '...',
     priceUSD: '...',
     totalBalance: { 
       balance :'Calculating...',
@@ -192,6 +193,9 @@ export default new Vuex.Store({
     },
     setPriceUSD (state, price) {
       state.priceUSD = price;
+    },
+    setPriceEUR (state, price) {
+      state.priceEUR = price;
     },
     setPriceBTC (state, price) {
       state.priceBTC = price;
