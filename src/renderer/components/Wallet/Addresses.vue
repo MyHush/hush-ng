@@ -45,6 +45,7 @@
         </div>
         <div class="box alt">
             {{ priceBTC }} BTC per 1 HUSH<br/>
+            {{ priceEUR }} EUR per 1 HUSH<br/>
             {{ priceUSD }} USD per 1 HUSH<br/>
             <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
         </div>
@@ -74,6 +75,7 @@
         'totalBytesRecv',
         'totalBytesSent',
         'priceBTC',
+        'priceEUR',
         'priceUSD',
       ]),     
       ...mapGetters([
