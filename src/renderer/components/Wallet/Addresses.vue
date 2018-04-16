@@ -29,16 +29,16 @@
 
     </div>
     <div class="bottom-row">
-      <div class="box">
+      <div class="box alt">
         <ul id="texts">
-          <li>Transparent:</li>
-          <li>Shielded:</li>
-          <li>TOTAL:</li>
+          <li><icon class=fa-fw name=eye></icon>Transparent:</li>
+          <li><icon class=fa-fw name=shield-alt></icon>Shielded:</li>
+          <li><icon class=fa-fw name=balance-scale></icon>TOTAL:</li>
         </ul>
         <ul id="balances">
-          <li v-bind:class="{ unconfirmed: !tBalance.valid }" >{{ tBalance.balance }} HUSH</li>
-          <li v-bind:class="{ unconfirmed: !zBalance.valid }" >{{ zBalance.balance }} HUSH</li>
-          <li v-bind:class="{ unconfirmed: !totalBalance.valid }">{{ totalBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !tBalance.valid }" > {{ tBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !zBalance.valid }" > {{ zBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !totalBalance.valid }"> {{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
         <div class="box alt">
@@ -47,9 +47,9 @@
             {{ totalBytesSent }} bytes sent<br/>
         </div>
         <div class="box alt">
-            <icon name="btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
-            <icon name="eur"></icon> {{ priceEUR }} EUR/HUSH<br/>
-            <icon name="usd"></icon> {{ priceUSD }} USD/HUSH<br/>
+            <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
+            <icon name="euro-sign"></icon> {{ priceEUR }} EUR/HUSH<br/>
+            <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
         </div>
       </div>
     </div>
@@ -140,7 +140,7 @@
   }
 
   .button {
-    font-size: 11pt;
+    font-size: 12pt;
     cursor: pointer;
     outline: none;
     padding: 5px 15px 5px 15px;
@@ -167,6 +167,11 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  .white {
+    color: white !important;
+    text-color: white !important;
   }
 
   .unconfirmed {

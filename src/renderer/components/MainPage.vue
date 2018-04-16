@@ -305,10 +305,6 @@
     color: #fff;
   }
 
-  .bottom-row .box #texts li{   
-    color: #fff;
-  }
-
   .bottom-row .box #balances {
     float: right;
     text-align: right;
@@ -317,7 +313,7 @@
     display: list-item;
   }
   .bottom-row .box #balances li {   
-    color: #fff;
+     font-weight: 500;
   }
 
   .container {    

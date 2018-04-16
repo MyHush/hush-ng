@@ -132,8 +132,7 @@ export default new Vuex.Store({
           operation.error = op.error.message;
         }
 
-      }
-      else {       
+      } else {
         state.operations.push({
           id : op.id,
           status: op.status,
