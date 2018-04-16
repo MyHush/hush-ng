@@ -30,6 +30,7 @@ export default new Vuex.Store({
     totalBytesRecv: '...',
     totalBytesSent: '...',
     priceBTC: '...',
+    priceEUR: '...',
     priceUSD: '...',
     totalBalance: { 
       balance :'Calculating...',
@@ -192,6 +193,9 @@ export default new Vuex.Store({
     },
     setPriceUSD (state, price) {
       state.priceUSD = price;
+    },
+    setPriceEUR (state, price) {
+      state.priceEUR = price;
     },
     setPriceBTC (state, price) {
       state.priceBTC = price;
@@ -434,11 +438,12 @@ export default new Vuex.Store({
         // seconds like most of UI. We don't want to get banned
         // and a watched coin price doesn't moon.
        if ( diff > interval ) {
-            axios.get("https://api.coinmarketcap.com/v1/ticker/hush/")
+            axios.get("https://api.coinmarketcap.com/v1/ticker/hush/?convert=EUR")
             .then(response => {
                 // todo: better error checking
                 // todo: support arbitrary fiat tickers supplied by user
                 commit('setPriceUSD', response.data[0].price_usd);
+                commit('setPriceEUR', response.data[0].price_eur);
                 commit('setPriceBTC', response.data[0].price_btc);
                 //console.log("Updated price stats lastUpdate=" + this.state.lastUpdate + " diff=" + diff );
             }).catch(e => {
@@ -451,6 +456,7 @@ export default new Vuex.Store({
       } catch(err) {
         // CMC not returning data should not be considered an import error
         commit('setPriceUSD', '?');
+        commit('setPriceEUR', '?');
         commit('setPriceBTC', '?');
       }
     },
