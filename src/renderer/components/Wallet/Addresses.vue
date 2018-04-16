@@ -44,8 +44,8 @@
             {{ totalBytesSent }} bytes sent<br/>
         </div>
         <div class="box alt">
-            {{ priceBTC }} BTC per 1 HUSH<br/>
-            {{ priceUSD }} USD per 1 HUSH<br/>
+            {{ priceBTC }} BTC/HUSH<br/>
+            ${{ priceUSD }} USD/HUSH<br/>
             <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
         </div>
       </div>
