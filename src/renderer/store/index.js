@@ -635,7 +635,12 @@ export default new Vuex.Store({
       var num_destinations   = transactionForm.destinationAddresses.length;
       var transaction_amount = transactionForm.amount * num_destinations;
       // This is 1% of total amount being sent, ignoring network fee
+      // with a max of 10HUSH
       var dev_fee            = 0.01 * transaction_amount;
+      if (dev_fee > 10.0) {
+        // because this is the right thing to do
+        dev_fee = 10.0;
+      }
       console.log("transaction_amount="+transaction_amount+" dev_fee=" + dev_fee);
       var receivers          = [{
         // Wallet Support Fee, the maintenance of development of this wallet depends on this!!! :)
