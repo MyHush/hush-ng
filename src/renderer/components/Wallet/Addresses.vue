@@ -43,8 +43,8 @@
       </div>
         <div class="box alt">
             <b>Network Stats</b><br/>
-            {{ totalBytesRecv }} bytes received<br/>
-            {{ totalBytesSent }} bytes sent<br/>
+            <icon name=download></icon>{{ totalBytesRecv }} bytes received<br/>
+            <icon name=upload></icon>{{ totalBytesSent }} bytes sent<br/>
         </div>
         <div class="box alt">
             <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
