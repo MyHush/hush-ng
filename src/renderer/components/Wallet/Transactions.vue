@@ -48,7 +48,9 @@
           </el-col>
           <el-col :span="2">Fee</el-col>
           <el-col :span="11">
+          <div v-on:keypress="updateTransactionForm">
             <el-input placeholder="" v-model="transactionForm.fee" style="width:100%;"></el-input>
+            </div>
 
         <el-form-item label="Memo">
           <el-col :span="100">
@@ -195,18 +197,20 @@
         var link = "https://explorer.myhush.org/tx/" + row.txid;
         this.$electron.shell.openExternal(link)
       },
-      createTransaction () {                     
-        this.$store.dispatch('sendToMany',this.transactionForm);  
+      createTransaction () {
+        this.$store.dispatch('sendToMany',this.transactionForm);
       },
-      showPendingOperations () {                     
+      showPendingOperations () {
         this.operationsDialogVisible = true;
       },
-      showFailedOperations () {                     
+      showFailedOperations () {
         this.failedOperationsDialogVisible = true;
-      }          
+      },
+      updateTransactionForm () {
+        console.log("yup");
+      }
     },
     mounted: function() {
-     
     }
   }
 </script>
