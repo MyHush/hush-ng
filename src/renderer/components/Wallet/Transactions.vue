@@ -48,7 +48,9 @@
           </el-col>
           <el-col :span="2">Fee</el-col>
           <el-col :span="11">
+          <div v-on:keypress="updateTransactionForm">
             <el-input placeholder="" v-model="transactionForm.fee" style="width:100%;"></el-input>
+            </div>
 
         <el-form-item label="Memo">
           <el-col :span="100">
@@ -66,10 +68,10 @@
         <el-col :span="8" class="info" >click on a row to open block explorer</el-col>
         <el-col :span="8" class="balance"> 
           <div v-on:click="showFailedOperations" style="float:right;margin-left:10px;"> 
-            <icon name="exclamation-triangle" /> <span class="ops" >{{ failedOperations.length }}</span>
+            <icon name="exclamation-triangle" scale=2 /> <span class="ops" >{{ failedOperations.length }}</span>
           </div>
           <div v-on:click="showPendingOperations" style="float:right">
-            <icon name="history" flip="horizontal" /> <span class="ops" >{{ pendingOperations.length }}</span> 
+            <icon name="cogs" scale=2 flip="horizontal" /> <span class="ops" >{{ pendingOperations.length }}</span> 
           </div>
         </el-col>
       </el-row>
@@ -195,18 +197,20 @@
         var link = "https://explorer.myhush.org/tx/" + row.txid;
         this.$electron.shell.openExternal(link)
       },
-      createTransaction () {                     
-        this.$store.dispatch('sendToMany',this.transactionForm);  
+      createTransaction () {
+        this.$store.dispatch('sendToMany',this.transactionForm);
       },
-      showPendingOperations () {                     
+      showPendingOperations () {
         this.operationsDialogVisible = true;
       },
-      showFailedOperations () {                     
+      showFailedOperations () {
         this.failedOperationsDialogVisible = true;
-      }          
+      },
+      updateTransactionForm () {
+        console.log("yup");
+      }
     },
     mounted: function() {
-     
     }
   }
 </script>
