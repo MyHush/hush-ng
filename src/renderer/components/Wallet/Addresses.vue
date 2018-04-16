@@ -1,7 +1,18 @@
 <template>
   <div>
       Below is a list of your addresses<br />
-      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name. </span>
+      <span>
+<ul>
+<li>
+Shielded Addresses (zaddrs) preserve your privacy with encrypted transactions that do not leak metadata such as the amount or who is sending and receiving, and are ANONYMOUS . The receiver will have no way to respond unless you tell them how in the memo field.
+</li>
+<li>
+Transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name, and the transaction
+information for them is publicly viewable and searchable.
+</li>
+</ul>
+
+</span>
     <span>
     <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
 </span>

@@ -240,6 +240,7 @@ export default new Vuex.Store({
       }
 
       // TODO: support testnet and other chains
+      // TODO: Sapling address format might be different!
       if (!contact.address.match(/^zc[a-z0-9]{93}$/i) ) {
           vue.$message.error("Invalid address for contact");
           return;
@@ -441,9 +442,9 @@ export default new Vuex.Store({
             .then(response => {
                 // todo: better error checking
                 // todo: support arbitrary fiat tickers supplied by user
-                commit('setPriceUSD', response.data[0].price_usd);
-                commit('setPriceEUR', response.data[0].price_eur);
-                commit('setPriceBTC', response.data[0].price_btc);
+                commit('setPriceUSD', sprintf("%.8f", response.data[0].price_usd) );
+                commit('setPriceEUR', sprintf("%.8f", response.data[0].price_eur) );
+                commit('setPriceBTC', sprintf("%.8f", response.data[0].price_btc) );
                 //console.log("Updated price stats lastUpdate=" + this.state.lastUpdate + " diff=" + diff );
             }).catch(e => {
                 console.log("Error getting price stats!");
@@ -453,7 +454,7 @@ export default new Vuex.Store({
             console.log("skipping price check");
         }
       } catch(err) {
-        // CMC not returning data should not be considered an import error
+        // CMC not returning data should not be considered an important error
         commit('setPriceUSD', '?');
         commit('setPriceEUR', '?');
         commit('setPriceBTC', '?');
