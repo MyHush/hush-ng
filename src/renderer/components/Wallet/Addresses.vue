@@ -2,6 +2,9 @@
   <div>
       Below is a list of your addresses<br />
       <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name. </span>
+    <span>
+    <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
+</span>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="2" >zaddr</el-col>
@@ -47,7 +50,6 @@
             <icon name="btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
             <icon name="eur"></icon> {{ priceEUR }} EUR/HUSH<br/>
             <icon name="usd"></icon> {{ priceUSD }} USD/HUSH<br/>
-            <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
         </div>
       </div>
     </div>
