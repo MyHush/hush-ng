@@ -66,10 +66,10 @@
         <el-col :span="8" class="info" >click on a row to open block explorer</el-col>
         <el-col :span="8" class="balance"> 
           <div v-on:click="showFailedOperations" style="float:right;margin-left:10px;"> 
-            <icon name="exclamation-triangle" /> <span class="ops" >{{ failedOperations.length }}</span>
+            <icon name="exclamation-triangle" scale=2 /> <span class="ops" >{{ failedOperations.length }}</span>
           </div>
           <div v-on:click="showPendingOperations" style="float:right">
-            <icon name="history" flip="horizontal" /> <span class="ops" >{{ pendingOperations.length }}</span> 
+            <icon name="cogs" scale=2 flip="horizontal" /> <span class="ops" >{{ pendingOperations.length }}</span> 
           </div>
         </el-col>
       </el-row>
