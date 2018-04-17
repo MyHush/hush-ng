@@ -46,6 +46,7 @@ export default new Vuex.Store({
     },
     unconfirmedBalance: 0.0,
     availableBalance :0.0,
+    totalAmount: '...',
     blockHeight: 'Scanning...',
     magicString: '...',
     peerCount: 'Discovering...',
@@ -165,6 +166,9 @@ export default new Vuex.Store({
     },    
     setAvailableBalance (state, b) {            
       state.availableBalance = b;
+    },
+    setTotalAmount (state, amount) {            
+      state.totalAmount = amount;
     },
     setTBalance (state, b) {            
       state.tBalance = b;
@@ -315,12 +319,11 @@ export default new Vuex.Store({
         //console.log('z-addrs... Found: ' + zAddresses.length );
 
         for (let item of zAddresses) {
-          commit('addAddress', {address: item, balance: 0, type: 'z', isConfirmed: false});
+          commit('addAddress', {address: item, balance: '...', type: 'z', isConfirmed: false});
         }
 
         commit("updateGroupedDestinationAddresses");
-      }
-      catch(err) {
+      } catch(err) {
         if(err) console.log(err);
       }
     },    
@@ -676,19 +679,23 @@ export default new Vuex.Store({
         });
       }
 
+      // TODO: update total amount in UI, but not here
+      commit('setTotalAmount', total_amount);
+
         var current_balance = await client.getBalance();
         if (current_balance >= total_amount) {
             // We have enough funds in wallet to make this transaction, woot!
             var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
             var msg    = "Transcation for total amount of " + total_amount + " HUSH queued successfully!";
             vue.$message.success(msg);
-            console.log(result);
+            console.log(msg);
             commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});
         } else {
             // Not enough funds in wallet to make this transaction!
-            var msg    = "Current wallet has " + current_balance + "\nbut " + total_amount;
-            msg += " HUSH needed for this transaction!\n";
-            msg += "You need " + (total_amount - current_balance) + " to make this transaction";
+            var msg  = "Current wallet has " + current_balance + "\nbut " + total_amount;
+            msg     += " HUSH needed for this transaction!\n";
+            msg     += "You need " + (total_amount - current_balance) + " to make this transaction";
+            console.log(msg);
             vue.$message.error(msg);
         }
       }

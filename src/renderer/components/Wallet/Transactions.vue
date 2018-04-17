@@ -41,23 +41,28 @@
             </el-option-group>
           </el-select>
         </el-form-item>
-
         <el-form-item label="Amount">
-          <el-col :span="11">
-            <el-input placeholder="" v-model="transactionForm.amount" style="width: 75%;"></el-input>
-          </el-col>
-          <el-col :span="2">Fee</el-col>
-          <el-col :span="11">
-          <div v-on:keypress="updateTransactionForm">
-            <el-input placeholder="" v-model="transactionForm.fee" style="width:100%;"></el-input>
-            </div>
+          <el-col :span="6">
+            <el-input placeholder="" 
+                v-on:input="transactionForm.totalAmount = $event"
+                v-model="transactionForm.amount" style="width: 80%;">
+            </el-input>
 
+<!--
+        <el-form-item label="Total" id="totalAmount">XXX </el-form-item>
+-->
+    
+          </el-col>
+        <el-form-item label="Total" ><div id="totalAmount">{{ totalAmount }}</div> </el-form-item>
+
+          <el-col :span="5">Miner Fee
+            <el-input placeholder="" v-model="transactionForm.fee" style="width:60%;"></el-input>
+          </el-col>
         <el-form-item label="Memo">
-          <el-col :span="100">
+          <el-col :span="10">
             <el-input placeholder="Optional text..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
           </el-col>
         </el-form-item>
-          </el-col>
         </el-form-item>
       </el-form>         
       <el-button type="primary" @click="createTransaction">Create</el-button>
@@ -184,6 +189,7 @@
         'transactions',
         'availableBalance',  
         'contacts',
+        'totalAmount',
         'groupedDestinationAddresses'
       ]),                         
       ...mapGetters([
