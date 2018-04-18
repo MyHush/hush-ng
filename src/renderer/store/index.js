@@ -672,11 +672,24 @@ export default new Vuex.Store({
       }
 
       for(let receiver of transactionForm.destinationAddresses) {
-        receivers.push({
-            "address": receiver.toString(),
-            "amount":  transactionForm.amount,
-            "memo":    encoded_memo
-        });
+       var addr = receiver.toString();
+
+       var transactionAmount = transactionForm.amount;
+
+       // zaddrs get memos
+       if ( addr.substring(0,1) == 'z' ) {
+            receivers.push({
+                "address": addr,
+                "amount":  transactionForm.amount,
+                "memo":    encoded_memo
+            });
+        } else {
+            // taddr receivers have no memos
+            receivers.push({
+                "address": addr,
+                "amount":  transactionForm.amount,
+            });
+        }
       }
 
       // TODO: update total amount in UI, but not here
