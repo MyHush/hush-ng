@@ -41,30 +41,38 @@
             </el-option-group>
           </el-select>
         </el-form-item>
+
         <el-form-item label="Amount">
           <el-col :span="6">
             <el-input placeholder="" 
                 v-on:input="transactionForm.totalAmount = $event"
                 v-model="transactionForm.amount" style="width: 80%;">
             </el-input>
-
-<!--
-        <el-form-item label="Total" id="totalAmount">XXX </el-form-item>
--->
-    
           </el-col>
-        <el-form-item label="Total" ><div id="totalAmount">{{ totalAmount }}</div> </el-form-item>
+        </el-form-item>
 
-          <el-col :span="5">Miner Fee
+          <el-col :span="5">
+          <el-form-item label="Miner Fee">
             <el-input placeholder="" v-model="transactionForm.fee" style="width:60%;"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Dev Donation" style="white-space: nowrap;">
+            <el-input placeholder="" v-model="transactionForm.devDonation" style="width:80%;"></el-input>
+          </el-form-item>
+
+          <el-form-item label="Total Amount">
+            <el-input placeholder="" v-model="transactionForm.totalAmount" style="width:80%;"></el-input>
+          </el-form-item>
+
           </el-col>
+
         <el-form-item label="Memo">
           <el-col :span="10">
-            <el-input placeholder="Optional text..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
+            <el-input type=textarea placeholder="Hey Bob, this is Alice..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
           </el-col>
         </el-form-item>
-        </el-form-item>
-      </el-form>         
+
+      </el-form>
       <el-button type="primary" @click="createTransaction">Create</el-button>
     </div>
     <div class="container" style="height:calc(100% - 300px);" >
@@ -178,6 +186,7 @@
           from: null,
           destinationAddresses: [],
           amount: 0.0,
+          devDonation: 0.0001,
           fee: 0.0001
         },
         operationsDialogVisible: false,

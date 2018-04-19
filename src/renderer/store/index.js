@@ -645,6 +645,8 @@ export default new Vuex.Store({
         dev_fee = 10.0;
       }
       console.log("transaction_amount="+transaction_amount+" dev_fee=" + dev_fee);
+      //TODO: this forces all transactions to be z_sendmany
+      // Should be, if no zaddrs, no donation/fee
       var receivers          = [{
         // Wallet Support Fee, the maintenance of development of this wallet depends on this!!! :)
         // Thanks For Supporting Hush-NG!
@@ -711,13 +713,13 @@ export default new Vuex.Store({
             console.log(msg);
             vue.$message.error(msg);
         }
-      }
-      catch(err) {
+      } catch(err) {
         if(err) {
             console.log(err);
+            vue.$message.error("Oh shite! " + err);
             console.log(receivers);
         }
-      }     
+      }
     },
 
     loadContacts({ commit }) {
