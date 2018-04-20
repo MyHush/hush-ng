@@ -68,7 +68,7 @@
 
         <el-form-item label="Memo">
           <el-col :span="10">
-            <el-input type=textarea placeholder="Hey Bob, this is Alice..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
+            <el-input type=textarea placeholder="Hey Bob, this is Alice, did you hear about Charlie? ..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
           </el-col>
         </el-form-item>
 
