@@ -20,7 +20,7 @@ information for them is publicly viewable and searchable.
       <el-row class="caption">
         <el-col :span="2" >zaddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
+        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New zaddr</a></el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
@@ -31,7 +31,7 @@ information for them is publicly viewable and searchable.
       <el-row class="caption">
         <el-col :span="2" >taddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
+        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New taddr</a></el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
