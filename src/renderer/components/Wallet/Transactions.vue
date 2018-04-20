@@ -11,7 +11,7 @@
         </el-col>
       </el-row>
       
-      <el-form ref="form" :model="transactionForm" label-width="120px" >
+      <el-form ref="form" :model="transactionForm" label-width="150px" >
         <el-form-item label="From" >
           <el-select v-model="transactionForm.from" placeholder="Select a shielded or transparent address" style="width:100%;">
             <el-option
@@ -71,6 +71,13 @@
           <el-col :span="8">
             <el-input placeholder="Total amount to send transaction" 
             v-model="transactionForm.totalAmount"></el-input>
+          </el-col>
+          </el-form-item>
+
+          <el-form-item label="Remaining Balance">
+          <el-col :span="8">
+            <el-input placeholder="Amount left after this transaction"
+            v-model="transactionForm.remaining"></el-input>
           </el-col>
           </el-form-item>
 
@@ -195,9 +202,10 @@
          transactionForm : {
           from: null,
           destinationAddresses: [],
-          amount: 0.0,
+          amount: '',
           devDonation: 0.0001,
-          fee: 0.0001
+          fee: 0.0001,
+          remaining: '',
         },
         operationsDialogVisible: false,
         failedOperationsDialogVisible: false
