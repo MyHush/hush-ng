@@ -11,7 +11,7 @@
         </el-col>
       </el-row>
       
-      <el-form ref="form" :model="transactionForm" label-width="60px" >
+      <el-form ref="form" :model="transactionForm" label-width="120px" >
         <el-form-item label="From" >
           <el-select v-model="transactionForm.from" placeholder="Select" style="width:100%;">
             <el-option
@@ -21,7 +21,7 @@
               :value="address.address"
               :disabled="!address.isConfirmed">  
                   <span class="address" style="float: left">{{ address.address }}</span>
-                  <span style="float: right; font-size: 13px">{{ address.balance }}</span>            
+                  <span style="float: right; font-size: 13px">{{ address.balance }}</span>
           </el-option>
         </el-select>
         </el-form-item>
@@ -51,12 +51,13 @@
           </el-col>
         </el-form-item>
 
-          <el-col :span="5">
           <el-form-item label="Miner Fee">
+          <el-col :span="5">
             <el-input placeholder="" v-model="transactionForm.fee" style="width:60%;"></el-input>
+          </el-col>
           </el-form-item>
 
-          <el-form-item label="Dev Donation" style="white-space: nowrap;">
+          <el-form-item label="Dev Donation">
             <el-input placeholder="" v-model="transactionForm.devDonation" style="width:80%;"></el-input>
           </el-form-item>
 
@@ -64,7 +65,6 @@
             <el-input placeholder="" v-model="transactionForm.totalAmount" style="width:80%;"></el-input>
           </el-form-item>
 
-          </el-col>
 
         <el-form-item label="Memo">
           <el-col :span="10">
