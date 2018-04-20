@@ -244,11 +244,7 @@
       updateTransactionForm (form,availableBalance) {
         form.amount      = form.amount > 0      ? parseFloat(form.amount) : 0.0;
         form.fee         = form.fee    > 0      ? parseFloat(form.fee)    : 0.0;
-        if (form.devDonation > 0.01*form.amount) {
-            form.devDonation = sprintf("%.8f", parseFloat(form.devDonation) );
-        } else {
-            form.devDonation = sprintf("%.8f", 0.01*form.amount);
-        }
+        form.devDonation = sprintf("%.8f", 0.01*form.amount);
         console.log('bal=' + availableBalance);
         console.log('totalamount=' + form.totalAmount);
         console.log("updating xtn form");
