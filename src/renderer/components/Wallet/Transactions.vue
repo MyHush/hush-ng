@@ -91,6 +91,7 @@
 
       </el-form>
       <el-button type="primary" @click="createTransaction">Create</el-button>
+      <el-button type="danger" @click="clearTransaction(transactionForm,availableBalance)">Clear</el-button>
     </div>
     <div class="container" style="height:calc(100% - 300px);" >
       <el-row >
@@ -225,12 +226,19 @@
         'allAddresses',
         'pendingOperations',
         'failedOperations'
-      ])           
+      ])
     },
     methods: {
       openExplorer (row) {
         var link = "https://explorer.myhush.org/tx/" + row.txid;
         this.$electron.shell.openExternal(link)
+      },
+      clearTransaction (form,balance) {
+        form.amount      = "";
+        form.devDonation = "";
+        form.totalAmount = "";
+        form.remaining   = balance;
+        form.memo        = "";
       },
       createTransaction () {
         this.$store.dispatch('sendToMany',this.transactionForm);
@@ -242,12 +250,12 @@
         this.failedOperationsDialogVisible = true;
       },
       updateTransactionForm (form,availableBalance) {
-        form.amount      = form.amount > 0      ? parseFloat(form.amount) : 0.0;
+        form.amount      = ((form.amount > 0) && (Math.abs(form.amount) < Infinity)) ? parseFloat(form.amount) : 0.0;
         form.fee         = form.fee    > 0      ? parseFloat(form.fee)    : 0.0;
         form.devDonation = sprintf("%.8f", 0.01*form.amount);
-        console.log('bal=' + availableBalance);
-        console.log('totalamount=' + form.totalAmount);
-        console.log("updating xtn form");
+        //console.log('bal=' + availableBalance);
+        //console.log('totalamount=' + form.totalAmount);
+        //console.log("updating xtn form");
         form.remaining   = availableBalance - form.totalAmount;
         form.remaining   = sprintf("%.8f", form.remaining);
         form.totalAmount = sprintf("%.8f", form.amount + form.fee + parseFloat(form.devDonation));

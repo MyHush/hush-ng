@@ -622,14 +622,15 @@ export default new Vuex.Store({
           }
           return encoded_memo;
 	  }
-      
       try {
 
       // TODO: support 1,0=1.0 notation
-      if (transactionForm.amount >= 0) {
+      // TODO: could use current circulating supply as max for xtn
+      // amount must be between [0,21000000] and not NaN
+      if (transactionForm.amount >= 0 && (transactionForm.amount <= 21000000) && (transactionForm.amount == transactionForm.amount) ) {
         // valid amount
       } else {
-        var msg = "Amount must be number >= 0";
+        var msg = "Amount must be number >= 0 and less than 21000000";
         vue.$message.error(msg);
         return;
       }
@@ -675,8 +676,7 @@ export default new Vuex.Store({
       }
 
       for(let receiver of transactionForm.destinationAddresses) {
-       var addr = receiver.toString();
-
+       var addr              = receiver.toString();
        var transactionAmount = transactionForm.amount;
 
        // zaddrs get memos
@@ -702,9 +702,6 @@ export default new Vuex.Store({
             });
         }
       }
-
-      // TODO: update total amount in UI, but not here
-      commit('setTotalAmount', total_amount);
 
         var current_balance = await client.getBalance();
         if (current_balance >= total_amount) {
