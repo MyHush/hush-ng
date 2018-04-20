@@ -627,10 +627,11 @@ export default new Vuex.Store({
       // TODO: support 1,0=1.0 notation
       // TODO: could use current circulating supply as max for xtn
       // amount must be between [0,21000000] and not NaN
-      if (transactionForm.amount >= 0 && (transactionForm.amount <= 21000000) && (transactionForm.amount == transactionForm.amount) ) {
+      var MAX_MONEY = 21000000;
+      if (transactionForm.amount >= 0 && (transactionForm.amount <= MAX_MONEY) && (transactionForm.amount == transactionForm.amount) ) {
         // valid amount
       } else {
-        var msg = "Amount must be number >= 0 and less than 21000000";
+        var msg = "Amount must be number >= 0 and <= " + MAX_MONEY;
         vue.$message.error(msg);
         return;
       }
@@ -642,8 +643,7 @@ export default new Vuex.Store({
       // with a max of 10HUSH
       var dev_fee            = 0.01 * transaction_amount;
       if (dev_fee > 10.0) {
-        // because this is the right thing to do
-        dev_fee = 10.0;
+        dev_fee = 10.0; // maximum of 10 HUSH dev donation per xtn
       }
       console.log("transaction_amount="+transaction_amount+" dev_fee=" + dev_fee);
       //TODO: this forces all transactions to be z_sendmany

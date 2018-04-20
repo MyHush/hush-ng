@@ -69,7 +69,7 @@
 
           <el-form-item label="Total Amount">
           <el-col :span="8">
-            <el-input placeholder="Total amount to send transaction" 
+            <el-input placeholder="Total amount to send transaction"
             v-model="transactionForm.totalAmount"></el-input>
           </el-col>
           </el-form-item>
@@ -215,13 +215,13 @@
       }
     },
     computed:{
-      ...mapState([        
+      ...mapState([
         'transactions',
-        'availableBalance',  
+        'availableBalance',
         'contacts',
         'totalAmount',
         'groupedDestinationAddresses'
-      ]),                         
+      ]),
       ...mapGetters([
         'allAddresses',
         'pendingOperations',
