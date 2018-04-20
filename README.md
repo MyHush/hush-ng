@@ -1,7 +1,10 @@
 #  Hush Next-Generation
 
-The Next Generation Hush GUI will include an integrated experience for users to do tasks
-related to their wallets, sending + receiving HushList memos and mining.
+The Next Generation Hush GUI will include an integrated experience for users to
+do tasks related to their wallets and having conversations with Hush Contacts,
+i.e. sending + receiving HushList memos.
+
+This wallet supports Shielded Addresses and Shielded Transactions.
 
 Currently we are focused on HushList-related operations, since other basic wallets
 exist. This codebase uses the Electron framework to enable cross-platform support.
