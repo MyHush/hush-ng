@@ -45,7 +45,7 @@
         <el-form-item label="Amount">
           <el-col :span="8">
             <el-input placeholder="Amount sent each address"
-                v-on:input="updateTransactionForm(transactionForm)"
+                v-on:input="updateTransactionForm(transactionForm,availableBalance)"
                 v-model="transactionForm.amount">
             </el-input>
           </el-col>
@@ -54,7 +54,7 @@
           <el-form-item label="Miner Fee">
           <el-col :span="8">
             <el-input placeholder="Cost to include transaction in block" v-model="transactionForm.fee"
-                v-on:input="updateTransactionForm(transactionForm)"
+                v-on:input="updateTransactionForm(transactionForm,availableBalance)"
             ></el-input>
           </el-col>
           </el-form-item>
@@ -62,7 +62,7 @@
           <el-form-item label="Dev Donation">
           <el-col :span="8">
             <el-input placeholder="Suggested 1% donation" 
-                v-on:input="updateTransactionForm(transactionForm)"
+                v-on:input="updateTransactionForm(transactionForm,availableBalance)"
             v-model="transactionForm.devDonation"></el-input>
           </el-col>
           </el-form-item>
@@ -77,6 +77,7 @@
           <el-form-item label="Remaining Balance">
           <el-col :span="8">
             <el-input placeholder="Amount left after this transaction"
+            v-on:input="updateTransactionForm(transactionForm,availableBalance)"
             v-model="transactionForm.remaining"></el-input>
           </el-col>
           </el-form-item>
@@ -203,7 +204,7 @@
           from: null,
           destinationAddresses: [],
           amount: '',
-          devDonation: 0.0001,
+          devDonation: '',
           fee: 0.0001,
           remaining: '',
         },
@@ -239,13 +240,17 @@
       showFailedOperations () {
         this.failedOperationsDialogVisible = true;
       },
-      updateTransactionForm (form) {
+      updateTransactionForm (form,availableBalance) {
         console.log("updating xtn form");
         form.amount      = form.amount      ? parseFloat(form.amount) : 0.0;
         form.fee         = form.fee         ? parseFloat(form.fee) : 0.0;
-        form.devDonation = form.devDonation ? parseFloat(form.devDonation) : (0.01 * form.amount);
-
+        if (form.devDonation > 0.01*form.amount) {
+            form.devDonation = parseFloat(form.devDonation);
+        } else {
+            form.devDonation = 0.01*form.amount;
+        }
         form.totalAmount = sprintf("%.8f", form.amount + form.fee + form.devDonation);
+        form.remaining   = sprintf("%.8f", availableBalance - form.totalAmount);
       }
     },
     mounted: function() {
