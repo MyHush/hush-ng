@@ -681,11 +681,19 @@ export default new Vuex.Store({
 
        // zaddrs get memos
        if ( addr.substring(0,1) == 'z' ) {
-            receivers.push({
-                "address": addr,
-                "amount":  transactionForm.amount,
-                "memo":    encoded_memo
-            });
+            if( encoded_memo ) {
+                receivers.push({
+                    "address": addr,
+                    "amount":  transactionForm.amount,
+                    "memo":    encoded_memo
+                });
+           } else {
+                // memo="" is an error, so don't pass along empty memos
+                receivers.push({
+                    "address": addr,
+                    "amount":  transactionForm.amount,
+                });
+           }
         } else {
             // taddr receivers have no memos
             receivers.push({
