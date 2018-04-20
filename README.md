@@ -8,7 +8,7 @@ exist. This codebase uses the Electron framework to enable cross-platform suppor
 
 ## Preview
 
-<img src="https://raw.githubusercontent.com/MyHush/hush-ng/master/static/hush-ng-preview.jpg" alt="Hush-NG preview">
+<img src="https://raw.githubusercontent.com/MyHush/hush-ng/master/static/hush-ng-addresses-preview.png" alt="Hush-NG preview">
 
 ## Build Setup
 
