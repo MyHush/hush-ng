@@ -235,8 +235,8 @@
         console.log("updating xtn form");
         form.amount      = form.amount      ? parseFloat(form.amount) : 0.0;
         form.fee         = form.fee         ? parseFloat(form.fee) : 0.0;
-        form.devDonation = form.devDonation ? parseFloat(form.devDonation) : 0.0;
-        form.devDonation = 0.01 * form.amount;
+        form.devDonation = form.devDonation ? parseFloat(form.devDonation) : (0.01 * form.amount);
+
         form.totalAmount = sprintf("%.8f", form.amount + form.fee + form.devDonation);
       }
     },
