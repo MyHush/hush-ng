@@ -13,7 +13,7 @@
       
       <el-form ref="form" :model="transactionForm" label-width="120px" >
         <el-form-item label="From" >
-          <el-select v-model="transactionForm.from" placeholder="Select" style="width:100%;">
+          <el-select v-model="transactionForm.from" placeholder="Select a shielded or transparent address" style="width:100%;">
             <el-option
               v-for="address in allAddresses"
               :key="address.address"
@@ -43,26 +43,35 @@
         </el-form-item>
 
         <el-form-item label="Amount">
-          <el-col :span="6">
-            <el-input placeholder="" 
-                v-on:input="transactionForm.totalAmount = $event"
-                v-model="transactionForm.amount" style="width: 80%;">
+          <el-col :span="8">
+            <el-input placeholder="Amount sent each address"
+                v-on:input="updateTransactionForm(transactionForm)"
+                v-model="transactionForm.amount">
             </el-input>
           </el-col>
         </el-form-item>
 
           <el-form-item label="Miner Fee">
-          <el-col :span="5">
-            <el-input placeholder="" v-model="transactionForm.fee" style="width:60%;"></el-input>
+          <el-col :span="8">
+            <el-input placeholder="Cost to include transaction in block" v-model="transactionForm.fee"
+                v-on:input="updateTransactionForm(transactionForm)"
+            ></el-input>
           </el-col>
           </el-form-item>
 
           <el-form-item label="Dev Donation">
-            <el-input placeholder="" v-model="transactionForm.devDonation" style="width:80%;"></el-input>
+          <el-col :span="8">
+            <el-input placeholder="Suggested 1% donation" 
+                v-on:input="updateTransactionForm(transactionForm)"
+            v-model="transactionForm.devDonation"></el-input>
+          </el-col>
           </el-form-item>
 
           <el-form-item label="Total Amount">
-            <el-input placeholder="" v-model="transactionForm.totalAmount" style="width:80%;"></el-input>
+          <el-col :span="8">
+            <el-input placeholder="Total amount to send transaction" 
+            v-model="transactionForm.totalAmount"></el-input>
+          </el-col>
           </el-form-item>
 
 
@@ -174,6 +183,7 @@
   import { mapState,mapGetters, mapActions } from 'vuex'
   import CloseButton from '../shared/CloseButton'
 
+  const sprintf = require("sprintf-js").sprintf
   const Repeat = require('repeat')
   var store = require('store')
 
@@ -221,8 +231,13 @@
       showFailedOperations () {
         this.failedOperationsDialogVisible = true;
       },
-      updateTransactionForm () {
-        console.log("yup");
+      updateTransactionForm (form) {
+        console.log("updating xtn form");
+        form.amount      = form.amount ? parseFloat(form.amount) : 0.0;
+        form.fee         = parseFloat(form.fee);
+        form.devDonation = parseFloat(form.devDonation);
+        form.devDonation = 0.01 * form.amount;
+        form.totalAmount = sprintf("%.8f", form.amount + form.fee + form.devDonation);
       }
     },
     mounted: function() {

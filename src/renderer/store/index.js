@@ -661,7 +661,8 @@ export default new Vuex.Store({
       var network_fee  = parseFloat(transactionForm.fee);
       var total_amount = transaction_amount + dev_fee + network_fee;
 
-	  console.log("encoded memo " + memo + " to " + encoded_memo);
+      console.log("total_amount=" + total_amount);
+      console.log("encoded memo " + memo + " to " + encoded_memo);
 
       if(!transactionForm.from) {
         vue.$message.error("You must choose a From address!")
