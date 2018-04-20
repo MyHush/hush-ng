@@ -207,6 +207,7 @@
           devDonation: '',
           fee: 0.0001,
           remaining: '',
+          totalAmount: '0',
         },
         operationsDialogVisible: false,
         failedOperationsDialogVisible: false
@@ -241,16 +242,19 @@
         this.failedOperationsDialogVisible = true;
       },
       updateTransactionForm (form,availableBalance) {
-        console.log("updating xtn form");
-        form.amount      = form.amount      ? parseFloat(form.amount) : 0.0;
-        form.fee         = form.fee         ? parseFloat(form.fee) : 0.0;
+        form.amount      = form.amount > 0      ? parseFloat(form.amount) : 0.0;
+        form.fee         = form.fee    > 0      ? parseFloat(form.fee)    : 0.0;
         if (form.devDonation > 0.01*form.amount) {
-            form.devDonation = parseFloat(form.devDonation);
+            form.devDonation = sprintf("%.8f", parseFloat(form.devDonation) );
         } else {
-            form.devDonation = 0.01*form.amount;
+            form.devDonation = sprintf("%.8f", 0.01*form.amount);
         }
-        form.totalAmount = sprintf("%.8f", form.amount + form.fee + form.devDonation);
-        form.remaining   = sprintf("%.8f", availableBalance - form.totalAmount);
+        console.log('bal=' + availableBalance);
+        console.log('totalamount=' + form.totalAmount);
+        console.log("updating xtn form");
+        form.remaining   = availableBalance - form.totalAmount;
+        form.remaining   = sprintf("%.8f", form.remaining);
+        form.totalAmount = sprintf("%.8f", form.amount + form.fee + parseFloat(form.devDonation));
       }
     },
     mounted: function() {
