@@ -3,8 +3,10 @@ const hushrpc = require('hushrpc')
 const sprintf = require("sprintf-js").sprintf
 var hush      = require('hush')
 
+
 import Vue from 'vue'
 import Vuex from 'vuex'
+import ElementUI from 'element-ui';
 
 import modules from './modules'
 import hushlist from './modules/hushlist';
@@ -75,6 +77,7 @@ export default new Vuex.Store({
     ],
     groupedDestinationAddresses:[]
   },
+
   getters: {  
     allAddresses: state => {
       return state.addresses.filter(address => true)
@@ -120,6 +123,7 @@ export default new Vuex.Store({
       return state.transactions.filter(t  => t.address == address && t.memo != null);
     },
   },
+
   mutations: {    
     addOrUpdateOperationStatus (state, op) {
       var operation = this.state.operations.find( a => a.id == op.id)
@@ -301,7 +305,6 @@ export default new Vuex.Store({
   actions : {
     async refreshAddresses({ commit }) {
       //console.log("scanning for addresses");
-      console.log( vue.$message );
 
       try {
         var tAddresses = await client.listReceivedByAddress(0,true);
@@ -602,7 +605,8 @@ export default new Vuex.Store({
         return;
       }
 
-      transactionForm.amount = parseFloat(transactionForm.amount);
+      // The default amount is *no value*, not zero. Avoid NaNs
+      transactionForm.amount = transactionForm.amount ? parseFloat(transactionForm.amount) : '';
       var num_destinations   = transactionForm.destinationAddresses.length;
       var transaction_amount = transactionForm.amount * num_destinations;
       // This is 1% of total amount being sent, ignoring network fee
