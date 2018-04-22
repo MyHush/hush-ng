@@ -1,6 +1,7 @@
 const bitcoin = require('bitcoin')
 const hushrpc = require('hushrpc')
 const sprintf = require("sprintf-js").sprintf
+var hush      = require('hush')
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -10,6 +11,13 @@ import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
 import axios from 'axios'
+var config = new hush.Config()
+var client = new hushrpc.Client({
+    port: config.rpcport(),
+    user: config.rpcuser(),
+    pass: config.rpcpassword(),
+    timeout: 60000
+});
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -23,6 +31,7 @@ export default new Vuex.Store({
   },
   strict: process.env.NODE_ENV !== 'production',
   state: {
+    client: '',
     addresses: [],
     operations: [],
     transactions: [],
@@ -222,7 +231,7 @@ export default new Vuex.Store({
     },
     setWalletPolling (state, flag) {      
       state.walletPolling = flag;
-    }, 
+    },
     setRpcCredentials (state, credentials) {      
       state.rpcCredentials = credentials;
     },
@@ -291,14 +300,8 @@ export default new Vuex.Store({
   },
   actions : {
     async refreshAddresses({ commit }) {
-      //console.log("scanning for addresses");
+      console.log("scanning for addresses");
 
-      var client = new hushrpc.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
       try {
         var tAddresses = await client.listReceivedByAddress(0,true);
         var unspentUTXOs = await client.listUnspent();
@@ -329,13 +332,7 @@ export default new Vuex.Store({
     },    
 
     async refreshBalances({ commit }) {
-      //console.log("updating address balances");
-      var client = new hushrpc.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
+      console.log("updating address balances");
 
       try {
         var confirmedBalance   = await client.z_gettotalbalance();
@@ -397,13 +394,7 @@ export default new Vuex.Store({
     },
 
     async refreshNetworkStats({ commit }) {
-      
-      var client = new hushrpc.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
+      //console.log("refreshing network stats");
 
       try {
         var data = await client.getInfo();
@@ -466,12 +457,6 @@ export default new Vuex.Store({
 
     async refreshTransactions({ commit }) {
       //console.log("refreshing transactions");
-      var client = new hushrpc.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
 
       try {
         var walletInfo = client.getWalletInfo();
@@ -549,13 +534,6 @@ export default new Vuex.Store({
     async refreshOperations({ commit }) {
       //console.log("refreshing operations");
 
-      var client = new hushrpc.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
-
       try {      
         // removes failed, success, cancelled ops  after beeing called
         var operationStates = await client.z_getoperationresult();
@@ -566,22 +544,17 @@ export default new Vuex.Store({
       catch(err) {
         if(err) console.log(err);
       }
-    }, 
- 
+    },
+
     async addTAddress({ commit }) {
-      console.log("adding taddr");
-      
-      var client = new hushrpc.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
-      
+
       try {
         var result = await client.getNewAddress();
         console.log(result);
         commit('addAddress', {address: result, balance: '...', type: 't'});
+        var msg = "Created new taddr " + result;
+        console.log(msg);
+        vue.$message.success(msg);
       }
       catch(err) {
         if(err) console.log(err);
@@ -589,15 +562,13 @@ export default new Vuex.Store({
     },
 
     async addZAddress({ commit }) {
-      var client = new bitcoin.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
+
       try {
         var result = await client.z_getnewaddress();
         commit('addAddress', {address: result, balance: '...', type: 'z'});
+        var msg = "Created new zaddr " + result;
+        console.log(msg);
+        vue.$message.success(msg);
       }
       catch(err) {
         console.log(err);
@@ -606,12 +577,6 @@ export default new Vuex.Store({
 
     async sendToMany({ commit },transactionForm) {
       var self = this;
-      var client = new bitcoin.Client({
-        port: this.state.rpcCredentials.port,
-        user: this.state.rpcCredentials.user,
-        pass: this.state.rpcCredentials.password,
-        timeout: 60000
-      });
 
       function encodeMemo(memo) {
           var encoded_memo = "";

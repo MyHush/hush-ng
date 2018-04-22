@@ -59,7 +59,7 @@
             var getInfo = client.getInfo();
             if (getInfo) {
                 // we got a successful response, no need to download binaries
-                console.log(getInfo);
+                //console.log(getInfo);
                 start_hushd = 0;
             }
         } catch (err) {
@@ -98,9 +98,16 @@
         this.$store.dispatch('loadContacts');
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
         this.$store.commit('setWalletPolling', true);
-        this.$store.dispatch('refreshAddresses');
 
-        var self = this
+        // Initial GUI rendering
+        this.$store.dispatch('refreshNetworkStats');
+        this.$store.dispatch('refreshAddresses');
+        this.$store.dispatch('refreshBalances');
+        this.$store.dispatch('refreshTransactions');
+        this.$store.dispatch('refreshOperations');
+        this.$store.commit('setLastUpdate', Date.now() );
+
+        var self = this;
         Repeat(function() {
 
           if (self.connectedToDeamon) {
@@ -130,12 +137,20 @@
               }
 
               self.connectedToDeamon = true
+              self.$store.dispatch('refreshNetworkStats');
               self.$store.dispatch('refreshAddresses');
+              self.$store.dispatch('refreshBalances');
+              self.$store.dispatch('refreshTransactions');
+              self.$store.dispatch('refreshOperations');
+              self.$store.commit('setLastUpdate', Date.now() );
               self.$router.push('/wallet/addresses')
             }); 
           }
 
-        }).every(interval, 'ms').start.now();
+        // This causes most of the UI to not render until the
+        // first repeat, don't ask me why
+        // }).every(interval, 'ms').start.now();
+        }).every(interval, 'ms').start.in(1,'secs');
       }
     },
     mounted: function() {
