@@ -19,6 +19,8 @@ Vue.config.productionTip = false
 // http://element.eleme.io/#/en-US/component/i18n
 import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(ElementUI, { locale })
+import { Popover } from 'element-ui'
+Vue.use(Popover)
 Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({

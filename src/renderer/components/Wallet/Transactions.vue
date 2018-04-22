@@ -89,6 +89,18 @@
         </el-form-item>
 
       </el-form>
+<el-popover
+  ref="popoverConfirm"
+  placement="top"
+  width="160"
+  v-model="popoverConfirm">
+  <p>Are you sure you want to make a transaction of {{ transactionForm.totalAmount }} HUSH ?</p>
+  <div style="text-align: right; margin: 0">
+    <el-button size="mini" type="text" @click="popoverConfirm = false">cancel</el-button>
+    <el-button type="primary" size="mini" @click="popoverConfirm = false">confirm</el-button>
+  </div>
+</el-popover>
+
       <el-button type="primary" @click="createTransaction">Create</el-button>
       <el-button type="danger" @click="clearTransaction(transactionForm,availableBalance)">Clear</el-button>
     </div>
@@ -209,6 +221,7 @@
           remaining: '',
           totalAmount: '0',
         },
+        popoverConfirm: false,
         operationsDialogVisible: false,
         failedOperationsDialogVisible: false
       }
