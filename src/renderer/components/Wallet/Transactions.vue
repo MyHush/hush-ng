@@ -70,7 +70,7 @@
           <el-form-item label="Total Amount">
           <el-col :span="8">
             <el-input placeholder="Total amount to send transaction"
-            v-model="transactionForm.totalAmount"></el-input>
+            v-model="transactionForm.totalAmount" readonly></el-input>
           </el-col>
           </el-form-item>
 
@@ -78,10 +78,9 @@
           <el-col :span="8">
             <el-input placeholder="Amount left after this transaction"
             v-on:input="updateTransactionForm(transactionForm,availableBalance)"
-            v-model="transactionForm.remaining"></el-input>
+            v-model="transactionForm.remaining" readonly></el-input>
           </el-col>
           </el-form-item>
-
 
         <el-form-item label="Memo">
           <el-col :span="10">
