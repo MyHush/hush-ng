@@ -15,7 +15,10 @@ if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+// Change default lang to EN from CN
+// http://element.eleme.io/#/en-US/component/i18n
+import locale from 'element-ui/lib/locale/lang/en'
+Vue.use(ElementUI, { locale })
 Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({

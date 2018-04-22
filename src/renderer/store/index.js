@@ -300,7 +300,8 @@ export default new Vuex.Store({
   },
   actions : {
     async refreshAddresses({ commit }) {
-      console.log("scanning for addresses");
+      //console.log("scanning for addresses");
+      console.log( vue.$message );
 
       try {
         var tAddresses = await client.listReceivedByAddress(0,true);
@@ -332,7 +333,7 @@ export default new Vuex.Store({
     },    
 
     async refreshBalances({ commit }) {
-      console.log("updating address balances");
+      //console.log("updating address balances");
 
       try {
         var confirmedBalance   = await client.z_gettotalbalance();
