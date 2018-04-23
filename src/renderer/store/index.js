@@ -704,8 +704,7 @@ export default new Vuex.Store({
 
       if (platform == "linux" || platform == "darwin") {                
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
-      }
-      else if(platform == "win32") {
+      } else if(platform == "win32") {
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 

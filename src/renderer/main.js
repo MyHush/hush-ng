@@ -18,9 +18,10 @@ Vue.config.productionTip = false
 // Change default lang to EN from CN
 // http://element.eleme.io/#/en-US/component/i18n
 import locale from 'element-ui/lib/locale/lang/en'
-Vue.use(ElementUI, { locale })
-import { Popover } from 'element-ui'
-Vue.use(Popover)
+Vue.use(ElementUI, { locale });
+import { Popover, Tooltip } from 'element-ui';
+Vue.use(Popover);
+Vue.use(Tooltip);
 Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({
