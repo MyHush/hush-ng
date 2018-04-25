@@ -60,6 +60,8 @@
           //{ 'title': 'Initialize database', 'pending': false, 'error': false, 'success': false }
 
         ],
+        // TODO: All these URLs are broke, and we need to be installing
+        // a fixed version/commit, not the latest Jenkins build
         downloadsLinux: [
           { 'component': 'hushd', 'url': 'https://build.madbuda.me/job/hush-rc/lastSuccessfulBuild/artifact/src/hushd', 'finished': false },
           { 'component': 'hush-cli', 'url': 'https://build.madbuda.me/job/hush-rc/lastSuccessfulBuild/artifact/src/hush-cli', 'finished': false }
