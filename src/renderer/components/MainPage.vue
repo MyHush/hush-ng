@@ -15,15 +15,14 @@
 <script>
   import { mapState } from 'vuex'
   import SideMenu from './shared/Menu'
-  
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  var cmd = require('node-cmd')
+  const Repeat  = require('repeat')
+  var request   = require('request')
+  var store     = require('store')
+  var cmd       = require('node-cmd')
   const bitcoin = require('bitcoin')
-  var hush = require('hush')
+  var hush      = require('hush')
   const hushrpc = require( 'hushrpc' )
-  var config      = new hush.Config()
+  var config    = new hush.Config()
 
   export default {
     name: 'main-page',
@@ -31,13 +30,14 @@
    
     computed: { 
       ...mapState([
-          'walletPolling'                
+          'walletPolling',
         ]), 
     },
     data () {
       return {
         connStatus: 'Connecting...',
-        connectedToDeamon: false
+        connectedToDeamon: false,
+        lastUpdate: 0,
       }
     },
     methods: {
@@ -59,7 +59,7 @@
             var getInfo = client.getInfo();
             if (getInfo) {
                 // we got a successful response, no need to download binaries
-                console.log(getInfo);
+                //console.log(getInfo);
                 start_hushd = 0;
             }
         } catch (err) {
@@ -98,19 +98,26 @@
         this.$store.dispatch('loadContacts');
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
         this.$store.commit('setWalletPolling', true);
-        this.$store.dispatch('refreshAddresses');
 
-        var self = this
+        // Initial GUI rendering
+        this.$store.dispatch('refreshNetworkStats');
+        this.$store.dispatch('refreshAddresses');
+        this.$store.dispatch('refreshBalances');
+        this.$store.dispatch('refreshTransactions');
+        this.$store.dispatch('refreshOperations');
+        this.$store.commit('setLastUpdate', Date.now() );
+
+        var self = this;
         Repeat(function() {
 
           if (self.connectedToDeamon) {
-            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshNetworkStats');
+            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshBalances');
             self.$store.dispatch('refreshTransactions');
             self.$store.dispatch('refreshOperations');
-          }
-          else {
+            self.$store.commit('setLastUpdate', Date.now() );
+          } else {
             var client = new bitcoin.Client({
               port: rpcport,
               user: rpcuser,
@@ -123,26 +130,33 @@
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
                   self.connStatus = "Connecting..."
-                }
-                else {
+                } else {
                   self.connStatus = err.message
                 }
                 return
-              } 
-              
+              }
+
               self.connectedToDeamon = true
+              self.$store.dispatch('refreshNetworkStats');
               self.$store.dispatch('refreshAddresses');
+              self.$store.dispatch('refreshBalances');
+              self.$store.dispatch('refreshTransactions');
+              self.$store.dispatch('refreshOperations');
+              self.$store.commit('setLastUpdate', Date.now() );
               self.$router.push('/wallet/addresses')
             }); 
           }
 
-        }).every(interval, 'ms').start.now();
+        // This causes most of the UI to not render until the
+        // first repeat, don't ask me why
+        // }).every(interval, 'ms').start.now();
+        }).every(interval, 'ms').start.in(1,'secs');
       }
     },
     mounted: function() {
       if(!this.walletPolling) {
           //TODO: make this configurable
-        this.startPolling(10000)
+        this.startPolling(20000)
       }
     }
   }
@@ -306,10 +320,6 @@
     color: #fff;
   }
 
-  .bottom-row .box #texts li{   
-    color: #fff;
-  }
-
   .bottom-row .box #balances {
     float: right;
     text-align: right;
@@ -318,7 +328,7 @@
     display: list-item;
   }
   .bottom-row .box #balances li {   
-    color: #fff;
+     font-weight: 500;
   }
 
   .container {    

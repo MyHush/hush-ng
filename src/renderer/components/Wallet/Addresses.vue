@@ -1,51 +1,66 @@
 <template>
   <div>
       Below is a list of your addresses<br />
-      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name. </span>
+      <span>
+<ul>
+<li>
+Shielded Addresses (zaddrs) preserve your privacy with encrypted transactions that do not leak metadata such as the amount or who is sending and receiving, and are ANONYMOUS . The receiver will have no way to respond unless you tell them how in the memo field.
+</li>
+<li>
+Transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name, and the transaction
+information for them is publicly viewable and searchable.
+</li>
+</ul>
+
+</span>
+    <span>
+    <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
+</span>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="2" >zaddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
+        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New zaddr</a></el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
+        <el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>        
       </el-table>        
     </div>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="2" >taddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
+        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New taddr</a></el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>      
-      </el-table>       
+		<el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>      
+		</el-table>       
 
     </div>
     <div class="bottom-row">
-      <div class="box">
+      <div class="box alt">
         <ul id="texts">
-          <li>Transparent:</li>
-          <li>Shielded:</li>
-          <li>TOTAL:</li>
+          <li><icon class=fa-fw name=eye></icon>Transparent:</li>
+          <li><icon class=fa-fw name=shield-alt></icon>Shielded:</li>
+          <li><icon class=fa-fw name=balance-scale></icon>TOTAL:</li>
         </ul>
         <ul id="balances">
-          <li v-bind:class="{ unconfirmed: !tBalance.valid }" >{{ tBalance.balance }} HUSH</li>
-          <li v-bind:class="{ unconfirmed: !zBalance.valid }" >{{ zBalance.balance }} HUSH</li>
-          <li v-bind:class="{ unconfirmed: !totalBalance.valid }">{{ totalBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !tBalance.valid }" > {{ tBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !zBalance.valid }" > {{ zBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !totalBalance.valid }"> {{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
         <div class="box alt">
             <b>Network Stats</b><br/>
-            {{ totalBytesRecv }} bytes received<br/>
-            {{ totalBytesSent }} bytes sent<br/>
+            <icon name=download></icon>{{ totalBytesRecv }} bytes received<br/>
+            <icon name=upload></icon>{{ totalBytesSent }} bytes sent<br/>
         </div>
         <div class="box alt">
-            <b>Funding</b><br/>
-            <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
+            <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
+            <icon name="euro-sign"></icon> {{ priceEUR }} EUR/HUSH<br/>
+            <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
         </div>
       </div>
     </div>
@@ -64,6 +79,7 @@
         'hoverAddress': null
       }
     },
+
     computed:{
       ...mapState([
         'tBalance',
@@ -71,12 +87,17 @@
         'totalBalance',
         'totalBytesRecv',
         'totalBytesSent',
+        'priceBTC',
+        'priceEUR',
+        'priceUSD',
       ]),     
       ...mapGetters([
         'zAddresses',
         'tAddresses',
+        'lastUpdate',
       ])
     },
+
     methods: {
       mouseover (address) {
         this.$data.hoverAddress = address;
@@ -130,7 +151,7 @@
   }
 
   .button {
-    font-size: 11pt;
+    font-size: 12pt;
     cursor: pointer;
     outline: none;
     padding: 5px 15px 5px 15px;
@@ -157,6 +178,11 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  .white {
+    color: white !important;
+    text-color: white !important;
   }
 
   .unconfirmed {

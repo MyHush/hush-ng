@@ -11,6 +11,18 @@
       </el-aside>
       <el-main> 
         <router-view></router-view>
+      <el-form>
+      <el-form-item label="Privacy Mode">
+        <el-switch v-model="privacyMode">
+        </el-switch>
+        </el-form-item>
+      <el-form-item label="RPC Port"><input placeholder="8822"/> </el-form-item>
+
+      <el-form-item label="Refresh Interval"><br>
+      <el-slider :max="120" :step="5" :min="5" v-model="refreshInterval"></el-slider>
+      </el-form-item>
+
+      </el-form>
       </el-main>
     </el-container>
 </template>
@@ -23,7 +35,9 @@
     name: 'hushlist-menu',
     components: { CloseButton },
     data () {
-       return {   
+       return {
+        privacyMode: false,
+        refreshInterval: 20, // seconds
         receiverAddressForm: {
           adress: null
         },    

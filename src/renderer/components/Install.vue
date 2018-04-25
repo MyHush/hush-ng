@@ -35,6 +35,8 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
   import CloseButton from './shared/CloseButton'
+  import Vue from 'vue'
+  let vue = new Vue()
 
   var https = require('https')
   var fs = require('fs')
@@ -58,6 +60,8 @@
           //{ 'title': 'Initialize database', 'pending': false, 'error': false, 'success': false }
 
         ],
+        // TODO: All these URLs are broke, and we need to be installing
+        // a fixed version/commit, not the latest Jenkins build
         downloadsLinux: [
           { 'component': 'hushd', 'url': 'https://build.madbuda.me/job/hush-rc/lastSuccessfulBuild/artifact/src/hushd', 'finished': false },
           { 'component': 'hush-cli', 'url': 'https://build.madbuda.me/job/hush-rc/lastSuccessfulBuild/artifact/src/hush-cli', 'finished': false }
@@ -194,10 +198,13 @@
             var getInfo = client.getInfo();
             if (getInfo) {
                 console.log(getInfo);
-                console.log("Detected already-running RPC server, skipping download process");
+                var msg = "Hush is already running! Skipping download process";
+                vue.$message(msg);
+                console.log(msg);
                 installed = 1;
             }
         } catch(err) {
+            // Is this a great idea, or should it ask before downloading?
             console.log("Did not detect a local running hushd, will try to download...");
             if(err) console.log(err);
         }

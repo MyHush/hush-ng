@@ -37,7 +37,7 @@
       }
     },
     mounted: function() {
-     console.log("mounted menu");
+     //console.log("mounted menu");
     }
   }
 </script>

@@ -3,12 +3,10 @@
       Below is a list of your contacts<br />
     <div class="container" style="height:95%">
       <el-row class="caption">
-        <el-col :span="2" >zaddr</el-col>
-        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
         <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addContact()">New contact</a></el-col>
       </el-row>
       <el-table :data="contacts" height="90%" style="width: 100%" empty-text="None">
-        <el-table-column prop="nickName" label="Amount" width="100"> </el-table-column>
+        <el-table-column prop="nickName" label="Contact" width="100"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
         <el-table-column
           fixed="right"
