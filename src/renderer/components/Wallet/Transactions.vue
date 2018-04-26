@@ -288,7 +288,7 @@
 
         var shieldedXtn = 0;
       // Does this xtn contain at least one zaddr?
-      if (form.from.substr(0,1) == 'z' ) {
+      if (form.from && form.from.substr(0,1) == 'z' ) {
         shieldedXtn = 1;
       } else {
         for(let receiver of form.destinationAddresses) {
@@ -299,7 +299,7 @@
             }
         }
         // only shielded xtns have dev donations
-        form.devDonation = shieldedXtn ? form.devDonation : "Only shielded transactions can contain dev donations";
+        form.devDonation = shieldedXtn ? form.devDonation : "Only shielded transactions contain donations";
        }
       }
     },
