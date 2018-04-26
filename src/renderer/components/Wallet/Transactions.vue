@@ -258,11 +258,13 @@
         this.$electron.shell.openExternal(link)
       },
       clearTransaction (form,balance) {
-        form.amount      = "";
-        form.devDonation = "";
-        form.totalAmount = "";
-        form.remaining   = balance;
-        form.memo        = "";
+        form.from                 = "";
+        form.destinationAddresses = [];
+        form.amount               = "";
+        form.devDonation          = "";
+        form.totalAmount          = "";
+        form.remaining            = balance;
+        form.memo                 = "";
       },
       createTransaction () {
         this.$store.dispatch('sendToMany',this.transactionForm);
