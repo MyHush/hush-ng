@@ -285,6 +285,22 @@
         form.remaining   = availableBalance - form.totalAmount;
         form.remaining   = sprintf("%.8f", form.remaining);
         form.totalAmount = sprintf("%.8f", form.amount + form.fee + parseFloat(form.devDonation));
+
+        var shieldedXtn = 0;
+      // Does this xtn contain at least one zaddr?
+      if (form.from.substr(0,1) == 'z' ) {
+        shieldedXtn = 1;
+      } else {
+        for(let receiver of form.destinationAddresses) {
+            var addr = receiver.toString();
+            if(addr.substr(0,1) == 'z') {
+                shieldedXtn = 1;
+                break;
+            }
+        }
+        // only shielded xtns have dev donations
+        form.devDonation = shieldedXtn ? form.devDonation : "Only shielded transactions can contain dev donations";
+       }
       }
     },
     mounted: function() {
