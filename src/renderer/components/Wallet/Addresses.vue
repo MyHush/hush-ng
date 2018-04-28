@@ -20,7 +20,10 @@ information for them is publicly viewable and searchable.
       <el-row class="caption">
         <el-col :span="2" >zaddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New zaddr</a></el-col>
+<el-col :span="10">
+<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">Import zaddr</el-button>
+<el-button round type=success id="generate-address" v-on:click="addZAddress()">New zaddr</el-button>
+</el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
@@ -31,7 +34,11 @@ information for them is publicly viewable and searchable.
       <el-row class="caption">
         <el-col :span="2" >taddr</el-col>
         <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New taddr</a></el-col>
+        <el-col :span="10" >
+<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">Import taddr</el-button>
+<el-button round type=success class="generate-address" v-on:click="addTAddress()">New taddr</el-button>
+
+</el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
@@ -63,6 +70,31 @@ information for them is publicly viewable and searchable.
             <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
         </div>
       </div>
+
+    <el-dialog title="Import Transparent Address" :visible.sync="importTaddrVisible" width="60%" >
+      <el-form :model="importTaddrForm">
+        <el-form-item label="Private Key (WIF)" label-width="100px">
+          <el-input placeholder="Wallet Import Format, starting with 5, K or L" v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="importTaddrVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="importTaddr">Import</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="Import Shielded Address" :visible.sync="importZaddrVisible" width="60%" >
+      <el-form :model="importZaddrForm">
+        <el-form-item label="Private Key (WIF)" label-width="100px">
+          <el-input placeholder="Wallet Import Format, starting with 5, K or L" v-model="importZaddrForm.wif" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="importZaddrVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="importZaddr">Import</el-button>
+      </span>
+    </el-dialog>
+
     </div>
 </template>
 
@@ -76,7 +108,15 @@ information for them is publicly viewable and searchable.
     data() {
       return {
         polling :false,
-        'hoverAddress': null
+        hoverAddress: null,
+        importTaddrVisible: false,
+        importTaddrForm: {
+            wif: "",
+        },
+        importZaddrVisible: false,
+        importZaddrForm: {
+            wif: "",
+        },
       }
     },
 
@@ -109,8 +149,21 @@ information for them is publicly viewable and searchable.
       copyToClipboard (row) {        
         copy(row.address)
         alert('Copied ' + row.address + ' to clipboard.')
-      }     
+      },     
+      importTaddrDialog() {
+          this.importTaddrVisible = true;
+      },
+      importTaddr() {
+          alert("TODO");
+      },
+      importZaddrDialog() {
+          this.importZaddrVisible = true;
+      },
+      importZaddr() {
+          alert("TODO");
+      },
     },
+
     mounted: function() {     
     }
   }
