@@ -549,6 +549,18 @@ export default new Vuex.Store({
       }
     },
 
+    async importTaddr({ commit }, wif, rescan) {
+        try {
+            var label = "";
+            rescan = true;
+            var result = await client.importPrivKey(wif,label,rescan);
+            vue.$message.success("Imported transparent address from WIF");
+        } catch (err) {
+            console.log("params=" + wif + "," + label + "," + rescan);
+            alert(err);
+            console.log(err);
+        }
+    },
     async addTAddress({ commit }) {
 
       try {

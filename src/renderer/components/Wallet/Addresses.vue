@@ -79,7 +79,7 @@ information for them is publicly viewable and searchable.
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="importTaddrVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="importTaddr(importTaddrForm.wif, true)">Import</el-button>
+        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">Import</el-button>
       </span>
     </el-dialog>
 
@@ -101,6 +101,7 @@ information for them is publicly viewable and searchable.
 <script>
   import { mapState,mapGetters, mapActions } from 'vuex'
   import copy from 'copy-to-clipboard';
+  var store = require('store')
 
   export default { 
     name: 'addresses',
@@ -144,7 +145,8 @@ information for them is publicly viewable and searchable.
       },
       ...mapActions([
         'addTAddress',
-        'addZAddress', 
+        'addZAddress',
+        'importTaddr',
       ]),
       copyToClipboard (row) {        
         copy(row.address)
@@ -153,17 +155,12 @@ information for them is publicly viewable and searchable.
       importTaddrDialog() {
           this.importTaddrVisible = true;
       },
-      importTaddr(wif,rescan) {
-        try {
-            var label = "";
-            var result = await client.importprivkey(wif,label,rescan);
-            vue.$message.success("Imported transparent address from WIF");
-        } catch (err) {
-            console.log(err);
-        }
-      },
       importZaddrDialog() {
           this.importZaddrVisible = true;
+      },
+      importTaddress(wif,rescan) {
+        rescan = rescan ? true : false;
+        this.$store.dispatch('importTaddr', wif, rescan);
       },
       importZaddr() {
           alert("TODO");
