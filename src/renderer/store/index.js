@@ -3,16 +3,15 @@ const hushrpc = require('hushrpc')
 const sprintf = require("sprintf-js").sprintf
 var hush      = require('hush')
 
-
 import Vue from 'vue'
 import Vuex from 'vuex'
 import ElementUI from 'element-ui';
-
 import modules from './modules'
 import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
 import axios from 'axios'
+
 var config = new hush.Config()
 var client = new hushrpc.Client({
     port: config.rpcport(),
