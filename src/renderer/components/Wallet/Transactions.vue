@@ -322,7 +322,17 @@
 
   .address {
     font-family: 'Courier', sans-serif;
-    font-size:8pt;  
+    font-size:10pt;  
+  }
+
+  .zaddress {
+    font-family: 'Courier', sans-serif;
+    font-size:12pt;  
+  }
+
+  .taddress {
+    font-family: 'Courier', sans-serif;
+    font-size:16pt;  
   }
 
   .blurry {
