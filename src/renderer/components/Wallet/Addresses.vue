@@ -91,10 +91,15 @@ needs to not require that or you consider that risky, use a shielded address.
         <el-form-item label="Private Key (WIF)" label-width="100px">
           <el-input placeholder="Wallet Import Format, starting with SK..." v-model="importZaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
+<!--
+        <el-form-item label="Start Height" label-width="100px">
+          <el-input v-model="importZaddrForm.startHeight" value=0 auto-complete="off"></el-input>
+        </el-form-item>
+-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="importZaddrVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="importZaddr">Import</el-button>
+        <el-button type="primary" @click="importZaddress(importZaddrForm)">Import</el-button>
       </span>
     </el-dialog>
 
@@ -116,10 +121,13 @@ needs to not require that or you consider that risky, use a shielded address.
         importTaddrVisible: false,
         importTaddrForm: {
             wif: "",
+            rescan: true,
         },
         importZaddrVisible: false,
         importZaddrForm: {
             wif: "",
+            rescan: "whenkeyisnew",
+            startHeight: 0,
         },
       }
     },
@@ -150,6 +158,7 @@ needs to not require that or you consider that risky, use a shielded address.
         'addTAddress',
         'addZAddress',
         'importTaddr',
+        'importZaddr',
       ]),
       copyToClipboard (row) {        
         copy(row.address)
@@ -165,8 +174,11 @@ needs to not require that or you consider that risky, use a shielded address.
         rescan = rescan ? true : false;
         this.$store.dispatch('importTaddr', wif, rescan);
       },
-      importZaddr() {
-          alert("TODO");
+      importZaddress(form) {
+        var wif         = form.wif;
+        var rescan      = form.rescan;
+        var startHeight = form.startHeight;
+        this.$store.dispatch('importZaddr', wif, rescan, startHeight);
       },
     },
 

@@ -549,6 +549,20 @@ export default new Vuex.Store({
       }
     },
 
+    async importZaddr({ commit }, wif, rescan, height) {
+        try {
+            //TODO: allow user to specify
+            rescan = 'whenkeyisnew';
+            height = 0;
+            var result = await client.z_importkey(wif,rescan,height);
+            vue.$message.success("Imported shielded address from WIF");
+        } catch (err) {
+            console.log("params=" + wif + "," +  rescan + "," + height);
+            console.log(err);
+            alert(err);
+        }
+    },
+
     async importTaddr({ commit }, wif, rescan) {
         try {
             var label = "";
@@ -557,8 +571,8 @@ export default new Vuex.Store({
             vue.$message.success("Imported transparent address from WIF");
         } catch (err) {
             console.log("params=" + wif + "," + label + "," + rescan);
-            alert(err);
             console.log(err);
+            alert(err);
         }
     },
     async addTAddress({ commit }) {
