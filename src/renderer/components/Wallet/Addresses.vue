@@ -6,8 +6,8 @@
     <div class="container" >
       <el-row class="caption">
 <el-col :span="10">
-<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">Import zaddr</el-button>
-<el-button round type=success id="generate-address" v-on:click="addZAddress()">New zaddr</el-button>
+<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">Import zaddr<icon name=angle-double-down></icon></el-button>
+<el-button round type=success id="generate-address" v-on:click="addZAddress()">New zaddr <icon name=plus></icon></el-button>
 </el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
@@ -18,8 +18,8 @@
     <div class="container" >
       <el-row class="caption">
         <el-col :span="10" >
-<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">Import taddr</el-button>
-<el-button round type=success class="generate-address" v-on:click="addTAddress()">New taddr</el-button>
+<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">Import taddr <icon name=angle-double-down></icon></el-button>
+<el-button round type=success class="generate-address" v-on:click="addTAddress()">New taddr <icon name=plus></icon></el-button>
 
 </el-col>
       </el-row>   
@@ -81,9 +81,9 @@ needs to not require that or you consider that risky, use a shielded address.
         </el-form-item>
         <div>
             <ul>
-            <li>Never give anybody your private key!</li>
-            <li>Treat it like a password that protects all the coins in your address.</li>
-            <li>You can import a private key to multiple nodes, they will all have access.</li>
+            <li><icon name=key></icon> Never give anybody your private key!</li>
+            <li><icon name=user-secret></icon> Treat it like a password that protects all the coins in your address.</li>
+            <li><icon name=share-alt></icon> You can import a private key to multiple nodes, they will all have access.</li>
             </ul>
         </div>
       </el-form>
@@ -100,9 +100,9 @@ needs to not require that or you consider that risky, use a shielded address.
         </el-form-item>
         <div>
             <ul>
-            <li>Never give anybody your private key!</li>
-            <li>Treat it like a password that protects all the coins in your address.</li>
-            <li>You can import a private key to multiple nodes, they will all have access.</li>
+            <li><icon name=key></icon> Never give anybody your private key!</li>
+            <li><icon name=user-secret></icon> Treat it like a password that protects all the coins in your address.</li>
+            <li><icon name=share-alt></icon> You can import a private key to multiple nodes, they will all have access.</li>
             </ul>
         </div>
 <!--
