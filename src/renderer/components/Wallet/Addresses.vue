@@ -79,6 +79,13 @@ needs to not require that or you consider that risky, use a shielded address.
         <el-form-item label="Private Key (WIF)" label-width="100px">
           <el-input placeholder="Wallet Import Format, starting with 5, K or L" v-model="importTaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
+        <div>
+            <ul>
+            <li>Never give anybody your private key!</li>
+            <li>Treat it like a password that protects all the coins in your address.</li>
+            <li>You can import a private key to multiple nodes, they will all have access.</li>
+            </ul>
+        </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="importTaddrVisible = false">Cancel</el-button>
@@ -91,6 +98,13 @@ needs to not require that or you consider that risky, use a shielded address.
         <el-form-item label="Private Key (WIF)" label-width="100px">
           <el-input placeholder="Wallet Import Format, starting with SK..." v-model="importZaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
+        <div>
+            <ul>
+            <li>Never give anybody your private key!</li>
+            <li>Treat it like a password that protects all the coins in your address.</li>
+            <li>You can import a private key to multiple nodes, they will all have access.</li>
+            </ul>
+        </div>
 <!--
         <el-form-item label="Start Height" label-width="100px">
           <el-input v-model="importZaddrForm.startHeight" value=0 auto-complete="off"></el-input>
