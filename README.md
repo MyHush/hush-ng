@@ -7,7 +7,8 @@ i.e. sending + receiving HushList memos.
 This wallet supports Shielded Addresses and Shielded Transactions.
 
 Currently we are focused on HushList-related operations, since other basic wallets
-exist. This codebase uses the Electron framework to enable cross-platform support.
+exist. This codebase uses the Electron framework to enable cross-platform support
+and supports Linux, Mac and Windows.
 
 ## Preview
 
