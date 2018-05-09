@@ -31,7 +31,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">         
         <el-button @click="contactDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="saveContact">Save</el-button>
+        <el-button type="primary" @click="saveContact(contactForm)">Save</el-button>
       </span>
     </el-dialog>
   </div>
@@ -82,9 +82,10 @@
         this.$store.commit('removeContact',contact );          
         this.$store.dispatch('saveContacts');      
       },
-      saveContact () {         
-         this.$store.commit('addOrUpdateContact',this.contactForm);    
-         this.$store.dispatch('saveContacts');     
+      saveContact (contactForm) {
+         console.log(contactForm);
+         this.$store.commit('addOrUpdateContact',contactForm);
+         this.$store.dispatch('saveContacts');
          this.contactDialogVisible = false; 
       }      
     },

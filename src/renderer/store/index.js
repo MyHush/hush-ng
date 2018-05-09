@@ -242,9 +242,12 @@ export default new Vuex.Store({
       state.contacts = contacts;
     },
     addOrUpdateContact (state, contact) {
-      console.log("searching for contact " + contact.id);
-      var c = state.contacts.find( a => a.id == contact.id);
-      console.log("found " + c.id);
+      var c;
+      if (contact.id) {
+        console.log("searching for contact " + contact.id);
+        c = state.contacts.find( a => a.id == contact.id);
+        console.log("found " + c.id);
+      }
 
       if (!contact.nickName) {
           vue.$message.error("Contacts must have a nickname");
