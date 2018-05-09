@@ -73,6 +73,7 @@
          this.contactDialogVisible = true;   
       },
       editContact (contact) {
+         console.log(contact);
          this.contactForm.id = contact.id;
          this.contactForm.nickName = contact.nickName;
          this.contactForm.address = contact.address;

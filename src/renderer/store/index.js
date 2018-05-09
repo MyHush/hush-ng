@@ -242,17 +242,25 @@ export default new Vuex.Store({
       state.contacts = contacts;
     },
     addOrUpdateContact (state, contact) {
+      console.log(contact);
       var c;
+
+      // Only existing contacts have an id
       if (contact.id) {
         console.log("searching for contact " + contact.id);
         c = state.contacts.find( a => a.id == contact.id);
-        console.log("found " + c.id);
+        if (c) {
+            console.log("found " + c.id + ", name=" + c.nickName);
+        } else {
+            console.log("could not find contact with id="+contact.id);
+        }
       }
 
       if (!contact.nickName) {
           vue.$message.error("Contacts must have a nickname");
           return;
       }
+
       if (!contact.address) {
           vue.$message.error("Contacts must have an address");
           return;
@@ -262,6 +270,13 @@ export default new Vuex.Store({
       // TODO: Sapling address format might be different!
       if (!contact.address.match(/^zc[a-z0-9]{93}$/i) ) {
           vue.$message.error("Invalid address for contact");
+          return;
+      }
+
+      // Prevent adding new contacts with same address as existing contact
+      var contact = state.contacts.find( a => a.address == contact.address);
+      if (contact) {
+          vue.$message.error("There is already a contact \"" + contact.nickName + "\" with address " + contact.address);
           return;
       }
 
