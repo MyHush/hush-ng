@@ -40,6 +40,7 @@
 <script> 
   import copy from 'copy-to-clipboard';
   import { mapState,mapGetters, mapActions } from 'vuex'
+  function log(msg) { console.log(msg) }
 
   export default {
     name: 'addresses',
@@ -67,21 +68,22 @@
         alert('Copied ' + value + ' to clipboard.')
       },
       addContact (value) {
-        this.contactForm.id = null;
+         this.contactForm.id = null;
          this.contactForm.nickName = "";
          this.contactForm.address = "";
-         this.contactDialogVisible = true;   
+         this.contactDialogVisible = true;
       },
       editContact (contact) {
          console.log(contact);
          this.contactForm.id = contact.id;
          this.contactForm.nickName = contact.nickName;
          this.contactForm.address = contact.address;
-         this.contactDialogVisible = true;   
-      },         
+         this.contactDialogVisible = true;
+      },
       removeContact (contact) {
-        this.$store.commit('removeContact',contact );          
-        this.$store.dispatch('saveContacts');      
+        this.$store.commit('removeContact',contact );
+        this.$store.dispatch('saveContacts');
+        log("Removed contact " + contact.nickName);
       },
       saveContact (contactForm) {
          console.log(contactForm);

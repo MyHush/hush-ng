@@ -19,6 +19,7 @@ var client = new hushrpc.Client({
     pass: config.rpcpassword(),
     timeout: 60000
 });
+function log(msg) { console.log(msg) }
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -274,10 +275,14 @@ export default new Vuex.Store({
       }
 
       // Prevent adding new contacts with same address as existing contact
-      var contact = state.contacts.find( a => a.address == contact.address);
-      if (contact) {
-          vue.$message.error("There is already a contact \"" + contact.nickName + "\" with address " + contact.address);
-          return;
+      if (contact.id) {
+          log("Updating contact id="+contact.id);
+      } else {
+        var found = state.contacts.find( a => a.address == contact.address);
+        if (found) {
+            vue.$message.error("There is already a contact \"" + found.nickName + "\" with address " + found.address);
+            return;
+        }
       }
 
       if(c) {
@@ -758,16 +763,15 @@ export default new Vuex.Store({
     },
 
     loadContacts({ commit }) {
-      var platform = os.platform();
-      var contactsFile = null;
+      var platform     = os.platform();
+      var contactsFile = os.homedir() + "/hush-ng/contacts.json";
 
-      if (platform == "linux" || platform == "darwin") {                
-        contactsFile = os.homedir() + "/hush-ng/contacts.json";
-      } else if(platform == "win32") {
+      if(platform == "win32") {
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
       if (fs.existsSync(contactsFile)) {
+        log("found contactsFile="+contactsFile);
         var data = '';
         var stream = fs.createReadStream(contactsFile)
         stream.on('data', function(chunk) {
@@ -777,6 +781,8 @@ export default new Vuex.Store({
           var contacts = JSON.parse(data);
           commit("setContacts",contacts);
         });
+      } else {
+          log("no contactsFile found!");
       }
     },
 
@@ -784,7 +790,7 @@ export default new Vuex.Store({
       var self = this;
       var platform = os.platform();
       var contactsFile = null;
-      console.log("Detected platform " + platform );
+      //console.log("Detected platform " + platform );
 
       if (platform == "linux" || platform == "darwin") {
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
