@@ -641,6 +641,15 @@ export default new Vuex.Store({
 	  }
       try {
 
+      if(!transactionForm.from) {
+        vue.$message.error("You must choose a From address!")
+        return;
+      }
+
+      if(!transactionForm.destinationAddresses.length) {
+        vue.$message.error("You must have at least one recipient in your transaction!");
+        return;
+      }
       // TODO: support 1,0=1.0 notation
       // TODO: could use current circulating supply as max for xtn
       // amount must be between [0,21000000] and not NaN
@@ -699,15 +708,6 @@ export default new Vuex.Store({
       console.log("total_amount=" + total_amount);
       console.log("encoded memo " + memo + " to " + encoded_memo);
 
-      if(!transactionForm.from) {
-        vue.$message.error("You must choose a From address!")
-        return;
-      }
-
-      if(!transactionForm.destinationAddresses.length) {
-        vue.$message.error("You must have at least one recipient in your transaction!");
-        return;
-      }
 
       for(let receiver of transactionForm.destinationAddresses) {
        var addr              = receiver.toString();
