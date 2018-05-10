@@ -689,16 +689,14 @@ export default new Vuex.Store({
       }
       console.log("transaction_amount="+transaction_amount+" dev_fee=" + dev_fee);
 
-      //TODO: this forces all transactions to be z_sendmany
-      // Should be, if no zaddrs, no donation/fee
       var receivers          = shieldedXtn ? [{
         // Wallet Support Fee, the maintenance of development of this wallet depends on this!!! :)
         // Thanks For Supporting Hush-NG!
 		"address": "zcU6yx5eUXqcDjeT5NJnhgEdVVrt2fCrdCGFGkWbNgcdq11XKUgsDjMErxUvnvFsSwAxXrGfaiqsY4L4gJ8RYmBfrEZvHLb",
         // 1% of zaddr xtns for sustainable wallet support, maintenance and development
-		"amount":  dev_fee,
+        "amount":  sprintf("%.8f", dev_fee),
         // Feel free to modify this to send your feedback, if you are mucking about in the code :)
-		"memo":    encodeMemo("Hush-NG Rocks!")
+        "memo":    encodeMemo("Hush-NG Rocks!")
 	  }] : [ ];
 	  var memo         = transactionForm.memo;
 	  var encoded_memo = encodeMemo(memo);
@@ -711,28 +709,28 @@ export default new Vuex.Store({
 
       for(let receiver of transactionForm.destinationAddresses) {
        var addr              = receiver.toString();
-       var transactionAmount = transactionForm.amount;
+       var transactionAmount = sprintf("%.8f", transactionForm.amount);
 
        // zaddrs get memos
        if ( addr.substring(0,1) == 'z' ) {
             if( encoded_memo ) {
                 receivers.push({
                     "address": addr,
-                    "amount":  transactionForm.amount,
+                    "amount":  transactionAmount,
                     "memo":    encoded_memo
                 });
            } else {
                 // memo="" is an error, so don't pass along empty memos
                 receivers.push({
                     "address": addr,
-                    "amount":  transactionForm.amount,
+                    "amount":  transactionAmount,
                 });
            }
         } else {
             // taddr receivers have no memos
             receivers.push({
                 "address": addr,
-                "amount":  transactionForm.amount,
+                "amount":  transactionAmount,
             });
         }
       }

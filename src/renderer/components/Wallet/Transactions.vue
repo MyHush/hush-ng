@@ -268,6 +268,15 @@
       },
       createTransaction () {
         this.$store.dispatch('sendToMany',this.transactionForm);
+
+        // clear some fields after we send, to prevent accidentally double-sending
+        form                      = this.transactionForm;
+        form.from                 = "";
+        form.destinationAddresses = [];
+        form.amount               = "";
+        form.devDonation          = "";
+        form.totalAmount          = "";
+        form.memo                 = "";
       },
       showPendingOperations () {
         this.operationsDialogVisible = true;
