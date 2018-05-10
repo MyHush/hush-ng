@@ -641,10 +641,13 @@ export default new Vuex.Store({
 	  }
       try {
 
+      var from;
       if(!transactionForm.from) {
         vue.$message.error("You must choose a From address!")
         return;
       }
+      from = transactionForm.from;
+      log("Sending from address " + from);
 
       if(!transactionForm.destinationAddresses.length) {
         vue.$message.error("You must have at least one recipient in your transaction!");
@@ -664,7 +667,7 @@ export default new Vuex.Store({
 
       // Does this xtn contain at least one zaddr?
       var shieldedXtn = 0;
-      if (transactionForm.from.substr(0,1) == 'z' ) {
+      if (from.substr(0,1) == 'z' ) {
         shieldedXtn = 1;
       } else {
         for(let receiver of transactionForm.destinationAddresses) {
@@ -738,8 +741,10 @@ export default new Vuex.Store({
         var current_balance = await client.getBalance();
         if (current_balance >= total_amount) {
             // We have enough funds in wallet to make this transaction, woot!
-            var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
-            var msg    = "Transcation for total amount of " + total_amount + " HUSH queued successfully!";
+            log("Wallet has enough funds for transaction! current_balance=" + current_balance);
+            log("About to z_sendmany(" + from + ",receivers,1," + transactionForm.fee + ")");
+            var result = await client.z_sendmany(from,receivers,1,transactionForm.fee);
+            var msg    = "Transaction for total amount of " + total_amount + " HUSH queued successfully!";
             vue.$message.success(msg);
             console.log(msg);
             commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});
