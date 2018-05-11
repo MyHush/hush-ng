@@ -6,15 +6,20 @@
         <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addContact()">New contact</a></el-col>
       </el-row>
       <el-table :data="contacts" height="90%" style="width: 100%" empty-text="None">
+        <el-table-column label="" width="100">
+          <template slot-scope="scope">
+            <el-button  @click="chatContact(scope.row)" size="small"><icon name=envelope></icon>Chat</el-button>
+          </template>
+        </el-table-column>
         <el-table-column prop="nickName" label="Contact" width="100"> </el-table-column>
         <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
         <el-table-column
           fixed="right"
           label=""
-          width="120">
+          width="200">
           <template slot-scope="scope">
-            <el-button @click="editContact(scope.row)" type="text" size="small">Edit</el-button>
-            <el-button type="text" @click="removeContact(scope.row)" size="small">Delete</el-button>
+            <el-button @click="editContact(scope.row)"  size="small"><icon name=pencil-alt></icon>Edit</el-button>
+            <el-button  @click="removeContact(scope.row)" size="small"><icon name=bomb></icon>Delete</el-button>
           </template>
         </el-table-column>        
       </el-table>        
@@ -32,6 +37,19 @@
       <span slot="footer" class="dialog-footer">         
         <el-button @click="contactDialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="saveContact(contactForm)">Save</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="Chat" :visible.sync="chatDialogVisible" width="60%" >
+     {{ chatForm.nickName }}
+      <el-form :model="chatForm">
+        <el-form-item label="Memo" label-width="100px">
+          <el-input v-model="chatForm.memo" type=textarea auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">         
+        <el-button @click="chatDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="sendToContact(chatForm)">Send</el-button>
       </span>
     </el-dialog>
   </div>
@@ -52,16 +70,22 @@
           nickName: "",
           address: ""
         },
-        contactDialogVisible: false
+         chatForm : {
+          id: null,
+          nickName: "",
+          memo: ""
+        },
+        contactDialogVisible: false,
+        chatDialogVisible: false
       }
     },
-    
+
     computed:{
       ...mapState([       
         'contacts'
       ])                         
-           
     },
+
     methods: {
       copy (value) {
         copy(value)
@@ -85,12 +109,42 @@
         this.$store.dispatch('saveContacts');
         log("Removed contact " + contact.nickName);
       },
+      chatContact (contact) {
+         this.chatForm.nickName = contact.nickName;
+         this.chatDialogVisible = true;
+      },
       saveContact (contactForm) {
          console.log(contactForm);
          this.$store.commit('addOrUpdateContact',contactForm);
          this.$store.dispatch('saveContacts');
          this.contactDialogVisible = false; 
-      }      
+      },
+      sendToContact (chatForm) {
+        log("Send a memo to " + chatForm.nickName + " consisting of " + chatForm.memo);
+        // TODO: we need to maintain a list of "conversation zaddrs",
+        // one for each contact we converse with
+        var hushListHeader = {
+            addr:    "zcIntroducer..",
+            viewkey: "ZVik....",
+        };
+        var memoLength = chatForm.memo.length();
+        var networkFee = 0.0001;
+        // TODO: calculate this dynamically
+        if (memoLength <= 200) {
+            hushListHeader["memo"] = chatForm.memo;
+            // TODO: this can also be from the Introducer,
+            // which means we dont need to keep funds in conversation addrs
+            var from   = "zcConversation";
+            var receivers = [
+            ];
+            //var result = await client.z_sendmany(from,receivers,1,networkFee);
+        } else if (memoLength <= 512) {
+            // use another vout to store entire memo
+        } else {
+            // TODO: multipart
+            log("Multipart HushList memo not implemented yet!");
+        }
+      },
     },
     mounted: function() {
      
