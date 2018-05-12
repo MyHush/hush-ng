@@ -624,7 +624,37 @@ export default new Vuex.Store({
       }
       catch(err) {
         console.log(err);
-      }     
+      }
+    },
+
+    async sendMemoToContact({ commit }, chatForm) {
+      var self = this;
+      // If we send from our introducer zaddr z_i and have
+      // contacts respond to our conversation zaddr z_c, we don't
+      // need to store funds in every z_c
+      var from = "zcIntroducer";
+
+
+      // Do we have a conversation address for this contact?
+      if (chatForm.conversationAddress) {
+        var conversationVK = "";
+        // Instead of storing viewkeys on disk, we look them up as needed
+        var result = await client.z_exportviewingkey(chatForm.conversationAddress);
+        var hushListHeader = {
+            addr:    conversationAddress,
+            viewkey: conversationVK,
+        };
+      } else {
+          // This is the first message to this contact, we need to create
+          // a new local zaddr that will ONLY be used for this conversation
+      }
+
+      var receivers = [
+          // address: chatForm.address
+      ];
+      var networkFee = 0.0001;
+      var minConf    = 1;
+      var result = await client.z_sendmany(from,receivers,minConf,networkFee);
     },
 
     async sendToMany({ commit },transactionForm) {

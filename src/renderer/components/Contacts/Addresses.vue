@@ -68,7 +68,8 @@
          contactForm : {
           id: null,
           nickName: "",
-          address: ""
+          address: "",
+          conversationAddress: "",
         },
          chatForm : {
           id: null,
@@ -81,9 +82,9 @@
     },
 
     computed:{
-      ...mapState([       
+      ...mapState([
         'contacts'
-      ])                         
+      ])
     },
 
     methods: {
@@ -91,63 +92,61 @@
         copy(value)
         alert('Copied ' + value + ' to clipboard.')
       },
+
       addContact (value) {
-         this.contactForm.id = null;
-         this.contactForm.nickName = "";
-         this.contactForm.address = "";
-         this.contactDialogVisible = true;
+         this.contactForm.id                  = null;
+         this.contactForm.nickName            = "";
+         this.contactForm.address             = "";
+         this.contactForm.conversationAddress = "";
+         this.contactDialogVisible            = true;
       },
+
       editContact (contact) {
          console.log(contact);
-         this.contactForm.id = contact.id;
-         this.contactForm.nickName = contact.nickName;
-         this.contactForm.address = contact.address;
-         this.contactDialogVisible = true;
+         this.contactForm.id                  = contact.id;
+         this.contactForm.nickName            = contact.nickName;
+         this.contactForm.address             = contact.address;
+         this.contactForm.conversationAddress = contact.conversationAddress;
+         this.contactDialogVisible            = true;
       },
+
       removeContact (contact) {
         this.$store.commit('removeContact',contact );
         this.$store.dispatch('saveContacts');
         log("Removed contact " + contact.nickName);
       },
+
       chatContact (contact) {
          this.chatForm.nickName = contact.nickName;
+         this.chatForm.address  = contact.address;
          this.chatDialogVisible = true;
       },
+
       saveContact (contactForm) {
          console.log(contactForm);
          this.$store.commit('addOrUpdateContact',contactForm);
          this.$store.dispatch('saveContacts');
-         this.contactDialogVisible = false; 
+         this.contactDialogVisible = false;
       },
+
       sendToContact (chatForm) {
         log("Send a memo to " + chatForm.nickName + " consisting of " + chatForm.memo);
-        // TODO: we need to maintain a list of "conversation zaddrs",
-        // one for each contact we converse with
         var hushListHeader = {
             addr:    "zcIntroducer..",
             viewkey: "ZVik....",
         };
         var memoLength = chatForm.memo.length();
-        var networkFee = 0.0001;
-        // TODO: calculate this dynamically
-        if (memoLength <= 200) {
+        if (memoLength <= 512) {
             hushListHeader["memo"] = chatForm.memo;
-            // TODO: this can also be from the Introducer,
-            // which means we dont need to keep funds in conversation addrs
-            var from   = "zcConversation";
-            var receivers = [
-            ];
-            //var result = await client.z_sendmany(from,receivers,1,networkFee);
-        } else if (memoLength <= 512) {
-            // use another vout to store entire memo
+            this.$store.dispatch('sendMemoToContact',this.chatForm);
         } else {
             // TODO: multipart
             log("Multipart HushList memo not implemented yet!");
         }
       },
+
     },
     mounted: function() {
-     
     }
   }
 </script>
