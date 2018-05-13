@@ -27,7 +27,8 @@ let vue = new Vue()
 // TODO: GUI option for this and read from config file!
 var privacy_mode       = 0;
 
-export default new Vuex.Store({
+//export default new Vuex.Store({
+var store = new Vuex.Store({
   modules: {
     hushlist:hushlist
   },
@@ -286,8 +287,9 @@ export default new Vuex.Store({
       }
 
       if(c) {
-          c.nickName = contact.nickName;
-          c.address  = contact.address;
+          c.nickName            = contact.nickName;
+          c.address             = contact.address;
+          c.conversationAddress = contact.conversationAddress;
       } else {
           contact.id = Date.now();
           console.log("about to push contact");
@@ -295,10 +297,12 @@ export default new Vuex.Store({
           state.contacts.push(contact)
       }
     },
+
     removeContact (state, contact) {
       var index = state.contacts.indexOf(contact);
       state.contacts.splice(index, 1);   
     },
+
     updateGroupedDestinationAddresses (state) {      
       var groups = [];
       var ownAddresses = {
@@ -627,44 +631,57 @@ export default new Vuex.Store({
       }
     },
 
-    async sendMemoToContact({ commit }, chatForm) {
+    async exportViewingKey({ commit }, chatForm) {
       var self = this;
+      // Instead of storing viewkeys on disk, we look them up as needed
+      try {
+          var result = await client.z_exportviewingkey(chatForm.conversationAddress);
+          log("Retreived viewkey " + result);
+      } catch(err) {
+          log(err);
+          vue.$notify.error({ title: "Error retreiving viewkey for " + chatForm.conversationAddress, message: err.message, duration: 0, showClose: true });
+          return;
+      }
+      if (result) {
+          chatForm.conversationVK = result;
+      } else {
+          vue.$notify.error({ title: "Error retreiving viewkey for " + chatForm.conversationAddress, message: "Unknown error", duration: 0, showClose: true });
+      }
+    },
+
+    async sendMemoToContact({ commit }, chatForm) {
       // If we send from our introducer zaddr z_i and have
       // contacts respond to our conversation zaddr z_c, we don't
       // need to store funds in every z_c
-      var from = "zcIntroducer";
+      var from           = "zcIntroducer";
 
       // Do we have a conversation address for this contact?
       if (chatForm.conversationAddress) {
-        var conversationVK = "";
-        // Instead of storing viewkeys on disk, we look them up as needed
-        try {
-            var result = await client.z_exportviewingkey(chatForm.conversationAddress);
-            log("Retreived viewkey " + result);
-        } catch(err) {
-            vue.$message.error(err);
-            log(err);
-        }
-        if (result) {
-            conversationVK = result;
-        } else {
-            vue.$message.error("Error getting viewkey for " + chatForm.conversationAddress);
-        }
-        var hushListHeader = {
-            addr:    conversationAddress,
-            viewkey: conversationVK,
-        };
+        this.$store.dispatch('exportViewingKey',chatForm);
+
       } else {
           // This is the first message to this contact, we need to create
           // a new local zaddr that will ONLY be used for this conversation
-          log("Creating new conversation zaddr for " + chatForm.nickName);
-          //var newzaddr = await client.z_getnewaddress();
-          // TODO: we need to update our contacts info and add this address
+          //chatForm.conversationAddress = await client.z_getnewaddress();
+          //log("Created new conversation zaddr " + chatForm.conversationAddress + " for " + chatForm.nickName);
+
+          store.dispatch('exportViewingKey',chatForm);
+
+          // Update our contact info and add this address
+          store.commit('addOrUpdateContact',chatForm);
+          log("Updated contact " + chatForm.nickName );
       }
+
+      var  hushListHeader = {
+            addr:    chatForm.conversationAddress,
+            viewkey: chatForm.conversationVK,
+      };
+      var encodedMemo = "";
+      var memoLength  = chatForm.memo.length;
 
       var receivers = [ {
           "address": chatForm.address,
-          "memo":    chatForm.memo,
+          "memo":    encodedMemo,
           "amount":  0.0,
       }
       ];
@@ -862,4 +879,5 @@ export default new Vuex.Store({
       });
     }
   }
-})
+});
+export default store;
