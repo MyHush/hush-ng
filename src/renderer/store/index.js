@@ -634,12 +634,22 @@ export default new Vuex.Store({
       // need to store funds in every z_c
       var from = "zcIntroducer";
 
-
       // Do we have a conversation address for this contact?
       if (chatForm.conversationAddress) {
         var conversationVK = "";
         // Instead of storing viewkeys on disk, we look them up as needed
-        var result = await client.z_exportviewingkey(chatForm.conversationAddress);
+        try {
+            var result = await client.z_exportviewingkey(chatForm.conversationAddress);
+            log("Retreived viewkey " + result);
+        } catch(err) {
+            vue.$message.error(err);
+            log(err);
+        }
+        if (result) {
+            conversationVK = result;
+        } else {
+            vue.$message.error("Error getting viewkey for " + chatForm.conversationAddress);
+        }
         var hushListHeader = {
             addr:    conversationAddress,
             viewkey: conversationVK,
@@ -647,14 +657,27 @@ export default new Vuex.Store({
       } else {
           // This is the first message to this contact, we need to create
           // a new local zaddr that will ONLY be used for this conversation
+          log("Creating new conversation zaddr for " + chatForm.nickName);
+          //var newzaddr = await client.z_getnewaddress();
+          // TODO: we need to update our contacts info and add this address
       }
 
-      var receivers = [
-          // address: chatForm.address
+      var receivers = [ {
+          "address": chatForm.address,
+          "memo":    chatForm.memo,
+          "amount":  0.0,
+      }
       ];
       var networkFee = 0.0001;
       var minConf    = 1;
-      var result = await client.z_sendmany(from,receivers,minConf,networkFee);
+      try {
+        var result = await client.z_sendmany(from,receivers,minConf,networkFee);
+      } catch(err) {
+        //vue.$message.error(err);
+        vue.$notify.error({ title: "Error sending memo", message: err.message, duration: 0, showClose: true });
+        console.dir(err);
+        log(err);
+      }
     },
 
     async sendToMany({ commit },transactionForm) {

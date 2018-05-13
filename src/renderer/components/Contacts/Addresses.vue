@@ -119,6 +119,7 @@
       chatContact (contact) {
          this.chatForm.nickName = contact.nickName;
          this.chatForm.address  = contact.address;
+         this.chatForm.id       = contact.id;
          this.chatDialogVisible = true;
       },
 
@@ -135,7 +136,9 @@
             addr:    "zcIntroducer..",
             viewkey: "ZVik....",
         };
-        var memoLength = chatForm.memo.length();
+        var memoLength = chatForm.memo.length;
+        log("Memo length = " + memoLength);
+
         if (memoLength <= 512) {
             hushListHeader["memo"] = chatForm.memo;
             this.$store.dispatch('sendMemoToContact',this.chatForm);
