@@ -662,14 +662,16 @@ var store = new Vuex.Store({
       } else {
           // This is the first message to this contact, we need to create
           // a new local zaddr that will ONLY be used for this conversation
-          //chatForm.conversationAddress = await client.z_getnewaddress();
-          //log("Created new conversation zaddr " + chatForm.conversationAddress + " for " + chatForm.nickName);
+          chatForm.conversationAddress = await client.z_getnewaddress();
+          log("Created new conversation zaddr " + chatForm.conversationAddress + " for " + chatForm.nickName);
 
           store.dispatch('exportViewingKey',chatForm);
 
           // Update our contact info and add this address
           store.commit('addOrUpdateContact',chatForm);
           log("Updated contact " + chatForm.nickName );
+
+          store.dispatch('saveContacts');
       }
 
       var  hushListHeader = {
@@ -855,7 +857,7 @@ var store = new Vuex.Store({
           commit("setContacts",contacts);
         });
       } else {
-          log("no contactsFile found!");
+          log("contactsFile " + contactsFile + " not found!");
       }
     },
 
@@ -871,12 +873,14 @@ var store = new Vuex.Store({
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
+      log("contactsFile=" + contactsFile);
       var data = '';
       var stream = fs.createWriteStream(contactsFile);
       stream.once('open', function(fd) {
         stream.write(JSON.stringify(self.state.contacts));
         stream.end();
       });
+      log("Saved contacts to disk");
     }
   }
 });
