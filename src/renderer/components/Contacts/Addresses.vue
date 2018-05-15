@@ -69,12 +69,13 @@
           id: null,
           nickName: "",
           address: "",
-          conversationAddress: "",
+          conversationAddress: ""
         },
          chatForm : {
           id: null,
           nickName: "",
-          memo: ""
+          memo: "",
+          conversationAddress: ""
         },
         contactDialogVisible: false,
         chatDialogVisible: false
@@ -117,10 +118,12 @@
       },
 
       chatContact (contact) {
-         this.chatForm.nickName = contact.nickName;
-         this.chatForm.address  = contact.address;
-         this.chatForm.id       = contact.id;
-         this.chatDialogVisible = true;
+         this.chatForm.nickName            = contact.nickName;
+         this.chatForm.address             = contact.address;
+         this.chatForm.id                  = contact.id;
+         this.chatForm.conversationAddress = contact.conversationAddress;
+         this.chatDialogVisible            = true;
+         console.log("Starting chat with " + contact.nickName + ":" + contact.address + " with zc=" + contact.conversationAddress );
       },
 
       saveContact (contactForm) {
@@ -132,15 +135,10 @@
 
       sendToContact (chatForm) {
         log("Send a memo to " + chatForm.nickName + " consisting of " + chatForm.memo);
-        var hushListHeader = {
-            addr:    "zcIntroducer..",
-            viewkey: "ZVik....",
-        };
         var memoLength = chatForm.memo.length;
         log("Memo length = " + memoLength);
 
         if (memoLength <= 512) {
-            hushListHeader["memo"] = chatForm.memo;
             this.$store.dispatch('sendMemoToContact',this.chatForm);
         } else {
             // TODO: multipart

@@ -252,7 +252,7 @@ var store = new Vuex.Store({
         console.log("searching for contact " + contact.id);
         c = state.contacts.find( a => a.id == contact.id);
         if (c) {
-            console.log("found " + c.id + ", name=" + c.nickName);
+            console.log("found " + c.id + ", name=" + c.nickName + ",zc=" + contact.conversationAddress);
         } else {
             console.log("could not find contact with id="+contact.id);
         }
@@ -657,8 +657,7 @@ var store = new Vuex.Store({
 
       // Do we have a conversation address for this contact?
       if (chatForm.conversationAddress) {
-        this.$store.dispatch('exportViewingKey',chatForm);
-
+          store.dispatch('exportViewingKey',chatForm);
       } else {
           // This is the first message to this contact, we need to create
           // a new local zaddr that will ONLY be used for this conversation
@@ -671,6 +670,7 @@ var store = new Vuex.Store({
           store.commit('addOrUpdateContact',chatForm);
           log("Updated contact " + chatForm.nickName );
 
+          // Update contacts on disk
           store.dispatch('saveContacts');
       }
 
