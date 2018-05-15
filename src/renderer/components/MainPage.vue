@@ -93,12 +93,9 @@
             })
         }
 
-        var rpcuser     = 'rpcuser'
-        var rpcpassword = 'rpcpassword'
-        var rpcport     = 8822
-        rpcuser         = config.rpcuser()
-        rpcpassword     = config.rpcpassword()
-        rpcport         = config.rpcport()
+        var rpcuser         = config.rpcuser()
+        var rpcpassword     = config.rpcpassword()
+        var rpcport         = config.rpcport()
 
         this.$store.dispatch('loadContacts');
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
