@@ -14,6 +14,8 @@
 
 <script>
   import { mapState } from 'vuex'
+  import Vue from 'vue'
+  import Vuex from 'vuex'
   import SideMenu from './shared/Menu'
   const Repeat  = require('repeat')
   var request   = require('request')
@@ -23,6 +25,9 @@
   var hush      = require('hush')
   const hushrpc = require( 'hushrpc' )
   var config    = new hush.Config()
+
+  Vue.use(Vuex)
+  let vue = new Vue()
 
   export default {
     name: 'main-page',
@@ -130,10 +135,12 @@
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
                   self.connStatus = "Connecting..."
+                  vue.$notify.error({ title: "Error connecting to Hush daemon", message: "Please make sure Hush is running" });
                 } else {
                   self.connStatus = err.message
+                  vue.$notify.error({ title: "Error talking to Hush daemon", message: err.message });
                 }
-                return
+                return;
               }
 
               self.connectedToDeamon = true
