@@ -678,6 +678,12 @@ var store = new Vuex.Store({
             addr:    chatForm.conversationAddress,
             viewkey: chatForm.conversationVK,
       };
+      log(hushListHeader);
+      var headerJSON  = JSON.stringify(hushListHeader);
+      log(headerJSON);
+      var JSONlength  = headerJSON.length;
+      var remaining   = 512 - JSONlength;
+      log("JSON header is " + JSONlength + ", with " + remaining + " remaining for memo data");
       var encodedMemo = "";
       var memoLength  = chatForm.memo.length;
 
