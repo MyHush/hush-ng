@@ -882,6 +882,41 @@ var store = new Vuex.Store({
       }
     },
 
+    async zListReceivedByAddress({ commit }, addr,minconf) {
+        var xtns = await client.z_listReceivedByAddress(addr,minconf);
+        return xtns;
+    },
+
+    async renderChat({ commit }, contact) {
+        log("renderChat");
+        var self        = this;
+        var zIntroducer = "zcIntro";
+        //var xtns        = this.$store.dispatch('zListReceivedByAddress', zIntroducer, 0);
+        var xtns;
+        try {
+            xtns = await client.z_listReceivedByAddress(zIntroducer, 0);
+        } catch(err) {
+          vue.$notify.error({ title: "Error finding previous messages for " + contact.nickName, message: err.message, duration: 0, showClose: true });
+          return;
+        }
+
+        for (let xtn of xtns) {
+            // Look for HushList memo headers to our introducer
+            var memo = xtn.memo;
+
+            // memo header is JSON and must start with a paren
+            if (memo.substring(0,1) == "{") {
+                // Min size check
+                // Valid JSON check
+                // Key existence checks
+            } else {
+                // TODO: what about completely anon HL messages, with no JSON?
+                log("Skipping txid=" + txid + " since no HL memo header found");
+            }
+        }
+
+    },
+
     saveContacts() {
       var self = this;
       var platform = os.platform();

@@ -118,13 +118,15 @@
         log("Removed contact " + contact.nickName);
       },
 
+
       chatContact (contact) {
          this.chatForm.nickName            = contact.nickName;
          this.chatForm.address             = contact.address;
          this.chatForm.id                  = contact.id;
          this.chatForm.conversationAddress = contact.conversationAddress;
          this.chatDialogVisible            = true;
-         console.log("Starting chat with " + contact.nickName + ":" + contact.address + " with zc=" + contact.conversationAddress );
+         console.log("Opening chat with " + contact.nickName + ":" + contact.address + " with zc=" + contact.conversationAddress );
+         this.$store.dispatch('renderChat', contact);
       },
 
       saveContact (contactForm) {
