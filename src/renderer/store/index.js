@@ -3,16 +3,15 @@ const hushrpc = require('hushrpc')
 const sprintf = require("sprintf-js").sprintf
 var hush      = require('hush')
 
-
 import Vue from 'vue'
 import Vuex from 'vuex'
 import ElementUI from 'element-ui';
-
 import modules from './modules'
 import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
 import axios from 'axios'
+
 var config = new hush.Config()
 var client = new hushrpc.Client({
     port: config.rpcport(),
@@ -20,6 +19,16 @@ var client = new hushrpc.Client({
     pass: config.rpcpassword(),
     timeout: 60000
 });
+function log(msg) { console.log(msg) }
+function encodeMemo(memo) {
+    var encoded_memo = "";
+    if(memo) {
+            for (var j = 0; j < memo.length; j += 1) {
+            encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
+            }
+    }
+    return encoded_memo;
+}
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -27,7 +36,8 @@ let vue = new Vue()
 // TODO: GUI option for this and read from config file!
 var privacy_mode       = 0;
 
-export default new Vuex.Store({
+//export default new Vuex.Store({
+var store = new Vuex.Store({
   modules: {
     hushlist:hushlist
   },
@@ -243,14 +253,25 @@ export default new Vuex.Store({
       state.contacts = contacts;
     },
     addOrUpdateContact (state, contact) {
-      console.log("searching for contact " + contact.id);
-      var c = state.contacts.find( a => a.id == contact.id);
-      console.log("found " + c.id);
+      console.log(contact);
+      var c;
+
+      // Only existing contacts have an id
+      if (contact.id) {
+        console.log("searching for contact " + contact.id);
+        c = state.contacts.find( a => a.id == contact.id);
+        if (c) {
+            console.log("found " + c.id + ", name=" + c.nickName + ",zc=" + contact.conversationAddress);
+        } else {
+            console.log("could not find contact with id="+contact.id);
+        }
+      }
 
       if (!contact.nickName) {
           vue.$message.error("Contacts must have a nickname");
           return;
       }
+
       if (!contact.address) {
           vue.$message.error("Contacts must have an address");
           return;
@@ -263,9 +284,21 @@ export default new Vuex.Store({
           return;
       }
 
+      // Prevent adding new contacts with same address as existing contact
+      if (contact.id) {
+          log("Updating contact id="+contact.id);
+      } else {
+        var found = state.contacts.find( a => a.address == contact.address);
+        if (found) {
+            vue.$message.error("There is already a contact \"" + found.nickName + "\" with address " + found.address);
+            return;
+        }
+      }
+
       if(c) {
-          c.nickName = contact.nickName;
-          c.address  = contact.address;
+          c.nickName            = contact.nickName;
+          c.address             = contact.address;
+          c.conversationAddress = contact.conversationAddress;
       } else {
           contact.id = Date.now();
           console.log("about to push contact");
@@ -273,10 +306,12 @@ export default new Vuex.Store({
           state.contacts.push(contact)
       }
     },
+
     removeContact (state, contact) {
       var index = state.contacts.indexOf(contact);
       state.contacts.splice(index, 1);   
     },
+
     updateGroupedDestinationAddresses (state) {      
       var groups = [];
       var ownAddresses = {
@@ -550,6 +585,32 @@ export default new Vuex.Store({
       }
     },
 
+    async importZaddr({ commit }, wif, rescan, height) {
+        try {
+            //TODO: allow user to specify
+            rescan = 'whenkeyisnew';
+            height = 0;
+            var result = await client.z_importkey(wif,rescan,height);
+            vue.$message.success("Imported shielded address from WIF");
+        } catch (err) {
+            console.log("params=" + wif + "," +  rescan + "," + height);
+            console.log(err);
+            alert(err);
+        }
+    },
+
+    async importTaddr({ commit }, wif, rescan) {
+        try {
+            var label = "";
+            rescan = true;
+            var result = await client.importPrivKey(wif,label,rescan);
+            vue.$message.success("Imported transparent address from WIF");
+        } catch (err) {
+            console.log("params=" + wif + "," + label + "," + rescan);
+            console.log(err);
+            alert(err);
+        }
+    },
     async addTAddress({ commit }) {
 
       try {
@@ -576,23 +637,115 @@ export default new Vuex.Store({
       }
       catch(err) {
         console.log(err);
-      }     
+      }
+    },
+
+    async exportViewingKey({ commit }, chatForm) {
+      var self = this;
+      // Instead of storing viewkeys on disk, we look them up as needed
+      try {
+          var result = await client.z_exportviewingkey(chatForm.conversationAddress);
+          log("Retreived viewkey " + result);
+          chatForm.conversationVK = result;
+          log("chatForm.conversationVK = " + chatForm.conversationVK);
+          return result;
+      } catch(err) {
+          log(err);
+          vue.$notify.error({ title: "Error retreiving viewkey for " + chatForm.conversationAddress, message: err.message, duration: 0, showClose: true });
+          return;
+      }
+    },
+
+    async sendMemoToContact({ commit }, chatForm) {
+      // If we send from our introducer zaddr z_i and have
+      // contacts respond to our conversation zaddr z_c, we don't
+      // need to store funds in every z_c
+      var from           = "zcIntroducer";
+
+      // Do we have a conversation address for this contact?
+      if (chatForm.conversationAddress) {
+          var VK = await store.dispatch('exportViewingKey',chatForm);
+          log("VK=");
+          log( VK.valueOf() );
+          console.dir(VK);
+      } else {
+          // This is the first message to this contact, we need to create
+          // a new local zaddr that will ONLY be used for this conversation
+          chatForm.conversationAddress = await client.z_getnewaddress();
+          log("Created new conversation zaddr " + chatForm.conversationAddress + " for " + chatForm.nickName);
+
+          var VK = await store.dispatch('exportViewingKey',chatForm);
+          log("VK=" + VK);
+
+          // Update our contact info and add this address
+          store.commit('addOrUpdateContact',chatForm);
+          log("Updated contact " + chatForm.nickName );
+
+          // Update contacts on disk
+          store.dispatch('saveContacts');
+      }
+
+      var  hushListHeader = {
+            addr:    chatForm.conversationAddress,
+            viewkey: chatForm.conversationVK,
+      };
+      log(hushListHeader);
+      var headerJSON  = JSON.stringify(hushListHeader);
+      log(headerJSON);
+      var JSONlength  = headerJSON.length;
+      var remaining   = 512 - JSONlength;
+      log("JSON header is " + JSONlength + ", with " + remaining + " remaining for memo data");
+      var encodedMemo   = encodeMemo(chatForm.memo);
+      var encodedHeader = encodeMemo(headerJSON);
+      var memoLength    = chatForm.memo.length;
+
+      // TODO: We need to keep track of Bobs *conversation* address
+      // since that will be used instead of the public introducer
+      // after the initial memo exchange
+      var receivers = [
+       {
+          "address": chatForm.address,
+          "memo":    encodedHeader,
+          "amount":  0.0,
+       },
+       {
+          "address": chatForm.address,
+          "memo":    encodedMemo,
+          "amount":  0.0,
+       }
+       //TODO: multipart HushList memos
+      ];
+      log("z_sendmany receivers=");
+      log(receivers);
+      var networkFee = 0.0001;
+      var minConf    = 1;
+      try {
+        var result = await client.z_sendmany(from,receivers,minConf,networkFee);
+      } catch(err) {
+        //vue.$message.error(err);
+        vue.$notify.error({ title: "Error sending memo", message: err.message, duration: 0, showClose: true });
+        console.dir(err);
+        log(err);
+      }
     },
 
     async sendToMany({ commit },transactionForm) {
       var self = this;
 
-      function encodeMemo(memo) {
-          var encoded_memo = "";
-          if(memo) {
-                  for (var j = 0; j < memo.length; j += 1) {
-                    encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
-                  }
-          }
-          return encoded_memo;
-	  }
       try {
 
+      var from;
+      if(!transactionForm.from) {
+        vue.$message.error("You must choose a From address!")
+        return;
+      }
+      from = transactionForm.from;
+      log("Sending from address " + from);
+
+      if(!transactionForm.destinationAddresses.length) {
+        vue.$message.error("You must have at least one recipient in your transaction!");
+        return;
+      }
       // TODO: support 1,0=1.0 notation
       // TODO: could use current circulating supply as max for xtn
       // amount must be between [0,21000000] and not NaN
@@ -605,28 +758,42 @@ export default new Vuex.Store({
         return;
       }
 
+      // Does this xtn contain at least one zaddr?
+      var shieldedXtn = 0;
+      if (from.substr(0,1) == 'z' ) {
+        shieldedXtn = 1;
+      } else {
+        for(let receiver of transactionForm.destinationAddresses) {
+            var addr = receiver.toString();
+            if(addr.substr(0,1) == 'z') {
+                shieldedXtn = 1;
+                break;
+            }
+        }
+      }
+      console.log("shieldedXtn=" + shieldedXtn);
+
       // The default amount is *no value*, not zero. Avoid NaNs
       transactionForm.amount = transactionForm.amount ? parseFloat(transactionForm.amount) : '';
       var num_destinations   = transactionForm.destinationAddresses.length;
       var transaction_amount = transactionForm.amount * num_destinations;
-      // This is 1% of total amount being sent, ignoring network fee
-      // with a max of 10HUSH
-      var dev_fee            = 0.01 * transaction_amount;
+      // 1% of total amount being sent, ignoring network fee
+      // with a max of 10HUSH, only on transactions containing zaddrs
+      var dev_fee            = shieldedXtn ? 0.01 * transaction_amount : 0.0;
       if (dev_fee > 10.0) {
         dev_fee = 10.0; // maximum of 10 HUSH dev donation per xtn
       }
       console.log("transaction_amount="+transaction_amount+" dev_fee=" + dev_fee);
-      //TODO: this forces all transactions to be z_sendmany
-      // Should be, if no zaddrs, no donation/fee
-      var receivers          = [{
+
+      var receivers          = shieldedXtn ? [{
         // Wallet Support Fee, the maintenance of development of this wallet depends on this!!! :)
         // Thanks For Supporting Hush-NG!
 		"address": "zcU6yx5eUXqcDjeT5NJnhgEdVVrt2fCrdCGFGkWbNgcdq11XKUgsDjMErxUvnvFsSwAxXrGfaiqsY4L4gJ8RYmBfrEZvHLb",
         // 1% of zaddr xtns for sustainable wallet support, maintenance and development
-		"amount":  dev_fee,
+        "amount":  sprintf("%.8f", dev_fee),
         // Feel free to modify this to send your feedback, if you are mucking about in the code :)
-		"memo":    encodeMemo("Hush-NG Rocks!")
-	  }];
+        "memo":    encodeMemo("Hush-NG Rocks!")
+	  }] : [ ];
 	  var memo         = transactionForm.memo;
 	  var encoded_memo = encodeMemo(memo);
       var network_fee  = parseFloat(transactionForm.fee);
@@ -635,40 +802,31 @@ export default new Vuex.Store({
       console.log("total_amount=" + total_amount);
       console.log("encoded memo " + memo + " to " + encoded_memo);
 
-      if(!transactionForm.from) {
-        vue.$message.error("You must choose a From address!")
-        return;
-      }
-
-      if(!transactionForm.destinationAddresses.length) {
-        vue.$message.error("You must have at least one recipient in your transaction!");
-        return;
-      }
 
       for(let receiver of transactionForm.destinationAddresses) {
        var addr              = receiver.toString();
-       var transactionAmount = transactionForm.amount;
+       var transactionAmount = sprintf("%.8f", transactionForm.amount);
 
        // zaddrs get memos
        if ( addr.substring(0,1) == 'z' ) {
             if( encoded_memo ) {
                 receivers.push({
                     "address": addr,
-                    "amount":  transactionForm.amount,
+                    "amount":  transactionAmount,
                     "memo":    encoded_memo
                 });
            } else {
                 // memo="" is an error, so don't pass along empty memos
                 receivers.push({
                     "address": addr,
-                    "amount":  transactionForm.amount,
+                    "amount":  transactionAmount,
                 });
            }
         } else {
             // taddr receivers have no memos
             receivers.push({
                 "address": addr,
-                "amount":  transactionForm.amount,
+                "amount":  transactionAmount,
             });
         }
       }
@@ -676,8 +834,10 @@ export default new Vuex.Store({
         var current_balance = await client.getBalance();
         if (current_balance >= total_amount) {
             // We have enough funds in wallet to make this transaction, woot!
-            var result = await client.z_sendmany(transactionForm.from,receivers,1,transactionForm.fee);
-            var msg    = "Transcation for total amount of " + total_amount + " HUSH queued successfully!";
+            log("Wallet has enough funds for transaction! current_balance=" + current_balance);
+            log("About to z_sendmany(" + from + ",receivers,1," + transactionForm.fee + ")");
+            var result = await client.z_sendmany(from,receivers,1,transactionForm.fee);
+            var msg    = "Transaction for total amount of " + total_amount + " HUSH queued successfully!";
             vue.$message.success(msg);
             console.log(msg);
             commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});
@@ -699,16 +859,15 @@ export default new Vuex.Store({
     },
 
     loadContacts({ commit }) {
-      var platform = os.platform();
-      var contactsFile = null;
+      var platform     = os.platform();
+      var contactsFile = os.homedir() + "/hush-ng/contacts.json";
 
-      if (platform == "linux" || platform == "darwin") {                
-        contactsFile = os.homedir() + "/hush-ng/contacts.json";
-      } else if(platform == "win32") {
+      if(platform == "win32") {
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
       if (fs.existsSync(contactsFile)) {
+        log("found contactsFile="+contactsFile);
         var data = '';
         var stream = fs.createReadStream(contactsFile)
         stream.on('data', function(chunk) {
@@ -718,6 +877,8 @@ export default new Vuex.Store({
           var contacts = JSON.parse(data);
           commit("setContacts",contacts);
         });
+      } else {
+          log("contactsFile " + contactsFile + " not found!");
       }
     },
 
@@ -725,7 +886,7 @@ export default new Vuex.Store({
       var self = this;
       var platform = os.platform();
       var contactsFile = null;
-      console.log("Detected platform " + platform );
+      //console.log("Detected platform " + platform );
 
       if (platform == "linux" || platform == "darwin") {
         contactsFile = os.homedir() + "/hush-ng/contacts.json";
@@ -733,12 +894,15 @@ export default new Vuex.Store({
         contactsFile = os.homedir() + "\\hush-ng\\contacts.json";
       }
 
+      log("contactsFile=" + contactsFile);
       var data = '';
       var stream = fs.createWriteStream(contactsFile);
       stream.once('open', function(fd) {
         stream.write(JSON.stringify(self.state.contacts));
         stream.end();
       });
+      log("Saved contacts to disk");
     }
   }
-})
+});
+export default store;

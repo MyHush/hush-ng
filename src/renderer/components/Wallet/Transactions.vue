@@ -258,14 +258,25 @@
         this.$electron.shell.openExternal(link)
       },
       clearTransaction (form,balance) {
-        form.amount      = "";
-        form.devDonation = "";
-        form.totalAmount = "";
-        form.remaining   = balance;
-        form.memo        = "";
+        form.from                 = "";
+        form.destinationAddresses = [];
+        form.amount               = "";
+        form.devDonation          = "";
+        form.totalAmount          = "";
+        form.remaining            = balance;
+        form.memo                 = "";
       },
       createTransaction () {
         this.$store.dispatch('sendToMany',this.transactionForm);
+
+        // clear some fields after we send, to prevent accidentally double-sending
+        var form                  = this.transactionForm;
+        form.from                 = "";
+        form.destinationAddresses = [];
+        form.amount               = "";
+        form.devDonation          = "";
+        form.totalAmount          = "";
+        form.memo                 = "";
       },
       showPendingOperations () {
         this.operationsDialogVisible = true;
@@ -283,6 +294,22 @@
         form.remaining   = availableBalance - form.totalAmount;
         form.remaining   = sprintf("%.8f", form.remaining);
         form.totalAmount = sprintf("%.8f", form.amount + form.fee + parseFloat(form.devDonation));
+
+        var shieldedXtn = 0;
+      // Does this xtn contain at least one zaddr?
+      if (form.from && form.from.substr(0,1) == 'z' ) {
+        shieldedXtn = 1;
+      } else {
+        for(let receiver of form.destinationAddresses) {
+            var addr = receiver.toString();
+            if(addr.substr(0,1) == 'z') {
+                shieldedXtn = 1;
+                break;
+            }
+        }
+        // only shielded xtns have dev donations
+        form.devDonation = shieldedXtn ? form.devDonation : "Only shielded transactions contain donations";
+       }
       }
     },
     mounted: function() {
@@ -304,7 +331,17 @@
 
   .address {
     font-family: 'Courier', sans-serif;
-    font-size:8pt;  
+    font-size:10pt;  
+  }
+
+  .zaddress {
+    font-family: 'Courier', sans-serif;
+    font-size:12pt;  
+  }
+
+  .taddress {
+    font-family: 'Courier', sans-serif;
+    font-size:16pt;  
   }
 
   .blurry {

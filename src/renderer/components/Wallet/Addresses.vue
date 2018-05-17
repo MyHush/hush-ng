@@ -2,43 +2,53 @@
   <div>
       Below is a list of your addresses<br />
       <span>
-<ul>
-<li>
-Shielded Addresses (zaddrs) preserve your privacy with encrypted transactions that do not leak metadata such as the amount or who is sending and receiving, and are ANONYMOUS . The receiver will have no way to respond unless you tell them how in the memo field.
-</li>
-<li>
-Transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name, and the transaction
-information for them is publicly viewable and searchable.
-</li>
-</ul>
-
-</span>
-    <span>
-    <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
 </span>
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="2" >zaddr</el-col>
-        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New zaddr</a></el-col>
+<el-col :span="10">
+<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">Import zaddr<icon name=angle-double-down></icon></el-button>
+<el-button round type=success id="generate-address" v-on:click="addZAddress()">New zaddr <icon name=plus></icon></el-button>
+</el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>        
+        <el-table-column prop="addressView" label="Shielded Address (zaddr)" width="*" class-name="zaddress" > </el-table-column>        
       </el-table>        
     </div>
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="2" >taddr</el-col>
-        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New taddr</a></el-col>
+        <el-col :span="10" >
+<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">Import taddr <icon name=angle-double-down></icon></el-button>
+<el-button round type=success class="generate-address" v-on:click="addTAddress()">New taddr <icon name=plus></icon></el-button>
+
+</el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-		<el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>      
-		</el-table>       
+        <el-table-column  prop="addressView" label="Transparent Address (taddr)" width="*" class-name="taddress" > </el-table-column>      
+        <icon name=copy></icon>
+        </el-table>
 
     </div>
+<div>
+<ul>
+<li>
+Shielded Addresses (zaddrs) preserve your privacy with encrypted transactions
+that do not leak metadata such as the amount or who is sending and receiving,
+and are ANONYMOUS . The receiver will have no way to respond unless you tell
+them how in the memo field. Each memo can contain up to 512 bytes of data.
+</li>
+<li>
+Transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name, and the transaction
+information for them is publicly viewable and searchable, by anyone, forever. If your
+needs to not require that or you consider that risky, use a shielded address.
+</li>
+</ul>
+    <span>
+    <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
+</span>
+
+</div>
     <div class="bottom-row">
       <div class="box alt">
         <ul id="texts">
@@ -63,12 +73,57 @@ information for them is publicly viewable and searchable.
             <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
         </div>
       </div>
+
+    <el-dialog title="Import Transparent Address" :visible.sync="importTaddrVisible" width="60%" >
+      <el-form :model="importTaddrForm">
+        <el-form-item label="Private Key (WIF)" label-width="100px">
+          <el-input placeholder="Wallet Import Format, starting with 5, K or L" v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+        </el-form-item>
+        <div>
+            <ul>
+            <li><icon name=key></icon> Never give anybody your private key!</li>
+            <li><icon name=user-secret></icon> Treat it like a password that protects all the coins in your address.</li>
+            <li><icon name=share-alt></icon> You can import a private key to multiple nodes, they will all have access.</li>
+            </ul>
+        </div>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="importTaddrVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">Import</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="Import Shielded Address" :visible.sync="importZaddrVisible" width="60%" >
+      <el-form :model="importZaddrForm">
+        <el-form-item label="Private Key (WIF)" label-width="100px">
+          <el-input placeholder="Wallet Import Format, starting with SK..." v-model="importZaddrForm.wif" auto-complete="off"></el-input>
+        </el-form-item>
+        <div>
+            <ul>
+            <li><icon name=key></icon> Never give anybody your private key!</li>
+            <li><icon name=user-secret></icon> Treat it like a password that protects all the coins in your address.</li>
+            <li><icon name=share-alt></icon> You can import a private key to multiple nodes, they will all have access.</li>
+            </ul>
+        </div>
+<!--
+        <el-form-item label="Start Height" label-width="100px">
+          <el-input v-model="importZaddrForm.startHeight" value=0 auto-complete="off"></el-input>
+        </el-form-item>
+-->
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="importZaddrVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="importZaddress(importZaddrForm)">Import</el-button>
+      </span>
+    </el-dialog>
+
     </div>
 </template>
 
 <script>
   import { mapState,mapGetters, mapActions } from 'vuex'
   import copy from 'copy-to-clipboard';
+  var store = require('store')
 
   export default { 
     name: 'addresses',
@@ -76,7 +131,18 @@ information for them is publicly viewable and searchable.
     data() {
       return {
         polling :false,
-        'hoverAddress': null
+        hoverAddress: null,
+        importTaddrVisible: false,
+        importTaddrForm: {
+            wif: "",
+            rescan: true,
+        },
+        importZaddrVisible: false,
+        importZaddrForm: {
+            wif: "",
+            rescan: "whenkeyisnew",
+            startHeight: 0,
+        },
       }
     },
 
@@ -104,13 +170,32 @@ information for them is publicly viewable and searchable.
       },
       ...mapActions([
         'addTAddress',
-        'addZAddress', 
+        'addZAddress',
+        'importTaddr',
+        'importZaddr',
       ]),
       copyToClipboard (row) {        
         copy(row.address)
         alert('Copied ' + row.address + ' to clipboard.')
-      }     
+      },     
+      importTaddrDialog() {
+          this.importTaddrVisible = true;
+      },
+      importZaddrDialog() {
+          this.importZaddrVisible = true;
+      },
+      importTaddress(wif,rescan) {
+        rescan = rescan ? true : false;
+        this.$store.dispatch('importTaddr', wif, rescan);
+      },
+      importZaddress(form) {
+        var wif         = form.wif;
+        var rescan      = form.rescan;
+        var startHeight = form.startHeight;
+        this.$store.dispatch('importZaddr', wif, rescan, startHeight);
+      },
     },
+
     mounted: function() {     
     }
   }
