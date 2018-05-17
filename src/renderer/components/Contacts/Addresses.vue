@@ -75,7 +75,8 @@
           id: null,
           nickName: "",
           memo: "",
-          conversationAddress: ""
+          conversationAddress: "",
+          conversationVK:      ""
         },
         contactDialogVisible: false,
         chatDialogVisible: false

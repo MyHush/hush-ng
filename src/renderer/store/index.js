@@ -637,15 +637,13 @@ var store = new Vuex.Store({
       try {
           var result = await client.z_exportviewingkey(chatForm.conversationAddress);
           log("Retreived viewkey " + result);
+          chatForm.conversationVK = result;
+          log("chatForm.conversationVK = " + chatForm.conversationVK);
+          return result;
       } catch(err) {
           log(err);
           vue.$notify.error({ title: "Error retreiving viewkey for " + chatForm.conversationAddress, message: err.message, duration: 0, showClose: true });
           return;
-      }
-      if (result) {
-          chatForm.conversationVK = result;
-      } else {
-          vue.$notify.error({ title: "Error retreiving viewkey for " + chatForm.conversationAddress, message: "Unknown error", duration: 0, showClose: true });
       }
     },
 
@@ -657,14 +655,18 @@ var store = new Vuex.Store({
 
       // Do we have a conversation address for this contact?
       if (chatForm.conversationAddress) {
-          store.dispatch('exportViewingKey',chatForm);
+          var VK = await store.dispatch('exportViewingKey',chatForm);
+          log("VK=");
+          log( VK.valueOf() );
+          console.dir(VK);
       } else {
           // This is the first message to this contact, we need to create
           // a new local zaddr that will ONLY be used for this conversation
           chatForm.conversationAddress = await client.z_getnewaddress();
           log("Created new conversation zaddr " + chatForm.conversationAddress + " for " + chatForm.nickName);
 
-          store.dispatch('exportViewingKey',chatForm);
+          var VK = await store.dispatch('exportViewingKey',chatForm);
+          log("VK=" + VK);
 
           // Update our contact info and add this address
           store.commit('addOrUpdateContact',chatForm);
