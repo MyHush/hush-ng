@@ -252,6 +252,9 @@ var store = new Vuex.Store({
     setContacts (state, contacts) {      
       state.contacts = contacts;
     },
+    setConfig (state, config) {      
+      state.config = config;
+    },
     addOrUpdateContact (state, contact) {
       console.log(contact);
       var c;
@@ -882,6 +885,30 @@ var store = new Vuex.Store({
       }
     },
 
+    loadConfig({ commit }) {
+      var platform     = os.platform();
+      var configFile = os.homedir() + "/hush-ng/config.json";
+
+      if(platform == "win32") {
+        configFile = os.homedir() + "\\hush-ng\\config.json";
+      }
+
+      if (fs.existsSync(configFile)) {
+        log("found configFile="+configFile);
+        var data = '';
+        var stream = fs.createReadStream(configFile)
+        stream.on('data', function(chunk) {
+          data += chunk;
+        })
+        .on('end', function() {
+          var config = JSON.parse(data);
+          commit("setConfig",config);
+        });
+      } else {
+          log("configFile " + configFile + " not found!");
+      }
+    },
+
     async zListReceivedByAddress({ commit }, addr,minconf) {
         var xtns = await client.z_listReceivedByAddress(addr,minconf);
         return xtns;
@@ -891,7 +918,9 @@ var store = new Vuex.Store({
         log("renderChat");
         var self        = this;
         var zIntroducer = "zcIntro";
-        //var xtns        = this.$store.dispatch('zListReceivedByAddress', zIntroducer, 0);
+        var config      = store.dispatch('loadConfig');
+        log(config);
+
         var xtns;
         try {
             xtns = await client.z_listReceivedByAddress(zIntroducer, 0);
