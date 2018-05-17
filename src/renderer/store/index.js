@@ -20,6 +20,15 @@ var client = new hushrpc.Client({
     timeout: 60000
 });
 function log(msg) { console.log(msg) }
+function encodeMemo(memo) {
+    var encoded_memo = "";
+    if(memo) {
+            for (var j = 0; j < memo.length; j += 1) {
+            encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
+            }
+    }
+    return encoded_memo;
+}
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -686,15 +695,28 @@ var store = new Vuex.Store({
       var JSONlength  = headerJSON.length;
       var remaining   = 512 - JSONlength;
       log("JSON header is " + JSONlength + ", with " + remaining + " remaining for memo data");
-      var encodedMemo = "";
-      var memoLength  = chatForm.memo.length;
+      var encodedMemo   = encodeMemo(chatForm.memo);
+      var encodedHeader = encodeMemo(headerJSON);
+      var memoLength    = chatForm.memo.length;
 
-      var receivers = [ {
+      // TODO: We need to keep track of Bobs *conversation* address
+      // since that will be used instead of the public introducer
+      // after the initial memo exchange
+      var receivers = [
+       {
+          "address": chatForm.address,
+          "memo":    encodedHeader,
+          "amount":  0.0,
+       },
+       {
           "address": chatForm.address,
           "memo":    encodedMemo,
           "amount":  0.0,
-      }
+       }
+       //TODO: multipart HushList memos
       ];
+      log("z_sendmany receivers=");
+      log(receivers);
       var networkFee = 0.0001;
       var minConf    = 1;
       try {
@@ -710,15 +732,6 @@ var store = new Vuex.Store({
     async sendToMany({ commit },transactionForm) {
       var self = this;
 
-      function encodeMemo(memo) {
-          var encoded_memo = "";
-          if(memo) {
-                  for (var j = 0; j < memo.length; j += 1) {
-                    encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
-                  }
-          }
-          return encoded_memo;
-	  }
       try {
 
       var from;
