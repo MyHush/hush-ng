@@ -21,14 +21,21 @@ var client = new hushrpc.Client({
 });
 function log(msg) { console.log(msg) }
 function encodeMemo(memo) {
-    var encoded_memo = "";
+    console.log("Encoding raw memo: '" + memo + "' length =" + memo.length);
+    var encodedMemo = "";
     if(memo) {
-            for (var j = 0; j < memo.length; j += 1) {
-            encoded_memo = encoded_memo + memo.charCodeAt(j).toString(16);
-            }
+        for (var j = 0; j < memo.length; j++) {
+            encodedMemo = encodedMemo + sprintf("%02x",memo.charCodeAt(j) );
+        }
     }
-    return encoded_memo;
+    console.log("Encoded memo length=" + encodedMemo.length);
+    return encodedMemo;
 }
+
+var memo1 = encodeMemo('{"addr":"zcLOL", "viewkey": "ZiVKwtf", "memo":"yo"}');
+log(memo1 + " len=" + memo1.length );
+var memo2 = encodeMemo("\n\t");
+log(memo2 + " len=" + memo2.length );
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -917,7 +924,8 @@ var store = new Vuex.Store({
     async renderChat({ commit }, contact) {
         log("renderChat");
         var self        = this;
-        var zIntroducer = "zcIntro";
+        // TODO: load from config
+        var zIntroducer = "zcQAMDJbgARwK5QqqXCoQX81iJoyf5sYqNF2dECHtAvhes1ss58hJdJ3TWAMBUZQSknMVo2S3xpu4KuCFYgfTK9FKdzBzY1";
         var config      = store.dispatch('loadConfig');
         log(config);
 
@@ -940,7 +948,7 @@ var store = new Vuex.Store({
                 // Key existence checks
             } else {
                 // TODO: what about completely anon HL messages, with no JSON?
-                log("Skipping txid=" + txid + " since no HL memo header found");
+                log("Skipping txid=" + xtn.txid + " since no HL memo header found");
             }
         }
 
