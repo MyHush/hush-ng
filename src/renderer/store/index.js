@@ -21,21 +21,21 @@ var client = new hushrpc.Client({
 });
 function log(msg) { console.log(msg) }
 function encodeMemo(memo) {
-    console.log("Encoding raw memo: '" + memo + "' length =" + memo.length);
-    var encodedMemo = "";
-    if(memo) {
-        for (var j = 0; j < memo.length; j++) {
-            encodedMemo = encodedMemo + sprintf("%02x",memo.charCodeAt(j) );
+    var encodedMemo = '';
+
+    if (memo) {
+        console.log("Encoding raw memo: '" + memo + "' length =" + memo.length);
+        if(memo) {
+            for (var j = 0; j < memo.length; j++) {
+                encodedMemo = encodedMemo + sprintf("%02x",memo.charCodeAt(j) );
+            }
         }
-    }
-    console.log("Encoded memo length=" + encodedMemo.length);
-    return encodedMemo;
+        console.log("Encoded memo length=" + encodedMemo.length);
+   } else {
+       return encodedMemo;
+   }
 }
 
-var memo1 = encodeMemo('{"addr":"zcLOL", "viewkey": "ZiVKwtf", "memo":"yo"}');
-log(memo1 + " len=" + memo1.length );
-var memo2 = encodeMemo("\n\t");
-log(memo2 + " len=" + memo2.length );
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -784,10 +784,10 @@ var store = new Vuex.Store({
       console.log("shieldedXtn=" + shieldedXtn);
 
       // The default amount is *no value*, not zero. Avoid NaNs
-      transactionForm.amount = transactionForm.amount ? parseFloat(transactionForm.amount) : '';
+      transactionForm.amount = ( transactionForm.amount >= 0 ) ? parseFloat(transactionForm.amount) : '';
       var num_destinations   = transactionForm.destinationAddresses.length;
       var transaction_amount = transactionForm.amount * num_destinations;
-      // 1% of total amount being sent, ignoring network fee
+      // 1% of total amount being sent SUGGESTED DEV FEE, ignoring network fee
       // with a max of 10HUSH, only on transactions containing zaddrs
       var dev_fee            = shieldedXtn ? 0.01 * transaction_amount : 0.0;
       if (dev_fee > 10.0) {
@@ -815,7 +815,10 @@ var store = new Vuex.Store({
 
       for(let receiver of transactionForm.destinationAddresses) {
        var addr              = receiver.toString();
+       log("transactionForm.amount=" + transactionForm.amount);
+
        var transactionAmount = sprintf("%.8f", transactionForm.amount);
+       log("transactionAmount=" + transactionAmount);
 
        // zaddrs get memos
        if ( addr.substring(0,1) == 'z' ) {
