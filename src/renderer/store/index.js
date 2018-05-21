@@ -540,7 +540,8 @@ var store = new Vuex.Store({
         for(let transactionResult of allZTransactionResults) {
           var zTransaction = await client.getTransaction(transactionResult.txid);
           var decodedText = "";
-          if(!transactionResult.memo.startsWith('f60000')) {
+          // Binary data memos will begin with f6
+          if(!transactionResult.memo.startsWith('f6')) {
             for (var j = 0; j < transactionResult.memo.length; j += 2) {
               var  str = transactionResult.memo.substring(j, j + 2);
               if (str != "00") {// Zero bytes are empty
@@ -551,7 +552,7 @@ var store = new Vuex.Store({
           var memo = null;
           if(decodedText.length > 0) {
             memo = decodedText;
-            //console.log(memo);
+            console.log('memo=' + memo);
           }
           var address = transactionResult.address;
 		  var amount  = transactionResult.amount;
@@ -944,6 +945,7 @@ var store = new Vuex.Store({
             // Look for HushList memo headers to our introducer
             var memo = xtn.memo;
 
+            var decodedMemo = '';
             // memo header is JSON and must start with a paren
             if (memo.substring(0,1) == "{") {
                 // Min size check
