@@ -36,6 +36,22 @@ function encodeMemo(memo) {
    }
 }
 
+//TODO: it would be nice to use this for binary memos as well, or maybe
+// we need a decodeBinaryMemo
+function decodeMemo(memo) {
+    var decodedMemo = '';
+    // empty and/or binary memos start with f6
+    if(!memo.startsWith('f6')) {
+        for (var j = 0; j < memo.length; j += 2) {
+            var  str = memo.substring(j, j + 2);
+            if (str != "00") {// Zero bytes are empty
+                decodedMemo = decodedMemo + String.fromCharCode(parseInt(str, 16));
+            }
+        }
+    }
+    return decodedMemo;
+}
+
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -539,16 +555,8 @@ var store = new Vuex.Store({
 
         for(let transactionResult of allZTransactionResults) {
           var zTransaction = await client.getTransaction(transactionResult.txid);
-          var decodedText = "";
-          // Binary data memos will begin with f6
-          if(!transactionResult.memo.startsWith('f6')) {
-            for (var j = 0; j < transactionResult.memo.length; j += 2) {
-              var  str = transactionResult.memo.substring(j, j + 2);
-              if (str != "00") {// Zero bytes are empty
-                decodedText = decodedText + String.fromCharCode(parseInt(str, 16));               
-              }
-            }
-          }
+          var decodedText = decodeMemo(transactionResult.memo);
+
           var memo = null;
           if(decodedText.length > 0) {
             memo = decodedText;
