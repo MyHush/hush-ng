@@ -951,14 +951,16 @@ var store = new Vuex.Store({
 
         for (let xtn of xtns) {
             // Look for HushList memo headers to our introducer
-            var memo = xtn.memo;
-
-            var decodedMemo = '';
+            var memo        = xtn.memo;
+            var decodedMemo = decodeMemo(memo);
             // memo header is JSON and must start with a paren
-            if (memo.substring(0,1) == "{") {
+            if (decodedMemo.substring(0,1) == "{") {
+                log("Detected JSON memo=" + decodedMemo);
                 // Min size check
                 // Valid JSON check
                 // Key existence checks
+
+                // Render actual memos sent to this address
             } else {
                 // TODO: what about completely anon HL messages, with no JSON?
                 log("Skipping txid=" + xtn.txid + " since no HL memo header found");
