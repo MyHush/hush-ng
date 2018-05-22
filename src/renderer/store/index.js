@@ -665,7 +665,9 @@ var store = new Vuex.Store({
       var self = this;
       // Instead of storing viewkeys on disk, we look them up as needed
       try {
-          var result = await client.z_importviewingkey(viewkey);
+          // don't look thru all of time for HL VKs
+          var height = 312632;
+          var result = await client.z_importviewingkey(viewkey, "whenkeyisnew", height);
           log("Imported viewkey=" + viewkey);
       } catch(err) {
           log(err);
