@@ -669,10 +669,11 @@ var store = new Vuex.Store({
           var height = 312632;
           var result = await client.z_importviewingkey(viewkey, "whenkeyisnew", height);
           log("Imported viewkey=" + viewkey);
+          return 1;
       } catch(err) {
           log(err);
           vue.$notify.error({ title: "Error importing viewkey " + viewkey, message: err.message, duration: 0, showClose: true });
-          return;
+          return 0;
       }
     },
 
@@ -988,11 +989,19 @@ var store = new Vuex.Store({
                 // TODO: key names are not finalized, should we optimize for size or readability?
                 var addr     = headerJSON["addr"];
                 var viewkey  = headerJSON["viewkey"];
+                // TODO: verify viewkey is the VK for addr
                 var result   = await client.z_validateaddress(addr);
                 if (result.isvalid) {
                     log("Valid HL.addr, ismine="+ result.ismine);
                     // Import this viewkey, so we can see memos *we send* to addr
-                    store.dispatch('importViewingKey',viewkey);
+                    var imported = store.dispatch('importViewingKey',viewkey);
+
+                    if (imported) {
+                        // It's imported or already was imported
+                    } else {
+                        log("Failed to import viewingkey, skipping");
+                        continue;
+                    }
                 } else {
                     log("Address="+ addr + " is invalid zaddr");
                     continue;
