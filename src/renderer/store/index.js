@@ -976,7 +976,7 @@ var store = new Vuex.Store({
 
                 var headerJSON;
                 try {
-                    headerJSON = JSON.parse(decodeMemo);
+                    headerJSON = JSON.parse(decodedMemo);
                     log("Valid JSON!");
                 } catch(e) {
                     console.log(e);
