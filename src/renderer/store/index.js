@@ -659,9 +659,25 @@ var store = new Vuex.Store({
       }
     },
 
+
+    // We can expect this to timeout sometimes
+    async importViewingKey({ commit }, viewkey) {
+      var self = this;
+      // Instead of storing viewkeys on disk, we look them up as needed
+      try {
+          var result = await client.z_importviewingkey(viewkey);
+          log("Imported viewkey=" + viewkey);
+      } catch(err) {
+          log(err);
+          vue.$notify.error({ title: "Error importing viewkey " + viewkey, message: err.message, duration: 0, showClose: true });
+          return;
+      }
+    },
+
     async exportViewingKey({ commit }, chatForm) {
       var self = this;
       // Instead of storing viewkeys on disk, we look them up as needed
+      // TODO: cache these in memory, as they never change for an address
       try {
           var result = await client.z_exportviewingkey(chatForm.conversationAddress);
           log("Retreived viewkey " + result);
@@ -960,7 +976,7 @@ var store = new Vuex.Store({
 
                 var headerJSON;
                 try {
-                    headerJSON = JSON.parse(response);
+                    headerJSON = JSON.parse(decodeMemo);
                     log("Valid JSON!");
                 } catch(e) {
                     console.log(e);
@@ -973,7 +989,8 @@ var store = new Vuex.Store({
                 var result   = await client.z_validateaddress(addr);
                 if (result.isvalid) {
                     log("Valid HL.addr, ismine="+ result.ismine);
-                    //TODO: import viewkey
+                    // Import this viewkey, so we can see memos *we send* to addr
+                    store.dispatch('importViewingKey',viewkey);
                 } else {
                     log("Address="+ addr + " is invalid zaddr");
                     continue;
