@@ -953,14 +953,32 @@ var store = new Vuex.Store({
             // Look for HushList memo headers to our introducer
             var memo        = xtn.memo;
             var decodedMemo = decodeMemo(memo);
+            var memoLength  = decodedMemo.length;
             // memo header is JSON and must start with a paren
             if (decodedMemo.substring(0,1) == "{") {
-                log("Detected JSON memo=" + decodedMemo);
-                // Min size check
-                // Valid JSON check
-                // Key existence checks
+                log("Potential JSON memo=" + decodedMemo);
 
-                // Render actual memos sent to this address
+                var headerJSON;
+                try {
+                    headerJSON = JSON.parse(response);
+                    log("Valid JSON!");
+                } catch(e) {
+                    console.log(e);
+                    continue;
+                }
+                // TODO: Key existence checks, i.e is it valid HushList JSON?
+                // TODO: key names are not finalized, should we optimize for size or readability?
+                var addr     = headerJSON["addr"];
+                var viewkey  = headerJSON["viewkey"];
+                var result   = await client.z_validateaddress(addr);
+                if (result.isvalid) {
+                    log("Valid HL.addr, ismine="+ result.ismine);
+                    //TODO: import viewkey
+                } else {
+                    log("Address="+ addr + " is invalid zaddr");
+                    continue;
+                }
+                // TODO: Render actual memos sent to this address, lol
             } else {
                 // TODO: what about completely anon HL messages, with no JSON?
                 log("Skipping txid=" + xtn.txid + " since no HL memo header found");

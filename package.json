@@ -1,9 +1,9 @@
 {
   "name": "hush-ng",
-  "version": "0.0.0",
-  "author": "Rafael Janetzek <rjanetzek@gmx.de>",
-  "description": "Hush Next-generation",
-  "license": "The HUSH Team",
+  "version": "0.0.1",
+  "author": "Duke Leto <duke@leto.net>",
+  "description": "HUSH Wallet And More",
+  "license": "GPLv3",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
