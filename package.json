@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Duke Leto <duke@leto.net>",
   "description": "HUSH Wallet And More",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -84,7 +84,7 @@
     "del": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "1.7.12",
-    "electron-builder": "^19.19.1",
+    "electron-builder": "^20.14.7",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.0",
     "extract-text-webpack-plugin": "^3.0.0",
