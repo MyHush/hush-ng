@@ -1,0 +1,3 @@
+const translationsFR = {
+	"content": "This is some {type} content"
+};

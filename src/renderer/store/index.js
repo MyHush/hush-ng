@@ -11,6 +11,7 @@ import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
 import axios from 'axios'
+import vuexI18n from 'vuex-i18n/dist/vuex-i18n.umd.js';
 
 var config = new hush.Config()
 var client = new hushrpc.Client({
@@ -51,7 +52,6 @@ function decodeMemo(memo) {
     }
     return decodedMemo;
 }
-
 
 Vue.use(Vuex)
 let vue = new Vue()
@@ -1002,11 +1002,11 @@ var store = new Vuex.Store({
                         log("Failed to import viewingkey, skipping");
                         continue;
                     }
+                    // TODO: Render actual memos sent to this address, lol
                 } else {
                     log("Address="+ addr + " is invalid zaddr");
                     continue;
                 }
-                // TODO: Render actual memos sent to this address, lol
             } else {
                 // TODO: what about completely anon HL messages, with no JSON?
                 log("Skipping txid=" + xtn.txid + " since no HL memo header found");
@@ -1039,3 +1039,12 @@ var store = new Vuex.Store({
   }
 });
 export default store;
+
+// without return value (will use fallback translation, default translation or key)
+Vue.use(vuexI18n.plugin, store, {
+    moduleName: 'i18n',
+    onTranslationNotFound (locale, key) {
+        console.warn(`i18n :: Key '${key}' not found for locale '${locale}'`);
+    }}
+);
+
