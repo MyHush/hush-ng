@@ -2,35 +2,37 @@
   <div id="wrapper">
     <close-button></close-button>
     <div id="hushng">
-      <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
+      <img id="logo" src="~@/assets/logo.png" alt="HushNG Logo">
       <span id="logo-text">HushNG</span>
     </div>
     <main>
       <div class="left-side">
         <span class="title">
-          Welcome to HushNG!
+          {{$t('welcome_to_hushNG')}}
         </span>
         <system-information></system-information>
       </div>
 
       <div class="right-side">
         <div class="doc">
-          <div class="title">Getting Started</div>
+          <div class="title">{{$t('getting_started')}}</div>
           <p>
-            Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets, easily enable mining,
-            and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.
+            {{$t('getting_started_1')}}
+            {{$t('getting_started_2')}}
           </p>
           <p>
-            Start by downloading the Hush proving-key. Afterwards, your wallet will be initialized and ready for use.
+            {{$t('getting_started_3')}}
           </p>
-          <router-link class="button" to="/install">Initialize wallet</router-link><br><br>
+          <router-link class="button" to="/install">{{$t('initialize_wallet')}}</router-link><br><br>
         </div>
         <div class="doc">
-          <div class="title alt">Get Involved</div>
+          <div class="title alt">{{$t('join_us')}}</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
+          <button class="button button-alt" @click="open('https://myhush.org/discord.html')">Discord</button>
           <button class="button button-alt" @click="open('https://twitter.com/MyHushTeam')">Twitter</button>
+          <!-- <button class="button button-alt" @click="open('https://fb.me/MyHushTeam')">Facebook</button> -->
+          <!-- <button class="button button-alt" @click="open('https://bitcointalk.org/index.php?topic=2008578.0')">Bitcoin Talk</button> -->
           <button class="button button-alt" @click="open('https://reddit.com/r/myhush/')">Reddit</button>
-          <button class="button button-alt" @click="open('https://discord.myhush.org')">Discord</button>
         </div>
       </div>
     </main>

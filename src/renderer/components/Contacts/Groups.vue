@@ -1,17 +1,17 @@
 <template>
   <div id="lists">
     <p id="intro">
-      Below is a list of your private HushLists.
-      Each HushList is a list of Contacts stored locally on this machine,
-      it is not stored in the blockchain.
+      {{$t('intro_groups_1')}}
+      {{$t('intro_groups_2')}}
+      {{$t('intro_groups_3')}}
       
       <br />
-      <span>Shielded addresses (zaddrs) are private and anonymous while transparent addresses (taddrs) are public and pseudonymous</span>
+      <span>{{$t('intro_groups_4')}}</span>
     </p>
-    <a class="button" id="add-addressbookentry" v-on:click="newHushList()">New HushList</a>
+    <a class="button" id="add-addressbookentry" v-on:click="newHushList()">{{$t('new_hushList')}}</a>
     <div class="address-list" id="z-addr">
-      <div class="type">HushList Name</div>
-      <div class="copy"># Of Contacts</div>
+      <div class="type">{{$t('hushList_name')}}</div>
+      <div class="copy">{{$t('#_of_contacts')}}</div>
       <ul class="address-details">
         <li>
           <div class="balance" style="clear: both;"></div>

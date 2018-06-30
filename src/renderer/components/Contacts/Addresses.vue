@@ -1,14 +1,14 @@
 <template>
   <div style="height:100%">
-      Below is a list of your contacts<br />
+      {{$t('list_of_contacts')}}<br/>
     <div class="container" style="height:95%">
       <el-row class="caption">
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addContact()">New contact</a></el-col>
+        <el-col :span="4"><a class="button" id="generate-address" v-on:click="addContact()">{{$t('new_contact')}}</a></el-col>
       </el-row>
       <el-table :data="contacts" height="90%" style="width: 100%" empty-text="None">
         <el-table-column label="" width="100">
           <template slot-scope="scope">
-            <el-button  @click="chatContact(scope.row)" size="small"><icon name=envelope></icon>Chat</el-button>
+            <el-button @click="chatContact(scope.row)" size="small"><icon name=envelope></icon>{{$t('chat')}}</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="nickName" label="Contact" width="100"> </el-table-column>
@@ -18,38 +18,38 @@
           label=""
           width="200">
           <template slot-scope="scope">
-            <el-button @click="editContact(scope.row)"  size="small"><icon name=pencil-alt></icon>Edit</el-button>
-            <el-button  @click="removeContact(scope.row)" size="small"><icon name=bomb></icon>Delete</el-button>
+            <el-button @click="editContact(scope.row)"  size="small"><icon name=pencil-alt></icon>{{$t('edit')}}</el-button>
+            <el-button @click="removeContact(scope.row)" size="small"><icon name=bomb></icon>{{$t('delete')}}</el-button>
           </template>
         </el-table-column>        
       </el-table>        
     </div>    
 
-    <el-dialog title="Edit contact" :visible.sync="contactDialogVisible" width="60%" >
+    <el-dialog title={{$t('edit_contact')}} :visible.sync="contactDialogVisible" width="60%" >
       <el-form :model="contactForm">
-        <el-form-item label="Name" label-width="100px">
+        <el-form-item label={{$t('name')}} label-width="100px">
           <el-input v-model="contactForm.nickName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="Address" label-width="100px">
+        <el-form-item label={{$t('adress')}} label-width="100px">
          <el-input v-model="contactForm.address" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">         
-        <el-button @click="contactDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="saveContact(contactForm)">Save</el-button>
+        <el-button @click="contactDialogVisible = false">{{$t('cancel')}}</el-button>
+        <el-button type="primary" @click="saveContact(contactForm)">{{$t('save')}}</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="Chat" :visible.sync="chatDialogVisible" width="60%" >
+    <el-dialog title={{$t('chat')}} :visible.sync="chatDialogVisible" width="60%" >
      {{ chatForm.nickName }}
       <el-form :model="chatForm">
-        <el-form-item label="Memo" label-width="100px">
+        <el-form-item label={{$t('memo')}} label-width="100px">
           <el-input v-model="chatForm.memo" type=textarea auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">         
-        <el-button @click="chatDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="sendToContact(chatForm)">Send</el-button>
+        <el-button @click="chatDialogVisible = false">{{$t('cancel')}}</el-button>
+        <el-button type="primary" @click="sendToContact(chatForm)">{{$t('send')}}</el-button>
       </span>
     </el-dialog>
   </div>

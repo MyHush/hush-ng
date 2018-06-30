@@ -1,19 +1,19 @@
 <template>
   <div style="height:95%">
-    Transactions can be sent <br/> from a zaddr or taddr depending on your preference
+    {{$t('intro_wallet_menu_1')}}
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="12" >Create a transaction</el-col>
+        <el-col :span="12" >{{$t('create_transaction')}}</el-col>
         <el-col :span="12" class="balance">
         <div style="float:right">
-          Spendable Balance: <span>{{ availableBalance }}</span>
+          {{$t('spendable_balance')}}: <span>{{ availableBalance }}</span>
         </div>
         </el-col>
       </el-row>
       
       <el-form ref="form" :model="transactionForm" label-width="150px" >
         <el-form-item label="From" >
-          <el-select v-model="transactionForm.from" placeholder="Select a shielded or transparent address" style="width:100%;">
+          <el-select v-model="transactionForm.from" placeholder={{$t('select_address')}} style="width:100%;">
             <el-option
               v-for="address in allAddresses"
               :key="address.address"
@@ -26,8 +26,8 @@
         </el-select>
         </el-form-item>
 
-        <el-form-item label="To">
-          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create  default-first-option placeholder="put address here or choose from your contacts" style="width:100%;">
+        <el-form-item label={{$t('to')}}>
+          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create  default-first-option placeholder={{$t('put_address_here')}} style="width:100%;">
             <el-option-group v-for="group in groupedDestinationAddresses" :key="group.label" :label="group.label">
               <el-option
                 v-for="item in group.addresses"
@@ -42,49 +42,49 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="Amount">
+        <el-form-item label={{$t('amount')}}>
           <el-col :span="8">
-            <el-input placeholder="Amount sent each address"
+            <el-input placeholder={{$t('amount_sent_each_address')}}
                 v-on:input="updateTransactionForm(transactionForm,availableBalance)"
                 v-model="transactionForm.amount">
             </el-input>
           </el-col>
         </el-form-item>
 
-          <el-form-item label="Miner Fee">
+          <el-form-item label={{$t('miner_fee')}}>
           <el-col :span="8">
-            <el-input placeholder="Cost to include transaction in block" v-model="transactionForm.fee"
+            <el-input placeholder={{$t('cost_transaction_in_block')}} v-model="transactionForm.fee"
                 v-on:input="updateTransactionForm(transactionForm,availableBalance)"
             ></el-input>
           </el-col>
           </el-form-item>
 
-          <el-form-item label="Dev Donation">
+          <el-form-item label={{$t('dev_donation')}}>
           <el-col :span="8">
-            <el-input placeholder="Suggested 1% donation" 
+            <el-input placeholder={{$t('suggested_donation')}} 
                 v-on:input="updateTransactionForm(transactionForm,availableBalance)"
             v-model="transactionForm.devDonation"></el-input>
           </el-col>
           </el-form-item>
 
-          <el-form-item label="Total Amount">
+          <el-form-item label={{$t('total_amount')}}>
           <el-col :span="8">
-            <el-input placeholder="Total amount to send transaction"
+            <el-input placeholder={{$t('total_amount_to_send')}}
             v-model="transactionForm.totalAmount" readonly></el-input>
           </el-col>
           </el-form-item>
 
-          <el-form-item label="Remaining Balance">
+          <el-form-item label={{$t('remaining_balance')}}>
           <el-col :span="8">
-            <el-input placeholder="Amount left after this transaction"
+            <el-input placeholder={{$t('amount_left_after_transaction')}}
             v-on:input="updateTransactionForm(transactionForm,availableBalance)"
             v-model="transactionForm.remaining" readonly></el-input>
           </el-col>
           </el-form-item>
 
-        <el-form-item label="Memo">
+        <el-form-item label={{$t('memo')}}>
           <el-col :span="10">
-            <el-input type=textarea placeholder="Hey Bob, this is Alice, did you hear about Charlie? ..." v-model="transactionForm.memo" style="width: 100%;"></el-input>
+            <el-input type=textarea placeholder={{$t('hey_Bob')}} v-model="transactionForm.memo" style="width: 100%;"></el-input>
           </el-col>
         </el-form-item>
 
@@ -94,28 +94,28 @@
   placement="top"
   width="160"
   v-model="popoverConfirm">
-  <p>Are you sure you want to make a transaction of {{ transactionForm.totalAmount }} HUSH ?</p>
+  <p>{{ $t('confirm_transaction_form', {'total_amount': transactionForm.totalAmount}) }}</p>
   <div style="text-align: right; margin: 0">
-    <el-button size="mini" type="text" @click="popoverConfirm = false">cancel</el-button>
-    <el-button type="primary" size="mini" @click="popoverConfirm = false">confirm</el-button>
+    <el-button size="mini" type="text" @click="popoverConfirm = false">{{$t('cancel')}}</el-button>
+    <el-button type="primary" size="mini" @click="popoverConfirm = false">{{$t('confirm')}}</el-button>
   </div>
 </el-popover>
 
-      <el-button type="primary" @click="createTransaction">Create</el-button>
+      <el-button type="primary" @click="createTransaction">{{$t('create')}}</el-button>
 
 
- <el-tooltip class="item" effect="dark" content="Clear the transaction form" placement="top">
-      <el-button type="danger" @click="clearTransaction(transactionForm,availableBalance)">Clear</el-button>
+ <el-tooltip class="item" effect="dark" content={{$t('clear_transaction_form')}} placement="top">
+      <el-button type="danger" @click="clearTransaction(transactionForm,availableBalance)">{{$t('clear')}}</el-button>
 </el-tooltip>
 
 
     </div>
     <div class="container" style="height:calc(100% - 300px);" >
       <el-row >
- <el-tooltip effect="dark" content="Sent and received transactions" placement="top">
-        <el-col :span="8" class="caption">Transaction History</el-col>
+ <el-tooltip effect="dark" content={{$t('sent_and_received_transactions')}} placement="top">
+        <el-col :span="8" class="caption">{{$t('transaction_history')}}</el-col>
 </el-tooltip>
-        <el-col :span="8" class="info" >click on a row to open block explorer</el-col>
+        <el-col :span="8" class="info" >{{$t('open_block_explorer')}}</el-col>
         <el-col :span="8" class="balance"> 
           <div v-on:click="showFailedOperations" style="float:right;margin-left:10px;"> 
             <icon name="exclamation-triangle" scale=2 /> <span class="ops" >{{ failedOperations.length }}</span>
@@ -135,9 +135,9 @@
        
         <el-table-column prop="category" label="Direction" width="90"> 
            <template slot-scope="scope">          
-             <div v-if="scope.row.category == 'receive'"> Incoming </div>
-             <div v-if="scope.row.category == 'send'"> Outgoing </div>
-             <div v-if="scope.row.category == 'generate'"> Mined </div>
+             <div v-if="scope.row.category == 'receive'"> {{$t('incoming')}} </div>
+             <div v-if="scope.row.category == 'send'"> {{$t('outgoing')}} </div>
+             <div v-if="scope.row.category == 'generate'"> {{$t('mined')}} </div>
           </template>
         </el-table-column>
 
@@ -147,7 +147,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="amount" label="Amount" width="160"> 
+        <el-table-column prop="amount" label={{$t('amount')}} width="160"> 
           <template slot-scope="scope">          
              <div style="float:right"> {{ Math.abs(scope.row.amount) }} HUSH </div>           
           </template>
@@ -157,7 +157,7 @@
             <span class="address">{{ scope.row.address }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="memo" label="Memo" width="*" >
+        <el-table-column prop="memo" label={{$t('memo')}} width="*" >
           <template slot-scope="scope">            
             <span class="memo">{{ scope.row.memo }}</span>
           </template>
@@ -165,16 +165,16 @@
       </el-table>
     </div>
 
-    <el-dialog title="Pending operations" :visible.sync="operationsDialogVisible" width="75%" >
+    <el-dialog title={{$t('pending_operations')}} :visible.sync="operationsDialogVisible" width="75%" >
       <el-table :data="pendingOperations" height="320" style="width: 100%" empty-text="None">
-        <el-table-column prop="date" label="Last Updated" width="160" >
+        <el-table-column prop="date" label={{$t('last_updated')}} width="160" >
           <template slot-scope="scope">           
             <div> {{ new Date(scope.row.date*1000).toLocaleString('en-US') }} </div>
           </template>
         </el-table-column>
-        <el-table-column prop="id" label="Id" width="*"> </el-table-column>
-        <el-table-column prop="status" label="Status" width="80"> </el-table-column>
-        <el-table-column prop="error" label="Error" width="260" > 
+        <el-table-column prop="id" label={{$t('id')}} width="*"> </el-table-column>
+        <el-table-column prop="status" label={{$t('status')}} width="80"> </el-table-column>
+        <el-table-column prop="error" label={{$t('error')}} width="260" > 
           <template slot-scope="scope">           
             <div style="text-overflow: ellipsis;"> {{ scope.row.error }} </div>
           </template>
@@ -184,16 +184,16 @@
         <el-button type="primary" @click="operationsDialogVisible = false">Close</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="Failed operations" :visible.sync="failedOperationsDialogVisible" width="75%" >
+    <el-dialog title={{$t('failed_operations')}} :visible.sync="failedOperationsDialogVisible" width="75%" >
       <el-table :data="failedOperations" height="320" style="width: 100%" empty-text="None">
-        <el-table-column prop="date" label="Date" width="160"> 
+        <el-table-column prop="date" label={{$t('date')}} width="160"> 
           <template slot-scope="scope" >           
             <div> {{ scope.row.date > 0 ? new Date(scope.row.date*1000).toLocaleString('en-US') : "..." }} </div> 
           </template>
         </el-table-column>
-        <el-table-column prop="id" label="Id" width="*" > </el-table-column>
-        <el-table-column prop="status" label="Status" width="80"> </el-table-column>
-        <el-table-column prop="error" label="Error" width="260" > 
+        <el-table-column prop="id" label={{$t('id')}} width="*" > </el-table-column>
+        <el-table-column prop="status" label={{$t('status')}} width="80"> </el-table-column>
+        <el-table-column prop="error" label={{$t('error')}} width="260" > 
           <template slot-scope="scope">           
             <div style="text-overflow: ellipsis; white-space: nowrap;overflow: hidden;"> {{ scope.row.error }} </div>
           </template>
@@ -308,7 +308,7 @@
             }
         }
         // only shielded xtns have dev donations
-        form.devDonation = shieldedXtn ? form.devDonation : "Only shielded transactions contain donations";
+        form.devDonation = shieldedXtn ? form.devDonation : $t('only_shielded_transactions_contain_donations');
        }
       }
     },
