@@ -11,7 +11,6 @@ import messages from '../lang/messages'
 
 Vue.use(VueI18n)
 
-
 // Create VueI18n instance with options
 let localisation = navigator.language
 const i18n = new VueI18n({

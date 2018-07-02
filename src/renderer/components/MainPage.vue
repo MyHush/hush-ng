@@ -16,6 +16,9 @@
   import { mapState } from 'vuex'
   import Vue from 'vue'
   import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
+  Vue.use(VueI18n)
+
   import SideMenu from './shared/Menu'
   const Repeat  = require('repeat')
   var request   = require('request')
@@ -25,9 +28,14 @@
   var hush      = require('hush')
   const hushrpc = require( 'hushrpc' )
   var config    = new hush.Config()
+  import messages from '../../lang/messages'
 
   Vue.use(Vuex)
-  let vue = new Vue()
+  const i18n = new VueI18n({
+    fallbackLocale: 'en',
+    messages, // set locale messages
+  })
+  let vue = new Vue({ i18n })
 
   export default {
     name: 'main-page',
@@ -132,10 +140,10 @@
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
                   self.connStatus = "Connecting..."
-                  vue.$notify.error({ title: $t('message.error_connect_daemon_title'), message: $t('message.error_connect_daemon_message') });
+                  vue.$notify.error({ title: vue.t('message.error_connect_daemon_title'), message: vue.t('message.error_connect_daemon_message') });
                 } else {
                   self.connStatus = err.message
-                  vue.$notify.error({ title: $t('message.error_talking_daemon_title'), message: err.message });
+                  vue.$notify.error({ title: vue.t('message.error_talking_daemon_title'), message: err.message });
                 }
                 return;
               }
