@@ -1,31 +1,31 @@
 <template>
   <div>
-      {{$t('intro_adresses_1')}}<br />
+      {{$t('message.intro_adresses_1')}}<br />
       <span>
 </span>
     <div class="container" >
       <el-row class="caption">
 <el-col :span="10">
-<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('import_zaddr')}}<icon name=angle-double-down></icon></el-button>
-<el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('new_zaddr')}}<icon name=plus></icon></el-button>
+<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></el-button>
+<el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
 </el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
-        <el-table-column prop="balance" label={{$t('amount')}} width="140" nowrap> </el-table-column>
-        <el-table-column prop="addressView" label={{$t('shielded_zaddr')}} width="*" class-name="zaddress" > </el-table-column>        
+        <el-table-column prop="balance" label={{$t('message.amount')}} width="140" nowrap> </el-table-column>
+        <el-table-column prop="addressView" label={{$t('message.shielded_zaddr')}} width="*" class-name="zaddress" > </el-table-column>        
       </el-table>        
     </div>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="10" >
-<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('import_taddr')}}<icon name=angle-double-down></icon></el-button>
-<el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('new_taddr')}}<icon name=plus></icon></el-button>
+<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></el-button>
+<el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></el-button>
 
 </el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
-        <el-table-column prop="balance" label={{$t('amount')}} width="140" nowrap> </el-table-column>
-        <el-table-column  prop="addressView" label={{$t('shielded_taddr')}} width="*" class-name="taddress" > </el-table-column>      
+        <el-table-column prop="balance" label={{$t('message.amount')}} width="140" nowrap> </el-table-column>
+        <el-table-column  prop="addressView" label={{$t('message.shielded_taddr')}} width="*" class-name="taddress" > </el-table-column>      
         <icon name=copy></icon>
         </el-table>
 
@@ -33,28 +33,28 @@
 <div>
 <ul>
 <li>
-{{$t('intro_adresses_2')}}
-{{$t('intro_adresses_3')}}
-{{$t('intro_adresses_4')}}
-{{$t('intro_adresses_5')}}
+{{$t('message.intro_adresses_2')}}
+{{$t('message.intro_adresses_3')}}
+{{$t('message.intro_adresses_4')}}
+{{$t('message.intro_adresses_5')}}
 </li>
 <li>
-{{$t('intro_adresses_6')}}
-{{$t('intro_adresses_7')}}
-{{$t('intro_adresses_8')}}
+{{$t('message.intro_adresses_6')}}
+{{$t('message.intro_adresses_7')}}
+{{$t('message.intro_adresses_8')}}
 </li>
 </ul>
     <span>
-    <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('fund_hush_fund')}}</a>
+    <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
 </span>
 
 </div>
     <div class="bottom-row">
       <div class="box alt">
         <ul id="texts">
-          <li><icon class=fa-fw name=eye></icon>{{$t('transparent')}}:</li>
-          <li><icon class=fa-fw name=shield-alt></icon>{{$t('shielded')}}:</li>
-          <li><icon class=fa-fw name=balance-scale></icon>{{$t('total')}}:</li>
+          <li><icon class=fa-fw name=eye></icon>{{$t('message.transparent')}}:</li>
+          <li><icon class=fa-fw name=shield-alt></icon>{{$t('message.shielded')}}:</li>
+          <li><icon class=fa-fw name=balance-scale></icon>{{$t('message.total')}}:</li>
         </ul>
         <ul id="balances">
           <li v-bind:class="{ unconfirmed: !tBalance.valid }" > {{ tBalance.balance }} HUSH</li>
@@ -63,9 +63,9 @@
         </ul>
       </div>
         <div class="box alt">
-            <b>{{$t('network_stats')}}</b><br/>
-            <icon name=download></icon>{{ totalBytesRecv }} {{$t('bytes_received')}}<br/>
-            <icon name=upload></icon>{{ totalBytesSent }} {{$t('bytes_sent')}}<br/>
+            <b>{{$t('message.network_stats')}}</b><br/>
+            <icon name=download></icon>{{ totalBytesRecv }} {{$t('message.bytes_received')}}<br/>
+            <icon name=upload></icon>{{ totalBytesSent }} {{$t('message.bytes_sent')}}<br/>
         </div>
         <div class="box alt">
             <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
@@ -74,35 +74,35 @@
         </div>
       </div>
 
-    <el-dialog title={{$t('import_transparent_address')}} :visible.sync="importTaddrVisible" width="60%" >
+    <el-dialog title={{$t('message.import_transparent_address')}} :visible.sync="importTaddrVisible" width="60%" >
       <el-form :model="importTaddrForm">
-        <el-form-item label={{$t('private_key_wif')}} label-width="100px">
-          <el-input placeholder={{$t('wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+        <el-form-item label={{$t('message.private_key_wif')}} label-width="100px">
+          <el-input placeholder={{$t('message.wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
             <ul>
-            <li><icon name=key></icon> {{$t('never_give_private_key')}}</li>
-            <li><icon name=user-secret></icon> {{$t('treat_it_like_a_password')}}</li>
-            <li><icon name=share-alt></icon> {{$t('import_a_private_key')}}</li>
+            <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
+            <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
+            <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
             </ul>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="importTaddrVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">{{$t('import')}}</el-button>
+        <el-button @click="importTaddrVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">{{$t('message.import')}}</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title={{$t('import_shielded_address')}} :visible.sync="importZaddrVisible" width="60%" >
+    <el-dialog title={{$t('message.import_shielded_address')}} :visible.sync="importZaddrVisible" width="60%" >
       <el-form :model="importZaddrForm">
-        <el-form-item label={{$t('private_key_wif')}} label-width="100px">
-          <el-input placeholder={{$t('wallet_import_format_zaddr')}} v-model="importZaddrForm.wif" auto-complete="off"></el-input>
+        <el-form-item label={{$t('message.private_key_wif')}} label-width="100px">
+          <el-input placeholder={{$t('message.wallet_import_format_zaddr')}} v-model="importZaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
             <ul>
-            <li><icon name=key></icon> {{$t('never_give_private_key')}}</li>
-            <li><icon name=user-secret></icon> {{$t('treat_it_like_a_password')}}</li>
-            <li><icon name=share-alt></icon> {{$t('import_a_private_key')}}</li>
+            <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
+            <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
+            <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
             </ul>
         </div>
 <!--
@@ -112,8 +112,8 @@
 -->
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="importZaddrVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="importZaddress(importZaddrForm)">{{$t('import')}}</el-button>
+        <el-button @click="importZaddrVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="importZaddress(importZaddrForm)">{{$t('message.import')}}</el-button>
       </span>
     </el-dialog>
 

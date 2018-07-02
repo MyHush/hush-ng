@@ -1,17 +1,17 @@
 <template>
   <div id="lists">
     <p id="intro">
-      {{$t('intro_groups_1')}}
-      {{$t('intro_groups_2')}}
-      {{$t('intro_groups_3')}}
+      {{$t('message.intro_groups_1')}}
+      {{$t('message.intro_groups_2')}}
+      {{$t('message.intro_groups_3')}}
       
       <br />
-      <span>{{$t('intro_groups_4')}}</span>
+      <span>{{$t('message.intro_groups_4')}}</span>
     </p>
-    <a class="button" id="add-addressbookentry" v-on:click="newHushList()">{{$t('new_hushList')}}</a>
+    <a class="button" id="add-addressbookentry" v-on:click="newHushList()">{{$t('message.new_hushList')}}</a>
     <div class="address-list" id="z-addr">
-      <div class="type">{{$t('hushList_name')}}</div>
-      <div class="copy">{{$t('#_of_contacts')}}</div>
+      <div class="type">{{$t('message.hushList_name')}}</div>
+      <div class="copy">{{$t('message.of_contacts')}}</div>
       <ul class="address-details">
         <li>
           <div class="balance" style="clear: both;"></div>
@@ -45,8 +45,12 @@
   }
 </script>
 
+
+
 <style>
   @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700');
+
+  
 
   * {
     font-family: 'Poppins', sans-serif;

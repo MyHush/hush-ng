@@ -11,7 +11,6 @@ import hushlist from './modules/hushlist';
 import os from 'os'
 import fs from 'fs'
 import axios from 'axios'
-import vuexI18n from 'vuex-i18n/dist/vuex-i18n.umd.js';
 
 var config = new hush.Config()
 var client = new hushrpc.Client({
@@ -1040,11 +1039,4 @@ var store = new Vuex.Store({
 });
 export default store;
 
-// without return value (will use fallback translation, default translation or key)
-Vue.use(vuexI18n.plugin, store, {
-    moduleName: 'i18n',
-    onTranslationNotFound (locale, key) {
-        console.warn(`i18n :: Key '${key}' not found for locale '${locale}'`);
-    }}
-);
 

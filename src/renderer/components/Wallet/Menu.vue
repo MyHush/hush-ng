@@ -3,7 +3,7 @@
     <div>
       <div>
         <div id="wallet-menu">
-          <div class="menu-title">{{$t('wallet')}}</div>
+          <div class="menu-title">{{$t('message.wallet')}}</div>
           <ul class="block-text chain-data">
             <li><span class="chain-text">{{ magicString }}</span></li>
             <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>

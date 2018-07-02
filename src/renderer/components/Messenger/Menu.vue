@@ -3,24 +3,24 @@
       <el-aside width="300px" >
         <div class="hushlist-title"> HushList</div>
         <div>
-          <div class="subtitle"> {{$t('contacts')}} </div>  
-          <div class="subtitle"> {{$t('lists')}} </div> 
-          <div class="subtitle"> {{$t('conversations')}} <div style="float:right" @click="startConversation" > <icon name="plus"  /> </div> </div> 
+          <div class="subtitle"> {{$t('message.contacts')}} </div>  
+          <div class="subtitle"> {{$t('message.lists')}} </div> 
+          <div class="subtitle"> {{$t('message.conversations')}} <div style="float:right" @click="startConversation" > <icon name="plus"  /> </div> </div> 
         </div>
       </el-aside>
       <el-main> 
         <router-view></router-view>
       </el-main>
 
-      <el-dialog title={{$t('start_a_conversation')}} :visible.sync="startConversationDialogVisible" width="60%" >
+      <el-dialog title={{$t('message.start_a_conversation')}} :visible.sync="startConversationDialogVisible" width="60%" >
         <el-form :model="receiverAddressForm">
           <el-form-item label="Name" label-width="100px">
            
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">         
-          <el-button @click="startConversationDialogVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="startConversation">{{$t('ok')}}</el-button>
+          <el-button @click="startConversationDialogVisible = false">{{$t('message.cancel')}}</el-button>
+          <el-button type="primary" @click="startConversation">{{$t('message.ok')}}</el-button>
         </span>
       </el-dialog>
     </el-container>    

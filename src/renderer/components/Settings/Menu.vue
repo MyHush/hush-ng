@@ -1,24 +1,24 @@
 <template>
     <el-container>
       <el-aside width="300px" >
-        <div class="hushlist-title">{{$t('hushNG_settings')}}</div>
+        <div class="hushlist-title">{{$t('message.hushNG_settings')}}</div>
         <div>
-          <div class="subtitle"> {{$t('contacts')}} </div>
-          <div class="subtitle"> {{$t('lists')}} </div>
-          <div class="subtitle"> {{$t('conversations')}} </div>
-          <div class="subtitle"> {{$t('advanced')}} </div>
+          <div class="subtitle"> {{$t('message.contacts')}} </div>
+          <div class="subtitle"> {{$t('message.lists')}} </div>
+          <div class="subtitle"> {{$t('message.conversations')}} </div>
+          <div class="subtitle"> {{$t('message.advanced')}} </div>
         </div>
       </el-aside>
       <el-main> 
         <router-view></router-view>
       <el-form>
-      <el-form-item label={{$t('privacy_mode')}}>
+      <el-form-item label={{$t('message.privacy_mode')}}>
         <el-switch v-model="privacyMode">
         </el-switch>
         </el-form-item>
-      <el-form-item label={{$t('rpc_port')}}><input placeholder="8822"/> </el-form-item>
+      <el-form-item label={{$t('message.rpc_port')}}><input placeholder="8822"/> </el-form-item>
 
-      <el-form-item label={{$t('refresh_interval')}}><br>
+      <el-form-item label={{$t('message.refresh_interval')}}><br>
       <el-slider :max="120" :step="5" :min="5" v-model="refreshInterval"></el-slider>
       </el-form-item>
 

@@ -8,25 +8,27 @@
     <main>
       <div class="left-side">
         <span class="title">
-          {{$t('welcome_to_hushNG')}}
+          {{$t('message.welcome_to_hushNG')}}
         </span>
         <system-information></system-information>
       </div>
 
       <div class="right-side">
         <div class="doc">
-          <div class="title">{{$t('getting_started')}}</div>
+          <div class="title">{{$t('message.getting_started')}}</div>
           <p>
-            {{$t('getting_started_1')}}
-            {{$t('getting_started_2')}}
+            {{$t('message.getting_started_1')}}
           </p>
           <p>
-            {{$t('getting_started_3')}}
+            {{$t('message.getting_started_2')}}
           </p>
-          <router-link class="button" to="/install">{{$t('initialize_wallet')}}</router-link><br><br>
+          <p>
+            {{$t('message.getting_started_3')}}
+          </p>
+          <router-link class="button" to="/install">{{$t('message.initialize_wallet')}}</router-link><br><br>
         </div>
         <div class="doc">
-          <div class="title alt">{{$t('join_us')}}</div>
+          <div class="title alt">{{$t('message.join_us')}}</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
           <button class="button button-alt" @click="open('https://myhush.org/discord.html')">Discord</button>
           <button class="button button-alt" @click="open('https://twitter.com/MyHushTeam')">Twitter</button>
@@ -42,7 +44,7 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
   import CloseButton from './shared/CloseButton'
-
+  
   var store = require('store')
 
   export default {

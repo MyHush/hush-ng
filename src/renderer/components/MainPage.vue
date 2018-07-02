@@ -132,10 +132,10 @@
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
                   self.connStatus = "Connecting..."
-                  vue.$notify.error({ title: $t('error_connect_daemon_title'), message: $t('error_connect_daemon_message') });
+                  vue.$notify.error({ title: $t('message.error_connect_daemon_title'), message: $t('message.error_connect_daemon_message') });
                 } else {
                   self.connStatus = err.message
-                  vue.$notify.error({ title: $t('error_talking_daemon_title'), message: err.message });
+                  vue.$notify.error({ title: $t('message.error_talking_daemon_title'), message: err.message });
                 }
                 return;
               }

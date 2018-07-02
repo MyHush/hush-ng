@@ -3,7 +3,7 @@
     <div>
       <div>
         <div id="sub-menu">
-          <div class="menu-title">{{$t('contacts')}}</div>
+          <div class="menu-title">{{$t('message.contacts')}}</div>
           <ul class="block-text chain-data">
             <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
             <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
