@@ -3,10 +3,10 @@
     <div>
       <div>
         <div id="sub-menu">
-          <div class="menu-title">Contacts</div>
+          <div class="menu-title">{{$t('message.contacts')}}</div>
           <ul class="block-text chain-data">
-            <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
-            <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
+            <li>{{$t('message.block_height')}}: <span class="chain-text">{{ blockHeight }}</span></li>
+            <li>{{$t('message.peers')}}: <span class="chain-text">{{ peerCount }}</span></li>
           </ul>          
           <ul class="submenu-sections">
             <router-link v-for="(item, index) in addressBookSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
@@ -32,8 +32,10 @@
     data () {
       return {
         addressBookSections: [
-          { 'name': 'addresses', 'path': '/contacts/Addresses', 'active': true },
-          { 'name': 'groups', 'path': '/contacts/Groups', 'active': false }
+          //{ 'name': 'addresses', 'path': '/contacts/Addresses', 'active': true },
+          //{ 'name': 'groups', 'path': '/contacts/Groups', 'active': false }
+          { 'name': this.$t('message.addresses'), 'path': '/contacts/Addresses', 'active': true },
+          { 'name': this.$t('message.groups'), 'path': '/contacts/Groups', 'active': false }
         ]
       }
     },

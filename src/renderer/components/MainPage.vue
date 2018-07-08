@@ -16,6 +16,7 @@
   import { mapState } from 'vuex'
   import Vue from 'vue'
   import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
   import SideMenu from './shared/Menu'
   const Repeat  = require('repeat')
   var request   = require('request')
@@ -132,9 +133,13 @@
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
                   self.connStatus = "Connecting..."
-                  vue.$notify.error({ title: "Error connecting to Hush daemon", message: "Please make sure Hush is running" });
+                  //gilardh : TODO $t('message.make_sure_hushd_is_running')
+                  //gilardh : TODO $t('error_connecting_to_hush_daemon')
+
+                  vue.$notify.error({ title: "Error connecting to Hush daemon", message: "Please make sure hushd is running" });
                 } else {
                   self.connStatus = err.message
+                  //gilardh : TODO: $t(error_talking_to_hush_daemon)
                   vue.$notify.error({ title: "Error talking to Hush daemon", message: err.message });
                 }
                 return;

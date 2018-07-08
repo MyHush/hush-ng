@@ -1,31 +1,31 @@
 <template>
   <div>
-      Below is a list of your addresses<br />
+      {{$t('message.intro_adresses_1')}}<br />
       <span>
 </span>
     <div class="container" >
       <el-row class="caption">
 <el-col :span="10">
-<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">Import zaddr<icon name=angle-double-down></icon></el-button>
-<el-button round type=success id="generate-address" v-on:click="addZAddress()">New zaddr <icon name=plus></icon></el-button>
+<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></el-button>
+<el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
 </el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
-        <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="addressView" label="Shielded Address (zaddr)" width="*" class-name="zaddress" > </el-table-column>        
+        <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
+        <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>        
       </el-table>        
     </div>
     <div class="container" >
       <el-row class="caption">
         <el-col :span="10" >
-<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">Import taddr <icon name=angle-double-down></icon></el-button>
-<el-button round type=success class="generate-address" v-on:click="addTAddress()">New taddr <icon name=plus></icon></el-button>
+<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></el-button>
+<el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></el-button>
 
 </el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
-        <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column  prop="addressView" label="Transparent Address (taddr)" width="*" class-name="taddress" > </el-table-column>      
+        <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
+        <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>      
         <icon name=copy></icon>
         </el-table>
 
@@ -33,28 +33,28 @@
 <div>
 <ul>
 <li>
-Shielded Addresses (zaddrs) preserve your privacy with encrypted transactions
-that do not leak metadata such as the amount or who is sending and receiving,
-and are ANONYMOUS . The receiver will have no way to respond unless you tell
-them how in the memo field. Each memo can contain up to 512 bytes of data.
+{{$t('message.intro_adresses_2')}}
+{{$t('message.intro_adresses_3')}}
+{{$t('message.intro_adresses_4')}}
+{{$t('message.intro_adresses_5')}}
 </li>
 <li>
-Transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name, and the transaction
-information for them is publicly viewable and searchable, by anyone, forever. If your
-needs to not require that or you consider that risky, use a shielded address.
+{{$t('message.intro_adresses_6')}}
+{{$t('message.intro_adresses_7')}}
+{{$t('message.intro_adresses_8')}}
 </li>
 </ul>
     <span>
-    <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
+    <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
 </span>
 
 </div>
     <div class="bottom-row">
       <div class="box alt">
         <ul id="texts">
-          <li><icon class=fa-fw name=eye></icon>Transparent:</li>
-          <li><icon class=fa-fw name=shield-alt></icon>Shielded:</li>
-          <li><icon class=fa-fw name=balance-scale></icon>TOTAL:</li>
+          <li><icon class=fa-fw name=eye></icon>{{$t('message.transparent')}}:</li>
+          <li><icon class=fa-fw name=shield-alt></icon>{{$t('message.shielded')}}:</li>
+          <li><icon class=fa-fw name=balance-scale></icon>{{$t('message.total')}}:</li>
         </ul>
         <ul id="balances">
           <li v-bind:class="{ unconfirmed: !tBalance.valid }" > {{ tBalance.balance }} HUSH</li>
@@ -63,9 +63,9 @@ needs to not require that or you consider that risky, use a shielded address.
         </ul>
       </div>
         <div class="box alt">
-            <b>Network Stats</b><br/>
-            <icon name=download></icon>{{ totalBytesRecv }} bytes received<br/>
-            <icon name=upload></icon>{{ totalBytesSent }} bytes sent<br/>
+            <b>{{$t('message.network_stats')}}</b><br/>
+            <icon name=download></icon>{{ totalBytesRecv }} {{$t('message.bytes_received')}}<br/>
+            <icon name=upload></icon>{{ totalBytesSent }} {{$t('message.bytes_sent')}}<br/>
         </div>
         <div class="box alt">
             <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
@@ -74,35 +74,35 @@ needs to not require that or you consider that risky, use a shielded address.
         </div>
       </div>
 
-    <el-dialog title="Import Transparent Address" :visible.sync="importTaddrVisible" width="60%" >
+    <el-dialog v-bind:title="$t('message.import_transparent_address')" :visible.sync="importTaddrVisible" width="60%" >
       <el-form :model="importTaddrForm">
-        <el-form-item label="Private Key (WIF)" label-width="100px">
-          <el-input placeholder="Wallet Import Format, starting with 5, K or L" v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+        <el-form-item v-bind:label="$t('message.private_key_wif')" label-width="100px">
+          <el-input placeholder={{$t('message.wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
             <ul>
-            <li><icon name=key></icon> Never give anybody your private key!</li>
-            <li><icon name=user-secret></icon> Treat it like a password that protects all the coins in your address.</li>
-            <li><icon name=share-alt></icon> You can import a private key to multiple nodes, they will all have access.</li>
+            <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
+            <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
+            <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
             </ul>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="importTaddrVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">Import</el-button>
+        <el-button @click="importTaddrVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">{{$t('message.import')}}</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="Import Shielded Address" :visible.sync="importZaddrVisible" width="60%" >
+    <el-dialog v-bind:title="$t('message.import_shielded_address')" :visible.sync="importZaddrVisible" width="60%" >
       <el-form :model="importZaddrForm">
-        <el-form-item label="Private Key (WIF)" label-width="100px">
-          <el-input placeholder="Wallet Import Format, starting with SK..." v-model="importZaddrForm.wif" auto-complete="off"></el-input>
+        <el-form-item v-bind:label="$t('message.private_key_wif')" label-width="100px">
+          <el-input v-bind:placeholder="$t('message.wallet_import_format_zaddr')" v-model="importZaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
             <ul>
-            <li><icon name=key></icon> Never give anybody your private key!</li>
-            <li><icon name=user-secret></icon> Treat it like a password that protects all the coins in your address.</li>
-            <li><icon name=share-alt></icon> You can import a private key to multiple nodes, they will all have access.</li>
+            <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
+            <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
+            <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
             </ul>
         </div>
 <!--
@@ -112,8 +112,8 @@ needs to not require that or you consider that risky, use a shielded address.
 -->
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="importZaddrVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="importZaddress(importZaddrForm)">Import</el-button>
+        <el-button @click="importZaddrVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="importZaddress(importZaddrForm)">{{$t('message.import')}}</el-button>
       </span>
     </el-dialog>
 
