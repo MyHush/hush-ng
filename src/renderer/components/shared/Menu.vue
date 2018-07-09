@@ -25,7 +25,7 @@
           { 'name': this.$t('message.wallet'), 'route': '/wallet/Addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
           { 'name': this.$t('message.contacts'), 'route': '/contacts/Addresses', 'path' : '/static/icons/addressbook.svg','active': false },
           { 'name': this.$t('message.hushlist'), 'route': '/hushlist', 'path' : '/static/icons/comment.svg','active': false },
-          { 'name': this.$t('message.settings'), 'route': '/settings', 'path' : '/static/icons/comment.svg','active': false },
+          { 'name': this.$t('message.settings'), 'route': '/settings', 'path' : '/static/icons/setting.svg','active': false },
         ],
         activeItemIndex : 0
       }
