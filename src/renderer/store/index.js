@@ -5,6 +5,8 @@ var hush      = require('hush')
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
+    import messages from '../../lang/messages'
 import ElementUI from 'element-ui';
 import modules from './modules'
 import hushlist from './modules/hushlist';
@@ -54,7 +56,21 @@ function decodeMemo(memo) {
 }
 
 Vue.use(Vuex)
-let vue = new Vue()
+Vue.use(VueI18n)
+
+// Create VueI18n instance with options
+//let localisation = navigator.language
+let localisation = navigator.language.split("-")[0] // Use browser first language
+const i18n = new VueI18n({
+   fallbackLocale: 'en',
+   locale: localisation,
+   //dateTimeFormats,
+   //numberFormats
+   messages
+})
+
+let vue = new Vue({ i18n })
+
 
 // TODO: GUI option for this and read from config file!
 var privacy_mode       = 0;
@@ -77,28 +93,23 @@ var store = new Vuex.Store({
     priceEUR: '...',
     priceUSD: '...',
     totalBalance: { 
-      //gilardh TODO : $t('message.calculating')
-      balance :'Calculating...',
+      balance : i18n.t('message.calculating'),
       valid :true
     },
     tBalance: { 
-      //gilardh TODO : $t('message.calculating')
-      balance : 'Calculating...',
+      balance : i18n.t('message.calculating'),
       valid :true
     },
     zBalance: { 
-      //gilardh TODO : $t('message.calculating')
-      balance : 'Calculating...',
+      balance : i18n.t('message.calculating'),
       valid :true
     },
     unconfirmedBalance: 0.0,
     availableBalance :0.0,
     totalAmount: '...',
-    //gilardh TODO : $t('message.scanning')
-    blockHeight: 'Scanning...',
+    blockHeight: i18n.t('message.scanning'),
     magicString: '...',
-    //gilardh TODO : $t('message.discovering')
-    peerCount: 'Discovering...',
+    peerCount: i18n.t('message.discovering'),
     walletPolling: false,
     rpcCredentials : {
       user : "",
@@ -171,13 +182,11 @@ var store = new Vuex.Store({
         }
 
         if (operation.status != op.status && op.status === "executing") {
-          //gilardh TODO : $t('message.operation_is_executing')
-          vue.$message.warning('Operation is executing. Check the pending operation list for further information', 5000 );     
+          vue.$message.warning(i18n.t('message.operation_is_executing'), 5000 );     
         }
               
         if (operation.status != op.status && op.status === "success" ) {
-          //gilardh TODO : $t('message.transaction_was_created_successfully')
-          vue.$message.success('Transaction was created successfully. Transaction id is:' + op.result.txid, 5000 );            
+          vue.$message.success(i18n.t('message.transaction_was_created_successfully') + op.result.txid, 5000 );            
         }    
 
         operation.date = Date.now();
@@ -300,23 +309,22 @@ var store = new Vuex.Store({
         }
       }
 
+
+
       if (!contact.nickName) {
-        //gilardh TODO : $t('message.contacts_must_have_a_nickname')
-          vue.$message.error("Contacts must have a nickname");
+          vue.$message.error(i18n.t('message.contacts_must_have_a_nickname'))
           return;
       }
 
       if (!contact.address) {
-        //gilardh TODO : $t('message.contacts_must_have_an_address')
-          vue.$message.error("Contacts must have an address");
+          vue.$message.error(i18n.t('message.contacts_must_have_an_address'));
           return;
       }
 
       // TODO: support testnet and other chains
       // TODO: Sapling address format might be different!
       if (!contact.address.match(/^zc[a-z0-9]{93}$/i) ) {
-          //gilardh TODO : $t('message.invalid_address_for_contact')
-          vue.$message.error("Invalid address for contact");
+          vue.$message.error(i18n.t('message.invalid_address_for_contact'));
           return;
       }
 
@@ -326,9 +334,7 @@ var store = new Vuex.Store({
       } else {
         var found = state.contacts.find( a => a.address == contact.address);
         if (found) {
-            //gilardh TODO : $t('message.there_is_already_a_contact')
-            //gilardh TODO : $t('message.with_address')
-            vue.$message.error("There is already a contact \"" + found.nickName + "\" with address " + found.address);
+            vue.$message.error(i18n.t('message.there_is_already_a_contact') + " : " + found.nickName + i18n.t('message.with_address') + " : " + found.address);
             return;
         }
       }
@@ -622,8 +628,7 @@ var store = new Vuex.Store({
             rescan = 'whenkeyisnew';
             height = 0;
             var result = await client.z_importkey(wif,rescan,height);
-            //gilardh TODO : $t(message.imported_shielded_address_from_WIF)
-            vue.$message.success("Imported shielded address from WIF");
+            vue.$message.success(i18n.t(message.imported_shielded_address_from_WIF));
         } catch (err) {
             console.log("params=" + wif + "," +  rescan + "," + height);
             console.log(err);
@@ -636,8 +641,7 @@ var store = new Vuex.Store({
             var label = "";
             rescan = true;
             var result = await client.importPrivKey(wif,label,rescan);
-            //gilardh TODO : $t(message.imported_transparent_address_from_WIF)
-            vue.$message.success("Imported transparent address from WIF");
+            vue.$message.success(i18n.t(message.imported_transparent_address_from_WIF));
         } catch (err) {
             console.log("params=" + wif + "," + label + "," + rescan);
             console.log(err);
@@ -650,8 +654,7 @@ var store = new Vuex.Store({
         var result = await client.getNewAddress();
         console.log(result);
         commit('addAddress', {address: result, balance: '...', type: 't'});
-        //gilardh TODO : $t(message.created_new_taddr)
-        var msg = "Created new taddr " + result;
+        var msg = i18n.t(message.created_new_taddr) + " " + result;
         console.log(msg);
         vue.$message.success(msg);
       }
@@ -665,8 +668,7 @@ var store = new Vuex.Store({
       try {
         var result = await client.z_getnewaddress();
         commit('addAddress', {address: result, balance: '...', type: 'z'});
-        //gilardh TODO : $t(message.created_new_zaddr)
-        var msg = "Created new zaddr " + result;
+        var msg = i18n.t(message.created_new_zaddr) + " " + result;
         console.log(msg);
         vue.$message.success(msg);
       }
@@ -688,8 +690,7 @@ var store = new Vuex.Store({
           return 1;
       } catch(err) {
           log(err);
-          //gilardh TODO : $t(message.error_importing_viewkey)
-          vue.$notify.error({ title: "Error importing viewkey " + viewkey, message: err.message, duration: 0, showClose: true });
+          vue.$notify.error({ title: i18n.t(message.error_importing_viewkey) + viewkey, message: err.message, duration: 0, showClose: true });
           return 0;
       }
     },
@@ -706,8 +707,7 @@ var store = new Vuex.Store({
           return result;
       } catch(err) {
           log(err);
-          //gilardh TODO : $t(message.error_retreiving_viewkey_for)
-          vue.$notify.error({ title: "Error retreiving viewkey for " + chatForm.conversationAddress, message: err.message, duration: 0, showClose: true });
+          vue.$notify.error({ title: i18n.t('message.error_retreiving_viewkey_for') + " " + chatForm.conversationAddress, message: err.message, duration: 0, showClose: true });
           return;
       }
     },
@@ -779,8 +779,7 @@ var store = new Vuex.Store({
         var result = await client.z_sendmany(from,receivers,minConf,networkFee);
       } catch(err) {
         //vue.$message.error(err);
-        //gilardh TODO : $t(message.error_sending_memo)
-        vue.$notify.error({ title: "Error sending memo", message: err.message, duration: 0, showClose: true });
+        vue.$notify.error({ title: i18n.t('message.error_sending_memo'), message: err.message, duration: 0, showClose: true });
         console.dir(err);
         log(err);
       }
@@ -793,16 +792,14 @@ var store = new Vuex.Store({
 
       var from;
       if(!transactionForm.from) {
-        //gilardh TODO : $t(message.you_must_choose_a_from_address)
-        vue.$message.error("You must choose a From address!")
+        vue.$message.error(i18n.t('message.you_must_choose_a_from_address'))
         return;
       }
       from = transactionForm.from;
       log("Sending from address " + from);
 
       if(!transactionForm.destinationAddresses.length) {
-        //gilardh TODO : $t(message.you_must_have_at_least_one_recipient_in_your_transaction)
-        vue.$message.error("You must have at least one recipient in your transaction!");
+        vue.$message.error(i18n.t('message.you_must_have_at_least_one_recipient_in_your_transaction'));
         return;
       }
       // TODO: support 1,0=1.0 notation
@@ -812,8 +809,8 @@ var store = new Vuex.Store({
       if (transactionForm.amount >= 0 && (transactionForm.amount <= MAX_MONEY) && (transactionForm.amount == transactionForm.amount) ) {
         // valid amount
       } else {
-        //gilardh TODO : $t(message.amount_must_be_number_valid)
-        var msg = "Amount must be number >= 0 and <= " + MAX_MONEY;
+
+        var msg = i18n.t('message.amount_must_be_number_valid') + " " + MAX_MONEY;
         vue.$message.error(msg);
         return;
       }
@@ -901,31 +898,23 @@ var store = new Vuex.Store({
             log("About to z_sendmany(" + from + ",receivers,1," + transactionForm.fee + ")");
             var result = await client.z_sendmany(from,receivers,1,transactionForm.fee);
             //gilardh TODO : translate to optimize later if needed 
-            //gilardh TODO : $t(message.transaction_for_total_amount_of)
-            //gilardh TODO : $t(message.hush_queued_successfully)
-            var msg    = "Transaction for total amount of " + total_amount + " HUSH queued successfully!";
+            var msg    = i18n.t('message.transaction_for_total_amount_of') + " " + total_amount + " " +  i18n.t('message.hush_queued_successfully');
             vue.$message.success(msg);
             console.log(msg);
             commit('addOrUpdateOperationStatus', {id: result.toString(), status: "queued"});
         } else {
             // Not enough funds in wallet to make this transaction!
             //gilardh TODO : translate to optimize later if needed 
-            //gilardh TODO : $t(message.current_wallet_has)
-            //gilardh TODO : $t(message.but)
-            //gilardh TODO : $t(message.hush_needed_for_this_transaction)
-            //gilardh TODO : $t(message.you_need)
-            //gilardh TODO : $t(message.to_make_this_transaction)
-            var msg  = "Current wallet has " + current_balance + "\nbut " + total_amount;
-            msg     += " HUSH needed for this transaction!\n";
-            msg     += "You need " + (total_amount - current_balance) + " to make this transaction";
+            var msg  = i18n.t('message.current_wallet_has') + " " + current_balance + "\n" + i18n.t('message.but') + " " + total_amount;
+            msg     += + " " + i18n.t('message.hush_needed_for_this_transaction') + "\n";
+            msg     += i18n.t('message.you_need') + " " + (total_amount - current_balance) + " " + i18n.t('message.to_make_this_transaction');
             console.log(msg);
             vue.$message.error(msg);
         }
       } catch(err) {
         if(err) {
             console.log(err);
-            //gilardh TODO : $t(message.oh_shite)
-            vue.$message.error("Oh shite! " + err);
+            vue.$message.error(i18n.t('message.oh_shite') + " " + err);
             console.log(receivers);
         }
       }
@@ -996,8 +985,7 @@ var store = new Vuex.Store({
         try {
             xtns = await client.z_listReceivedByAddress(zIntroducer, 0);
         } catch(err) {
-          //gilardh TODO : $t(message.error_finding_previous_messages_for)
-          vue.$notify.error({ title: "Error finding previous messages for " + contact.nickName, message: err.message, duration: 0, showClose: true });
+          vue.$notify.error({ title: i18n.t('message.error_finding_previous_messages_for') + " " + contact.nickName, message: err.message, duration: 0, showClose: true });
           return;
         }
 

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import axios from 'axios'
-
 import App from './App'
 import router from './router'
 import store from './store'
@@ -12,7 +11,8 @@ import messages from '../lang/messages'
 Vue.use(VueI18n)
 
 // Create VueI18n instance with options
-let localisation = navigator.language
+//let localisation = navigator.language
+let localisation = navigator.language.split("-")[0] // Use browser first language
 const i18n = new VueI18n({
   fallbackLocale: 'en',
   locale: localisation,
@@ -41,6 +41,7 @@ Vue.use(Tooltip);
 Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({
+  el: '#app',
   i18n,
   components: { App },
   router,

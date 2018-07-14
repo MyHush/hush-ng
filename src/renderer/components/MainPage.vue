@@ -18,6 +18,7 @@
   import Vuex from 'vuex'
   import VueI18n from 'vue-i18n'
   import SideMenu from './shared/Menu'
+  import messages from '../../lang/messages'
   const Repeat  = require('repeat')
   var request   = require('request')
   var store     = require('store')
@@ -28,8 +29,21 @@
   var config    = new hush.Config()
 
   Vue.use(Vuex)
-  let vue = new Vue()
+  Vue.use(VueI18n)
 
+  // Create VueI18n instance with options
+  //let localisation = navigator.language
+  let localisation = navigator.language.split("-")[0] // Use browser first language
+  const i18n = new VueI18n({
+    fallbackLocale: 'en',
+    locale: localisation,
+    //dateTimeFormats,
+    //numberFormats
+    messages
+  })
+
+  let vue = new Vue({ i18n })
+ 
   export default {
     name: 'main-page',
     components: {SideMenu },
@@ -38,10 +52,11 @@
       ...mapState([
           'walletPolling',
         ]), 
+   
     },
     data () {
       return {
-        connStatus: 'Connecting...',
+        connStatus: this.$t('message.connecting'),
         connectedToDeamon: false,
         lastUpdate: 0,
       }
@@ -128,19 +143,17 @@
               timeout: 60000
             });
 
+
             client.getInfo(function(err, data, resHeaders) {
               if (err) {
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
-                  self.connStatus = "Connecting..."
-                  //gilardh : TODO $t('message.make_sure_hushd_is_running')
-                  //gilardh : TODO $t('error_connecting_to_hush_daemon')
-
-                  vue.$notify.error({ title: "Error connecting to Hush daemon", message: "Please make sure hushd is running" });
+                  //self.connStatus = i18n.t('message.connecting')
+                  self.connStatus = err.message
+                  vue.$notify.error({ title: i18n.t('message.error_connecting_to_hush_daemon'), message: i18n.t('message.make_sure_hushd_is_running') });
                 } else {
                   self.connStatus = err.message
-                  //gilardh : TODO: $t(error_talking_to_hush_daemon)
-                  vue.$notify.error({ title: "Error talking to Hush daemon", message: err.message });
+                  vue.$notify.error({ title: i18n.t('message.error_talking_to_hush_daemon'), message: err.message });
                 }
                 return;
               }

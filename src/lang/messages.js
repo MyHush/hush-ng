@@ -8,12 +8,12 @@ export default {
 	join_us: "Join us!",
 	getting_started: "Getting Started",
 	initialize_wallet: "Initialize wallet",
-	getting_started_1: "Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets, easily enable mining,",
+	getting_started_1: "Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets ",
 	getting_started_2: "and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.",
 	getting_started_3: "Start by downloading the Hush proving-key. Afterwards, your wallet will be initialized and ready for use",
 	
 	error_connect_daemon_title: "Error connecting to Hush daemon",
-	error_connect_daemon_message: "message Please make sure Hush is running",
+	error_connect_daemon_message: "Please make sure Hush is running",
     error_talking_daemon_title: "Error talking to Hush daemon",
 
     hushd_is_already_running: "Hush is already running! Skipping download process",
@@ -170,9 +170,10 @@ export default {
     block_height: "Block height",
     peers: "Peers",
 
-    calculating: "Calculating",
+    calculating: "Calculating...",
     scanning: "Scanning",
     discovering: "Discovering",
+    connecting : "Connecting",
 
     operation_is_executing: "Operation is executing. Check the pending operation list for further information",    
     transaction_was_created_successfully: "Transaction was created successfully. Transaction id is : ",
@@ -187,28 +188,28 @@ export default {
     imported_shielded_address_from_WIF: "Imported shielded address from WIF",
     imported_transparent_address_from_WIF: "Imported transparent address from WIF",
 
-    created_new_taddr: "Created new taddr ",
-    created_new_zaddr: "Created new zaddr ",
+    created_new_taddr: "Created new taddr",
+    created_new_zaddr: "Created new zaddr",
 
 
     error_importing_viewkey: "Error importing viewkey ",
-    error_retreiving_viewkey_for: "Error retreiving viewkey for ",    
+    error_retreiving_viewkey_for: "Error retreiving viewkey for",    
     error_sending_memo: "Error sending memo",
     you_must_choose_a_from_address: "You must choose a From address!",
     you_must_have_at_least_one_recipient_in_your_transaction: "You must have at least one recipient in your transaction!",
-    amount_must_be_number_valid: "Amount must be number >= 0 and <= ",
+    amount_must_be_number_valid: "Amount must be number >= 0 and <=",
 
-    transaction_for_total_amount_of: "Transaction for total amount of ",
-    hush_queued_successfully: " HUSH queued successfully!",
-    current_wallet_has: "Current wallet has ",
-    but: "but ",
-    hush_needed_for_this_transaction: " HUSH needed for this transaction!",
-    you_need: "You need ",
-    to_make_this_transaction: " HUSH to make this transaction",
+    transaction_for_total_amount_of: "Transaction for total amount of",
+    hush_queued_successfully: "HUSH queued successfully!",
+    current_wallet_has: "Current wallet has",
+    but: "but",
+    hush_needed_for_this_transaction: "HUSH needed for this transaction!",
+    you_need: "You need",
+    to_make_this_transaction: "HUSH to make this transaction",
 
-    error_finding_previous_messages_for: "Error finding previous messages for ",
+    error_finding_previous_messages_for: "Error finding previous messages for",
 
-    oh_shite: "Oh shite! ",
+    oh_shite: "Oh shite!",
 
     to: "To"
 
@@ -228,8 +229,8 @@ export default {
 	initialize_wallet: "Initialiser le portefeuille",
 	
     getting_started_1: "Hush Next-Generation est votre passerelle vers la blockchain Hush.",
-    getting_started_2: "Gérez vos portefeuilles, activez facilement l'exploration minière et utilisez le protocole HushList pour envoyer et recevoir des messages chiffrés et anonymes, appelés mémos.",
-  	getting_started_3: "Commencez par télécharger la clé de vérification Hush. Ensuite, votre portefeuille sera initialisé et prêt à l'emploi",
+    getting_started_2: "GÃ©rez vos portefeuilles et utilisez le protocole HushList pour envoyer et recevoir des messages chiffrÃ©s et anonymes, appelÃ©s mÃ©mos.",
+    getting_started_3: "Commencez par télécharger la clé de vérification Hush. Ensuite, votre portefeuille sera initialisé et prêt à l'emploi",
 	error_connect_daemon_title: "Erreur lors de la connexion au daemon Hush",
     error_connect_daemon_message: "S'il vous plaît, assurez-vous que Hush est en cours d'exécution",
     error_talking_daemon_title: "Erreur lors de la communication avec le daemon Hush",
@@ -389,15 +390,16 @@ export default {
     import_shielded_address: "Importer une adresse protégée",
 
     make_sure_hushd_is_running: "S'il vous plaît assurez-vous que hushd est lancé.",
-    error_connecting_to_hush_daemon: "Erreur de connection à Hush démon.",
-    error_talking_to_hush_daemon: "Erreur de communication avec Hush démon.",
+    error_connecting_to_hush_daemon: "Erreur de connection au démon de Hush.",
+    error_talking_to_hush_daemon: "Erreur de communication au démon de Hush",
 
     block_height: "Nb de bloc",
     peers: "Pairs",
 
-    calculating: "Calcul",
+    calculating: "Calcul...",
     scanning: "Scan",
     discovering: "Recherche",
+    connecting : "Connexion",
 
     operation_is_executing: "L'opération est en cours d'exécution. Vérifiez la liste des opérations en attente pour plus d'informations.",    
     transaction_was_created_successfully: "La transaction a été créée avec succès. L'identifiant de transaction est : ",
@@ -411,27 +413,27 @@ export default {
     imported_shielded_address_from_WIF: "Adresse blindée importée depuis WIF",
     imported_transparent_address_from_WIF: "Adresse transparente importée depuis WIF",
 
-    created_new_taddr: "Nouvelle taddr créée ",
-    created_new_zaddr: "Nouvelle zaddr créée ",
-
+    created_new_taddr: "Nouvelle taddr créée",
+    created_new_zaddr: "Nouvelle zaddr créée",
+    
     error_importing_viewkey: "Erreur lors de l'importation clef ",
-    error_retreiving_viewkey_for: "Erreur lors de l'extraction de la clef pour ",
+    error_retreiving_viewkey_for: "Erreur lors de l'extraction de la clef pour",
     error_sending_memo: "Erreur lors de l'envoi du mémo",
     you_must_choose_a_from_address: "Vous devez choisir une adresse de départ !",
     you_must_have_at_least_one_recipient_in_your_transaction: "Vous devez avoir au moins un destinataire dans votre transaction!",
-    amount_must_be_number_valid: "Le montant doit être un nombre nombre entre >= 0 et <= ",
+    amount_must_be_number_valid: "Le montant doit être un nombre nombre entre >= 0 et <=",
 
     transaction_for_total_amount_of: "Transaction pour un montant total de",
-    hush_queued_successfully: " HUSH avec succès !",
-    current_wallet_has: "Le portefeuille actuel contient ",
-    but: "mais ",
-    hush_needed_for_this_transaction: " HUSH sont nécessaire pour cette transaction !",
-    you_need: "Vous avez besoin de ",
-    to_make_this_transaction: " HUSH pour réaliser cette transation.",
+    hush_queued_successfully: "HUSH avec succès !",
+    current_wallet_has: "Le portefeuille actuel contient",
+    but: "mais",
+    hush_needed_for_this_transaction: "HUSH sont nécessaire pour cette transaction !",
+    you_need: "Vous avez besoin de",
+    to_make_this_transaction: "HUSH pour réaliser cette transation.",
 
-    error_finding_previous_messages_for: "Erreur lors de la recherche des messages précédents pour ",
+    error_finding_previous_messages_for: "Erreur lors de la recherche des messages précédents pour r",
 
-    oh_shite: "Oopsss! ",
+    oh_shite: "Oopsss!",
 
     to: "vers"
 
