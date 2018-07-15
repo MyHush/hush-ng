@@ -1,9 +1,25 @@
 import Vue from 'vue'
 import axios from 'axios'
-
 import App from './App'
 import router from './router'
 import store from './store'
+import VueI18n from 'vue-i18n'
+import messages from '../lang/messages'
+//import dateTimeFormats from './lang/dateTimeFormats'
+//import numberFormats from './lang/numberFormats'
+
+Vue.use(VueI18n)
+
+// Create VueI18n instance with options
+//let localisation = navigator.language
+let localisation = navigator.language.split("-")[0] // Use browser first language
+const i18n = new VueI18n({
+  fallbackLocale: 'en',
+  locale: localisation,
+  //dateTimeFormats,
+  //numberFormats
+  messages
+})
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -25,6 +41,8 @@ Vue.use(Tooltip);
 Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({
+  el: '#app',
+  i18n,
   components: { App },
   router,
   store,

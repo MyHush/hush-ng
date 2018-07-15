@@ -3,11 +3,11 @@
     <div>
       <div>
         <div id="wallet-menu">
-          <div class="menu-title">Wallet</div>
+          <div class="menu-title">{{$t('message.wallet')}}</div>
           <ul class="block-text chain-data">
-            <li><span class="chain-text">{{ magicString }}</span></li>
-            <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
-            <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
+            <li><span class="chain-text"> {{ magicString }}</span></li>
+            <li>{{$t('message.block_height')}}: <span class="chain-text">{{ blockHeight }}</span></li>
+            <li>{{$t('message.peers')}}: <span class="chain-text">{{ peerCount }}</span></li>
           </ul>
           <ul class="wallet-sections">
             <router-link v-for="(item, index) in walletSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
@@ -42,8 +42,8 @@
         connStatus: 'Connecting...',
         connectedToDeamon: false,
         walletSections: [
-          { 'name': 'addresses', 'path': '/wallet/addresses', 'active': true },
-          { 'name': 'transactions', 'path': '/wallet/transactions', 'active': false }
+          { 'name': this.$t('message.addresses'), 'path': '/wallet/addresses', 'active': true },
+          { 'name': this.$t('message.transactions'), 'path': '/wallet/transactions', 'active': false }
         ]
       }
     },

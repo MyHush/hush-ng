@@ -6,26 +6,30 @@
     <main>
       <div class="left-side">
         <span class="title">
-          Welcome to HushNG
+          {{$t('message.welcome_to_hushNG')}}
         </span>
         <system-information></system-information>
       </div>
 
       <div class="right-side">
         <div class="doc">
-          <div class="title">Installing HushNG</div>
+          <div class="title">{{$t('message.installing_hushNG')}}</div>
           <ul class="install-list">
             <li v-for="step in installSteps">
               <div class="progress" v-bind:class="{ pending: step.pending, error: step.error, success: step.success }"></div> {{ step.title }}
             </li>
           </ul>
-            <router-link class="button primary" to="/wallet" style="font-weight: 600;">Launch HushNG</router-link><br><br>
-            <button class="button button-info" @click="cancelsetup()">Cancel setup</button><br><br>
+            <router-link class="button primary" to="/wallet" style="font-weight: 600;">{{$t('message.launch_hushNG')}}</router-link><br><br>
+            <button class="button button-info" @click="cancelsetup()">{{$t('message.cancel_setup')}}</button><br><br>
         </div>
         <div class="doc">
-          <div class="title alt">Get Involved</div>
+          <div class="title alt">{{$t('message.join_us')}}</div>
           <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://myhush.org/discord')">Discord</button>
+          <button class="button button-alt" @click="open('https://myhush.org/discord.html')">Discord</button>
+          <button class="button button-alt" @click="open('https://twitter.com/MyHushTeam')">Twitter</button>
+          <!-- <button class="button button-alt" @click="open('https://fb.me/MyHushTeam')">Facebook</button> -->
+          <!-- <button class="button button-alt" @click="open('https://bitcointalk.org/index.php?topic=2008578.0')">Bitcoin Talk</button> -->
+          <button class="button button-alt" @click="open('https://reddit.com/r/myhush/')">Reddit</button>
         </div>
       </div>
     </main>
@@ -198,7 +202,7 @@
             var getInfo = client.getInfo();
             if (getInfo) {
                 console.log(getInfo);
-                var msg = "Hush is already running! Skipping download process";
+                var msg = this.$t('hushd_is_already_running');
                 vue.$message(msg);
                 console.log(msg);
                 installed = 1;
