@@ -1,37 +1,55 @@
 <template>
   <div style="height:100%">
-      Below is a list of your contacts<br />
+      {{$t('message.list_of_contacts')}}<br/>
     <div class="container" style="height:95%">
       <el-row class="caption">
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addContact()">New contact</a></el-col>
+        <el-col :span="4"><a class="button" id="generate-address" v-on:click="addContact()">{{$t('message.new_contact')}}</a></el-col>
       </el-row>
       <el-table :data="contacts" height="90%" style="width: 100%" empty-text="None">
-        <el-table-column prop="nickName" label="Contact" width="100"> </el-table-column>
-        <el-table-column prop="address" label="Address" width="*" class-name="address" > </el-table-column>        
+        <el-table-column label="" width="100">
+          <template slot-scope="scope">
+            <el-button @click="chatContact(scope.row)" size="small"><icon name=envelope></icon>{{$t('message.chat')}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="nickName" v-bind:label="$t('message.contacts')" width="100"> </el-table-column>
+        <el-table-column prop="address" v-bind:label="$t('message.addresses')" width="*" class-name="address" > </el-table-column>        
         <el-table-column
           fixed="right"
           label=""
-          width="120">
+          width="200">
           <template slot-scope="scope">
-            <el-button @click="editContact(scope.row)" type="text" size="small">Edit</el-button>
-            <el-button type="text" @click="removeContact(scope.row)" size="small">Delete</el-button>
+            <el-button @click="editContact(scope.row)"  size="small"><icon name=pencil-alt></icon>{{$t('message.edit')}}</el-button>
+            <el-button @click="removeContact(scope.row)" size="small"><icon name=bomb></icon>{{$t('message.delete')}}</el-button>
           </template>
         </el-table-column>        
       </el-table>        
     </div>    
 
-    <el-dialog title="Edit contact" :visible.sync="contactDialogVisible" width="60%" >
+    <el-dialog v-bind:title="$t('message.edit_contact')" :visible.sync="contactDialogVisible" width="60%" >
       <el-form :model="contactForm">
-        <el-form-item label="Name" label-width="100px">
+        <el-form-item v-bind:label="$t('message.name')" label-width="100px">
           <el-input v-model="contactForm.nickName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="Address" label-width="100px">
+        <el-form-item v-bind:label="$t('message.adress')" label-width="100px">
          <el-input v-model="contactForm.address" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">         
-        <el-button @click="contactDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="saveContact">Save</el-button>
+        <el-button @click="contactDialogVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="saveContact(contactForm)">{{$t('message.save')}}</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog v-bind:title="$t('message.chat')" :visible.sync="chatDialogVisible" width="60%" >
+     {{ chatForm.nickName }}
+      <el-form :model="chatForm">
+        <el-form-item v-bind:label="$t('message.memo')" label-width="100px">
+          <el-input v-model="chatForm.memo" type=textarea auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">         
+        <el-button @click="chatDialogVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="sendToContact(chatForm)">{{$t('message.send')}}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -40,6 +58,7 @@
 <script> 
   import copy from 'copy-to-clipboard';
   import { mapState,mapGetters, mapActions } from 'vuex'
+  function log(msg) { console.log(msg) }
 
   export default {
     name: 'addresses',
@@ -49,47 +68,89 @@
          contactForm : {
           id: null,
           nickName: "",
-          address: ""
+          address: "",
+          conversationAddress: ""
         },
-        contactDialogVisible: false
+         chatForm : {
+          id: null,
+          nickName: "",
+          memo: "",
+          conversationAddress: "",
+          conversationVK:      ""
+        },
+        contactDialogVisible: false,
+        chatDialogVisible: false
       }
     },
-    
+
     computed:{
-      ...mapState([       
+      ...mapState([
         'contacts'
-      ])                         
-           
+      ])
     },
+
     methods: {
       copy (value) {
         copy(value)
         alert('Copied ' + value + ' to clipboard.')
       },
+
       addContact (value) {
-        this.contactForm.id = null;
-         this.contactForm.nickName = "";
-         this.contactForm.address = "";
-         this.contactDialogVisible = true;   
+         this.contactForm.id                  = null;
+         this.contactForm.nickName            = "";
+         this.contactForm.address             = "";
+         this.contactForm.conversationAddress = "";
+         this.contactDialogVisible            = true;
       },
+
       editContact (contact) {
-         this.contactForm.id = contact.id;
-         this.contactForm.nickName = contact.nickName;
-         this.contactForm.address = contact.address;
-         this.contactDialogVisible = true;   
-      },         
-      removeContact (contact) {
-        this.$store.commit('removeContact',contact );          
-        this.$store.dispatch('saveContacts');      
+         console.log(contact);
+         this.contactForm.id                  = contact.id;
+         this.contactForm.nickName            = contact.nickName;
+         this.contactForm.address             = contact.address;
+         this.contactForm.conversationAddress = contact.conversationAddress;
+         this.contactDialogVisible            = true;
       },
-      saveContact () {         
-         this.$store.commit('addOrUpdateContact',this.contactForm);    
-         this.$store.dispatch('saveContacts');     
-         this.contactDialogVisible = false; 
-      }      
+
+      removeContact (contact) {
+        this.$store.commit('removeContact',contact );
+        this.$store.dispatch('saveContacts');
+        log("Removed contact " + contact.nickName);
+      },
+
+
+      chatContact (contact) {
+         this.chatForm.nickName            = contact.nickName;
+         this.chatForm.address             = contact.address;
+         this.chatForm.id                  = contact.id;
+         this.chatForm.conversationAddress = contact.conversationAddress;
+         this.chatDialogVisible            = true;
+         console.log("Opening chat with " + contact.nickName + ":" + contact.address + " with zc=" + contact.conversationAddress );
+         this.$store.dispatch('renderChat', contact);
+      },
+
+      saveContact (contactForm) {
+         console.log(contactForm);
+         this.$store.commit('addOrUpdateContact',contactForm);
+         this.$store.dispatch('saveContacts');
+         this.contactDialogVisible = false;
+      },
+
+      sendToContact (chatForm) {
+        log("Send a memo to " + chatForm.nickName + " consisting of " + chatForm.memo);
+        var memoLength = chatForm.memo.length;
+        log("Memo length = " + memoLength);
+
+        if (memoLength <= 512) {
+            this.$store.dispatch('sendMemoToContact',this.chatForm);
+        } else {
+            // TODO: multipart
+            log("Multipart HushList memo not implemented yet!");
+        }
+      },
+
     },
     mounted: function() {
-     
     }
   }
 </script>

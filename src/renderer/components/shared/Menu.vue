@@ -22,10 +22,10 @@
     data () {      
       return {
         menuSections: [
-          { 'name': 'wallet', 'route': '/wallet/Addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
-          { 'name': 'contacts', 'route': '/contacts/Addresses', 'path' : '/static/icons/addressbook.svg','active': false },
-          { 'name': 'hushlist', 'route': '/hushlist', 'path' : '/static/icons/comment.svg','active': false },
-          { 'name': 'settings', 'route': '/settings', 'path' : '/static/icons/comment.svg','active': false },
+          { 'name': this.$t('message.wallet'), 'route': '/wallet/Addresses', 'path' : '/static/icons/wallet.svg', 'active': true },
+          { 'name': this.$t('message.contacts'), 'route': '/contacts/Addresses', 'path' : '/static/icons/addressbook.svg','active': false },
+          { 'name': this.$t('message.hushlist'), 'route': '/hushlist', 'path' : '/static/icons/comment.svg','active': false },
+          { 'name': this.$t('message.settings'), 'route': '/settings', 'path' : '/static/icons/setting.svg','active': false },
         ],
         activeItemIndex : 0
       }
@@ -37,7 +37,7 @@
       }
     },
     mounted: function() {
-     console.log("mounted menu");
+     //console.log("mounted menu");
     }
   }
 </script>

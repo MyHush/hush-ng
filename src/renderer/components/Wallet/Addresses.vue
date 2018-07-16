@@ -1,59 +1,129 @@
 <template>
   <div>
-      Below is a list of your addresses<br />
-      <span>Shielded Addresses (zaddrs) are ANONYMOUS while transparent addresses (taddrs) are PSEUDONYMOUS, like a pen name. </span>
+      {{$t('message.intro_adresses_1')}}<br />
+      <span>
+</span>
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="2" >zaddr</el-col>
-        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4"  ><a class="button" id="generate-address" v-on:click="addZAddress()">New address</a></el-col>
+<el-col :span="10">
+<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></el-button>
+<el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
+</el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
-        <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-        <el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>        
+        <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
+        <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>        
       </el-table>        
     </div>
     <div class="container" >
       <el-row class="caption">
-        <el-col :span="2" >taddr</el-col>
-        <el-col :span="18" class="copy" >click on an address to copy it</el-col>
-        <el-col :span="4" ><a class="button" id="generate-address" v-on:click="addTAddress()">New address</a></el-col>
+        <el-col :span="10" >
+<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></el-button>
+<el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></el-button>
+
+</el-col>
       </el-row>   
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
-        <el-table-column prop="balance" label="Amount" width="140" nowrap> </el-table-column>
-		<el-table-column prop="addressView" label="Address" width="*" class-name="address" > </el-table-column>      
-		</el-table>       
+        <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
+        <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>      
+        <icon name=copy></icon>
+        </el-table>
 
     </div>
+<div>
+<ul>
+<li>
+{{$t('message.intro_adresses_2')}}
+{{$t('message.intro_adresses_3')}}
+{{$t('message.intro_adresses_4')}}
+{{$t('message.intro_adresses_5')}}
+</li>
+<li>
+{{$t('message.intro_adresses_6')}}
+{{$t('message.intro_adresses_7')}}
+{{$t('message.intro_adresses_8')}}
+</li>
+</ul>
+    <span>
+    <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
+</span>
+
+</div>
     <div class="bottom-row">
-      <div class="box">
+      <div class="box alt">
         <ul id="texts">
-          <li>Transparent:</li>
-          <li>Shielded:</li>
-          <li>TOTAL:</li>
+          <li><icon class=fa-fw name=eye></icon>{{$t('message.transparent')}}:</li>
+          <li><icon class=fa-fw name=shield-alt></icon>{{$t('message.shielded')}}:</li>
+          <li><icon class=fa-fw name=balance-scale></icon>{{$t('message.total')}}:</li>
         </ul>
         <ul id="balances">
-          <li v-bind:class="{ unconfirmed: !tBalance.valid }" >{{ tBalance.balance }} HUSH</li>
-          <li v-bind:class="{ unconfirmed: !zBalance.valid }" >{{ zBalance.balance }} HUSH</li>
-          <li v-bind:class="{ unconfirmed: !totalBalance.valid }">{{ totalBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !tBalance.valid }" > {{ tBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !zBalance.valid }" > {{ zBalance.balance }} HUSH</li>
+          <li v-bind:class="{ unconfirmed: !totalBalance.valid }"> {{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
         <div class="box alt">
-            <b>Network Stats</b><br/>
-            {{ totalBytesRecv }} bytes received<br/>
-            {{ totalBytesSent }} bytes sent<br/>
+            <b>{{$t('message.network_stats')}}</b><br/>
+            <icon name=download></icon>{{ totalBytesRecv }} {{$t('message.bytes_received')}}<br/>
+            <icon name=upload></icon>{{ totalBytesSent }} {{$t('message.bytes_sent')}}<br/>
         </div>
         <div class="box alt">
-            <b>Funding</b><br/>
-            <a class="button" id="funding" v-on:click="fundHushFund()">Fund Your Hush Fund</a>
+            <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
+            <icon name="euro-sign"></icon> {{ priceEUR }} EUR/HUSH<br/>
+            <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
         </div>
       </div>
+
+    <el-dialog v-bind:title="$t('message.import_transparent_address')" :visible.sync="importTaddrVisible" width="60%" >
+      <el-form :model="importTaddrForm">
+        <el-form-item v-bind:label="$t('message.private_key_wif')" label-width="100px">
+          <el-input placeholder={{$t('message.wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+        </el-form-item>
+        <div>
+            <ul>
+            <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
+            <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
+            <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
+            </ul>
+        </div>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="importTaddrVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="importTaddress(importTaddrForm.wif,true)">{{$t('message.import')}}</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog v-bind:title="$t('message.import_shielded_address')" :visible.sync="importZaddrVisible" width="60%" >
+      <el-form :model="importZaddrForm">
+        <el-form-item v-bind:label="$t('message.private_key_wif')" label-width="100px">
+          <el-input v-bind:placeholder="$t('message.wallet_import_format_zaddr')" v-model="importZaddrForm.wif" auto-complete="off"></el-input>
+        </el-form-item>
+        <div>
+            <ul>
+            <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
+            <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
+            <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
+            </ul>
+        </div>
+<!--
+        <el-form-item label="Start Height" label-width="100px">
+          <el-input v-model="importZaddrForm.startHeight" value=0 auto-complete="off"></el-input>
+        </el-form-item>
+-->
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="importZaddrVisible = false">{{$t('message.cancel')}}</el-button>
+        <el-button type="primary" @click="importZaddress(importZaddrForm)">{{$t('message.import')}}</el-button>
+      </span>
+    </el-dialog>
+
     </div>
 </template>
 
 <script>
   import { mapState,mapGetters, mapActions } from 'vuex'
   import copy from 'copy-to-clipboard';
+  var store = require('store')
 
   export default { 
     name: 'addresses',
@@ -61,9 +131,21 @@
     data() {
       return {
         polling :false,
-        'hoverAddress': null
+        hoverAddress: null,
+        importTaddrVisible: false,
+        importTaddrForm: {
+            wif: "",
+            rescan: true,
+        },
+        importZaddrVisible: false,
+        importZaddrForm: {
+            wif: "",
+            rescan: "whenkeyisnew",
+            startHeight: 0,
+        },
       }
     },
+
     computed:{
       ...mapState([
         'tBalance',
@@ -71,25 +153,49 @@
         'totalBalance',
         'totalBytesRecv',
         'totalBytesSent',
+        'priceBTC',
+        'priceEUR',
+        'priceUSD',
       ]),     
       ...mapGetters([
         'zAddresses',
         'tAddresses',
+        'lastUpdate',
       ])
     },
+
     methods: {
       mouseover (address) {
         this.$data.hoverAddress = address;
       },
       ...mapActions([
         'addTAddress',
-        'addZAddress', 
+        'addZAddress',
+        'importTaddr',
+        'importZaddr',
       ]),
       copyToClipboard (row) {        
         copy(row.address)
         alert('Copied ' + row.address + ' to clipboard.')
-      }     
+      },     
+      importTaddrDialog() {
+          this.importTaddrVisible = true;
+      },
+      importZaddrDialog() {
+          this.importZaddrVisible = true;
+      },
+      importTaddress(wif,rescan) {
+        rescan = rescan ? true : false;
+        this.$store.dispatch('importTaddr', wif, rescan);
+      },
+      importZaddress(form) {
+        var wif         = form.wif;
+        var rescan      = form.rescan;
+        var startHeight = form.startHeight;
+        this.$store.dispatch('importZaddr', wif, rescan, startHeight);
+      },
     },
+
     mounted: function() {     
     }
   }
@@ -130,7 +236,7 @@
   }
 
   .button {
-    font-size: 11pt;
+    font-size: 12pt;
     cursor: pointer;
     outline: none;
     padding: 5px 15px 5px 15px;
@@ -157,6 +263,11 @@
 
   .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  .white {
+    color: white !important;
+    text-color: white !important;
   }
 
   .unconfirmed {

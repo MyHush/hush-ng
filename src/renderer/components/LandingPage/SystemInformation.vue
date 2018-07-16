@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="title">Information</div>
+    <div class="title">{{$t('message.informations')}}</div>
     <div class="items">
       <div class="item">
         <div class="name">HushNG:</div>

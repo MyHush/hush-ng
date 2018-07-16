@@ -14,30 +14,51 @@
 
 <script>
   import { mapState } from 'vuex'
+  import Vue from 'vue'
+  import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
   import SideMenu from './shared/Menu'
-  
-  const Repeat = require('repeat')
-  var request = require('request')
-  var store = require('store')
-  var cmd = require('node-cmd')
+  import messages from '../../lang/messages'
+  const Repeat  = require('repeat')
+  var request   = require('request')
+  var store     = require('store')
+  var cmd       = require('node-cmd')
   const bitcoin = require('bitcoin')
-  var hush = require('hush')
+  var hush      = require('hush')
   const hushrpc = require( 'hushrpc' )
-  var config      = new hush.Config()
+  var config    = new hush.Config()
 
+  Vue.use(Vuex)
+  Vue.use(VueI18n)
+
+  // Create VueI18n instance with options
+  //let localisation = navigator.language
+  let localisation = navigator.language.split("-")[0] // Use browser first language
+  const i18n = new VueI18n({
+    fallbackLocale: 'en',
+    locale: localisation,
+    //dateTimeFormats,
+    //numberFormats
+    messages
+  })
+
+  let vue = new Vue({ i18n })
+ 
   export default {
     name: 'main-page',
     components: {SideMenu },
    
     computed: { 
       ...mapState([
-          'walletPolling'                
+          'walletPolling',
         ]), 
+   
     },
     data () {
       return {
-        connStatus: 'Connecting...',
-        connectedToDeamon: false
+        connStatus: this.$t('message.connecting'),
+        connectedToDeamon: false,
+        lastUpdate: 0,
       }
     },
     methods: {
@@ -59,7 +80,7 @@
             var getInfo = client.getInfo();
             if (getInfo) {
                 // we got a successful response, no need to download binaries
-                console.log(getInfo);
+                //console.log(getInfo);
                 start_hushd = 0;
             }
         } catch (err) {
@@ -88,29 +109,33 @@
             })
         }
 
-        var rpcuser     = 'rpcuser'
-        var rpcpassword = 'rpcpassword'
-        var rpcport     = 8822
-        rpcuser         = config.rpcuser()
-        rpcpassword     = config.rpcpassword()
-        rpcport         = config.rpcport()
+        var rpcuser         = config.rpcuser()
+        var rpcpassword     = config.rpcpassword()
+        var rpcport         = config.rpcport()
 
         this.$store.dispatch('loadContacts');
         this.$store.commit('setRpcCredentials', {user : rpcuser, password : rpcpassword, port: rpcport});
         this.$store.commit('setWalletPolling', true);
-        this.$store.dispatch('refreshAddresses');
 
-        var self = this
+        // Initial GUI rendering
+        this.$store.dispatch('refreshNetworkStats');
+        this.$store.dispatch('refreshAddresses');
+        this.$store.dispatch('refreshBalances');
+        this.$store.dispatch('refreshTransactions');
+        this.$store.dispatch('refreshOperations');
+        this.$store.commit('setLastUpdate', Date.now() );
+
+        var self = this;
         Repeat(function() {
 
           if (self.connectedToDeamon) {
-            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshNetworkStats');
+            self.$store.dispatch('refreshAddresses');
             self.$store.dispatch('refreshBalances');
             self.$store.dispatch('refreshTransactions');
             self.$store.dispatch('refreshOperations');
-          }
-          else {
+            self.$store.commit('setLastUpdate', Date.now() );
+          } else {
             var client = new bitcoin.Client({
               port: rpcport,
               user: rpcuser,
@@ -118,31 +143,42 @@
               timeout: 60000
             });
 
+
             client.getInfo(function(err, data, resHeaders) {
               if (err) {
                 console.log(err)
                 if (err.code == "ECONNREFUSED") {
-                  self.connStatus = "Connecting..."
-                }
-                else {
+                  //self.connStatus = i18n.t('message.connecting')
                   self.connStatus = err.message
+                  vue.$notify.error({ title: i18n.t('message.error_connecting_to_hush_daemon'), message: i18n.t('message.make_sure_hushd_is_running') });
+                } else {
+                  self.connStatus = err.message
+                  vue.$notify.error({ title: i18n.t('message.error_talking_to_hush_daemon'), message: err.message });
                 }
-                return
-              } 
-              
+                return;
+              }
+
               self.connectedToDeamon = true
+              self.$store.dispatch('refreshNetworkStats');
               self.$store.dispatch('refreshAddresses');
+              self.$store.dispatch('refreshBalances');
+              self.$store.dispatch('refreshTransactions');
+              self.$store.dispatch('refreshOperations');
+              self.$store.commit('setLastUpdate', Date.now() );
               self.$router.push('/wallet/addresses')
             }); 
           }
 
-        }).every(interval, 'ms').start.now();
+        // This causes most of the UI to not render until the
+        // first repeat, don't ask me why
+        // }).every(interval, 'ms').start.now();
+        }).every(interval, 'ms').start.in(1,'secs');
       }
     },
     mounted: function() {
       if(!this.walletPolling) {
           //TODO: make this configurable
-        this.startPolling(10000)
+        this.startPolling(20000)
       }
     }
   }
@@ -306,10 +342,6 @@
     color: #fff;
   }
 
-  .bottom-row .box #texts li{   
-    color: #fff;
-  }
-
   .bottom-row .box #balances {
     float: right;
     text-align: right;
@@ -318,7 +350,7 @@
     display: list-item;
   }
   .bottom-row .box #balances li {   
-    color: #fff;
+     font-weight: 500;
   }
 
   .container {    

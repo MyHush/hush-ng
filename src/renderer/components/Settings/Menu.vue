@@ -1,16 +1,28 @@
 <template>
     <el-container>
       <el-aside width="300px" >
-        <div class="hushlist-title">Hush-NG Settings</div>
+        <div class="hushlist-title">{{$t('message.hushNG_settings')}}</div>
         <div>
-          <div class="subtitle"> Contacts </div>
-          <div class="subtitle"> Lists </div>
-          <div class="subtitle"> Conversations </div>
-          <div class="subtitle"> Advanced </div>
+          <div class="subtitle"> {{$t('message.contacts')}} </div>
+          <div class="subtitle"> {{$t('message.lists')}} </div>
+          <div class="subtitle"> {{$t('message.conversations')}} </div>
+          <div class="subtitle"> {{$t('message.advanced')}} </div>
         </div>
       </el-aside>
       <el-main> 
         <router-view></router-view>
+      <el-form>
+      <el-form-item v-bind:label="$t('message.privacy_mode')">
+        <el-switch v-model="privacyMode">
+        </el-switch>
+        </el-form-item>
+      <el-form-item v-bind:label="$t('message.rpc_port')"><input placeholder="8822"/> </el-form-item>
+
+      <el-form-item v-bind:label="$t('message.refresh_interval')"><br>
+      <el-slider :max="120" :step="5" :min="5" v-model="refreshInterval"></el-slider>
+      </el-form-item>
+
+      </el-form>
       </el-main>
     </el-container>
 </template>
@@ -23,7 +35,9 @@
     name: 'hushlist-menu',
     components: { CloseButton },
     data () {
-       return {   
+       return {
+        privacyMode: false,
+        refreshInterval: 20, // seconds
         receiverAddressForm: {
           adress: null
         },    

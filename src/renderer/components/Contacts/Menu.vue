@@ -3,10 +3,10 @@
     <div>
       <div>
         <div id="sub-menu">
-          <div class="menu-title">Contacts</div>
+          <div class="menu-title">{{$t('message.contacts')}}</div>
           <ul class="block-text chain-data">
-            <li>Block height: <span class="chain-text">{{ blockHeight }}</span></li>
-            <li>Peers: <span class="chain-text">{{ peerCount }}</span></li>
+            <li>{{$t('message.block_height')}}: <span class="chain-text">{{ blockHeight }}</span></li>
+            <li>{{$t('message.peers')}}: <span class="chain-text">{{ peerCount }}</span></li>
           </ul>          
           <ul class="submenu-sections">
             <router-link v-for="(item, index) in addressBookSections" v-bind:class="{ active: item.active }" :key="item.id" style="padding: 0px 10px 0px 10px;" tag="li" :to="item.path" v-on:click.native="toggle(index);" >{{ item.name }}</router-link>
@@ -32,8 +32,10 @@
     data () {
       return {
         addressBookSections: [
-          { 'name': 'addresses', 'path': '/contacts/Addresses', 'active': true },
-          { 'name': 'groups', 'path': '/contacts/Groups', 'active': false }
+          //{ 'name': 'addresses', 'path': '/contacts/Addresses', 'active': true },
+          //{ 'name': 'groups', 'path': '/contacts/Groups', 'active': false }
+          { 'name': this.$t('message.addresses'), 'path': '/contacts/Addresses', 'active': true },
+          { 'name': this.$t('message.groups'), 'path': '/contacts/Groups', 'active': false }
         ]
       }
     },
@@ -209,21 +211,33 @@
   .bottom-row {
     clear: both;
     position: fixed;
-    bottom: 15px;
+    bottom: 5px;
+    width: 100%;
   }
 
   .bottom-row .box {
     float: left;
-    width: 300px;
-    height: 95px;
+    width: 100%;
+    height: 100px;
+    font-size: 11pt;
+    //margin-right: 5px;
+    //padding: 5px 5px 5px 5px;
+    background-color: #3e3e3e;
+  }
+
+  .bottom-row .box-thin {
+    float: left;
+    width: 350px;
+    height: 100px;
     margin-right: 15px;
-    padding: 10px 15px 10px 15px;
+    padding: 5px 5px 5px 5px;
     background-color: #3e3e3e;
   }
 
   .bottom-row .alt {
     font-weight: 300;
     font-size: 11pt;
+    width: 100%;
     background-color: #cacaca;
   }
 
@@ -239,19 +253,20 @@
   }
 
   .bottom-row .box #texts {
-    float: left;
+    float: right;
+    color: black;
     list-style-type: none;
   }
 
   .bottom-row .box #balances {
-    float: right;
+    float: left;
     text-align: right;
     list-style-type: none;
   }
 
   .bottom-row .box li {
     font-weight: 500;
-    color: #fff;
+    color: black;
   }
 
 div#sub-menu {
