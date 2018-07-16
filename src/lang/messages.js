@@ -652,6 +652,8 @@ export default {
     error_finding_previous_messages_for: "Помилка пошуку попередніх повідомлень для",
 
     oh_shite: "Трапилась халепа!",
+	    
+    copied_to_clipboard: "Скопійовано {value} в буфер обміну.",
 
     to: "До"
 
