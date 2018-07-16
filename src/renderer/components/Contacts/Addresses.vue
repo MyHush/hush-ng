@@ -57,8 +57,28 @@
 
 <script> 
   import copy from 'copy-to-clipboard';
+  import Vue from 'vue'
+  import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
+  import messages from '../../../lang/messages'
   import { mapState,mapGetters, mapActions } from 'vuex'
   function log(msg) { console.log(msg) }
+
+  Vue.use(Vuex)
+  Vue.use(VueI18n)
+
+  // Create VueI18n instance with options
+  //let localisation = navigator.language
+  let localisation = navigator.language.split("-")[0] // Use browser first language
+  const i18n = new VueI18n({
+    fallbackLocale: 'en',
+    locale: localisation,
+    //dateTimeFormats,
+    //numberFormats
+    messages
+  })
+
+  let vue = new Vue({ i18n })
 
   export default {
     name: 'addresses',
@@ -92,7 +112,8 @@
     methods: {
       copy (value) {
         copy(value)
-        alert('Copied ' + value + ' to clipboard.')
+        //alert('Copied ' + value + ' to clipboard.')
+        alert(i18n.t('message.copied_to_clipboard', { value: value }))
       },
 
       addContact (value) {
