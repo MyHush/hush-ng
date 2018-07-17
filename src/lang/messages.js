@@ -446,17 +446,17 @@ de:{
 	launch_hushNG: "Starte HushNG",
 	cancel_setup: "Setup abbrechen",
 	join_us: "Folge uns!",
-	getting_started: "beginne",
-	initialize_wallet: "Initialisiere wallet",
-	getting_started_1: "Hush Next-generation ist dein Zugang zur Hush Blockchain. Verwalte deine Wallets",
-	getting_started_2: "und benutze das HushList Protokoll um verschlüsselte und anonmye Nachrichten zu empfangen, und zu senden. Diese nennen sich Memos.",
-	getting_started_3: "Starte mit dem Dowload des Hush Proving Key. Anschließend wird dein Wallet bereit zur Nutzung sein",
+	getting_started: "Beginne",
+	initialize_wallet: "Initialisiere Wallet",
+	getting_started_1: "Hush Next-Generation ist dein Zugang zur Hush Blockchain. Verwalte deine Wallets hier",
+	getting_started_2: "und benutze das HushList Protokoll, um verschlüsselte und anonmye Nachrichten zu empfangen, und zu senden. Diese nennen sich Memos.",
+	getting_started_3: "Starte mit dem Download des Hush Proving Key. Anschließend wird dein Wallet bereit zur Nutzung sein",
 	
 	error_connect_daemon_title: "Verbindungsfehler zum Hush daemon",
 	error_connect_daemon_message: "Stelle bitte sicher, dass Hush gestartet ist",
     error_talking_daemon_title: "Kommunikationsfehler zum Hush daemon",
 
-    hushd_is_already_running: "Hush läuft bereits, überspringe den download Prozess",
+    hushd_is_already_running: "Hush läuft bereits, überspringe den Download Prozess",
     
     list_of_contacts: "Hier ist deine Kontaktliste",
     new_contact: "Neuer Kontakt",
@@ -470,7 +470,7 @@ de:{
     addresses: "Adressen",
     groups: "Gruppen",
     transactions: "Transaktionen",   
-    destination_address: "Empfänger Addresse", 
+    destination_address: "Empfänger Adresse", 
     from: "Von",
     time: "Zeit",
     direction: "Richtung",
@@ -482,8 +482,8 @@ de:{
     
     of_contacts: "# der Kontakte",
     
-    intro_groups_1: "Hier ist eine Liste deiner privaten HushLists.",
-    intro_groups_2: "Jede HushList ist eine Liste von Kontakten, die loakal auf deinem Computer gespeichert wird,",
+    intro_groups_1: "Hier ist eine Liste deiner privaten HushListen.",
+    intro_groups_2: "Jede HushListe ist eine Liste von Kontakten, die loakal auf deinem Computer gespeichert wird,",
     intro_groups_3: "sie wird nicht in der Blockchain gespeichert.",
     intro_groups_4: "Geschützte Adressen (zaddrs) sind privat und anonym, während transparente Adressen (taddrs) öffentlich sind.",
     
@@ -503,10 +503,10 @@ de:{
     intro_adresses_1: "Hier ist eine Liste deiner Addressen",
     intro_adresses_2: "Geschützte Adressen (zaddrs) schützen deine Privatsspähre mit verschlüsselten Transaktionen",
     intro_adresses_3: "sie offenbaren keine Metadaten wie z.B. den Betrag oder Sender- und Empfängeradresse,",
-    intro_adresses_4: "und sind ANONYM. Der Emfänger kann nicht Antworten ausser du willst es und teilst",
+    intro_adresses_4: "und sind ANONYM. Der Emfänger kann nicht Antworten ausser du willst es, und teilst",
     intro_adresses_5: "ihm im Memo Feld mit wie. Jedes Memo kann bis zu 512 bytes an Daten beinhalten.",
     intro_adresses_6: "Transparente Adressen (taddrs) sind Öffentlich, wie z.B. die Transaktion",
-    intro_adresses_7: "informationen sind dann öffentlich such- und einsehbar, für jeden, zu jeder Zeit. Wenn du",
+    intro_adresses_7: "alle informationen sind dann öffentlich such- und einsehbar, für jeden, zu jeder Zeit. Wenn du",
     intro_adresses_8: "dieses Risiko nicht eingehen willst, benutze eine geschütze Adresse.",
     
     fund_hush_fund: "Lade Hush auf",
@@ -518,7 +518,7 @@ de:{
     new_taddr: "Neue taddr",
     
     // transparent: "Transparent",
-    // shielded: "geschützt",
+    // shielded: "Geschützt",
     transparent: "taddr",
     shielded: "zaddr",
     
@@ -529,7 +529,7 @@ de:{
     
     never_give_private_key: "Gebe niemals jemanden dein Private Key!",
     treat_it_like_a_password: "Behandel es wie ein Passwort, dass all deine Coins schützt.",
-    import_a_private_key: "Du kannst deinen private Key in jeden Node importieren.",
+    import_a_private_key: "Du kannst deinen private Key in jeden HUSH Node importieren.",
     
     amount: "Menge",
     shielded_zaddr: "Geschützte Adresse (zaddr)",
