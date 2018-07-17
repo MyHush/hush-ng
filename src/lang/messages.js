@@ -650,6 +650,8 @@ de:{
     error_finding_previous_messages_for: "Fehler beim suchen der Nachricht für",
 
     oh_shite: "Oh Mist!",
+	    
+    copied_to_clipboard: "In die Zwischenablage kopiert."    
 
     to: "zu"
 
