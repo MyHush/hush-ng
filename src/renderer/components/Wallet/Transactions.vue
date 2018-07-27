@@ -47,6 +47,7 @@
         <el-form-item v-bind:label="$t('message.amount')" label-width="150px" >
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.amount_sent_each_address')"
+                v-numeric-only
                 v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount')"
                 v-model="transactionForm.amount">
             </el-input>
@@ -219,10 +220,49 @@
   var store = require('store')
   const transaction_fee = 0.0001
   const dev_fee_percentage = 0.01
+  const max_supply = 21000000
   import { Popover, Tooltip } from 'element-ui';
   import Vue from 'vue'
+
+
   Vue.use(Popover);
   Vue.use(Tooltip);
+
+  Vue.directive('numeric-only', {
+		bind(el) {
+		  el.addEventListener('keydown', (e) => {
+
+                //console.log('keydown = ' + e.keyCode);
+          		if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1 ||
+					// Allow: Ctrl+A
+					(e.keyCode === 65 && e.ctrlKey === true) ||
+					// Allow: Ctrl+C
+					(e.keyCode === 67 && e.ctrlKey === true) ||
+					// Allow: Ctrl+X
+					(e.keyCode === 88 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+V
+          		    (e.keyCode === 86 && e.ctrlKey === true) ||
+					// Allow: home, end, left, right
+					(e.keyCode >= 35 && e.keyCode <= 39)) {
+					// let it happen, don't do anything
+					return
+               }
+
+        		//// Replace ',' by '.'
+				//if ((e.keyCode === 188 )) {
+                //    e.target.value += '.';
+				//	e.preventDefault()
+                //}
+        
+				// Ensure that it is a number and stop the keypress
+				if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+					e.preventDefault()
+				}
+      })
+    }
+  });
+
+
 
   export default {
     name: 'transactions',
@@ -351,13 +391,23 @@
         }
       }
 
-      if (form.amount != '') {
-        form.amount = form.amount.replace(' ', '');
-        form.amount = form.amount.replace(',', '.');
+      //if (form.amount != '') {
+        //form.amount = form.amount.replace(' ', '');
+        //form.amount = form.amount.replace(',', '.');
         //form.amount = ((form.amount > 0) && (Math.abs(form.amount) < Infinity)) ? parseFloat(form.amount) : 0.0;
+        //form.amount = parseFloat(form.amount);
+      //}
+
+      if (form.amount > max_supply || isNaN(form.amount))
+      {
+          form.amount = "0";
+          console.log('000000000000000000 ' + form.amount);
+          //formvar d_amount = new Decimal('0');
+      }else{
+         console.log('parseFloat  ' + form.amount);
         form.amount = parseFloat(form.amount);
       }
-
+      
       var d_amount = new Decimal(form.amount);
       var d_nbDestinationAddresses = new Decimal(nbDestinationAddresses);
 
