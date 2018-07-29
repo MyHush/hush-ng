@@ -1,30 +1,33 @@
 <template>
-    <el-container>
-      <el-aside width="300px" >
-        <div class="hushlist-title">{{$t('message.hushNG_settings')}}</div>
-        <div>
-          <div class="subtitle"> {{$t('message.contacts')}} </div>
-          <div class="subtitle"> {{$t('message.lists')}} </div>
-          <div class="subtitle"> {{$t('message.conversations')}} </div>
-          <div class="subtitle"> {{$t('message.advanced')}} </div>
+  <div>
+    <div>
+      <div>
+        <div id="sub-menu">
+           <div class="menu-title">{{$t('message.hushNG_settings')}}</div>
         </div>
-      </el-aside>
-      <el-main> 
-        <router-view></router-view>
-      <el-form>
-      <el-form-item v-bind:label="$t('message.privacy_mode')">
-        <el-switch v-model="privacyMode">
-        </el-switch>
-        </el-form-item>
-      <el-form-item v-bind:label="$t('message.rpc_port')"><input placeholder="8822"/> </el-form-item>
+        <close-button></close-button>
+      </div>
+    </div>
+    <div class="inner-content">
+     <div class="container" style="height:95%">
+        <el-main> 
+          <el-form>
+            <el-form-item v-bind:label="$t('message.privacy_mode')">
+            <el-switch v-model="privacyMode"></el-switch>
+            </el-form-item>
+            
+            <el-form-item v-bind:label="$t('message.rpc_port')">
+            <input placeholder="8822"/>
+            </el-form-item>
 
-      <el-form-item v-bind:label="$t('message.refresh_interval')"><br>
-      <el-slider :max="120" :step="5" :min="5" v-model="refreshInterval"></el-slider>
-      </el-form-item>
-
-      </el-form>
-      </el-main>
-    </el-container>
+            <el-form-item v-bind:label="$t('message.refresh_interval')"><br>
+            <el-slider :max="120" :step="5" :min="5" v-model="refreshInterval"></el-slider>
+            </el-form-item>
+          </el-form>
+        </el-main>
+      </div>
+    </div>
+  </div>   
 </template>
 
 <script>
@@ -103,6 +106,43 @@
     width:100%;
   }
 
+  div#sub-menu {
+    position: absolute;
+    width: 100vw;
+    background-color: #fff;
+    padding: 10px 10px 10px 88.3px;
+    border-bottom: 2px solid #e3e3e3;
+    z-index: 1;
+  }
+
+      .submenu-sections {
+    float: left;
+    margin-left: 30px;
+    margin-top: -10px;
+    margin-bottom: -11px;
+    height: 56px;
+    -webkit-app-region: no-drag;
+  }
+
+  .submenu-sections li {
+    list-style-type: none;
+    display: inline-block;
+    font-size: 12pt;
+    font-weight: 500;
+    text-transform: uppercase;
+    height: 100%;
+    line-height: 56px;
+  }
+
+  .submenu-sections li:hover {
+    cursor: pointer;
+    background-color: #e2e2e2;
+  }
+
+  .submenu-sections .active {
+    border-bottom: 4px solid #cacaca;
+  }
+
   .el-container {
     margin-left:68px;
     height: 100vh;
@@ -113,5 +153,12 @@
     min-height:100%;
     background-color: #A1A1A1;
     color: #ABABAB;    
+  }
+
+    .inner-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 77px 20px 20px 88.3px;
   }
 </style>
