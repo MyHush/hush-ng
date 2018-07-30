@@ -13,7 +13,7 @@
       
       <el-form ref="form" :model="transactionForm" label-width="150px" >
         <el-form-item v-bind:label="$t('message.from')">
-          <el-select v-model="transactionForm.from" v-bind:placeholder="$t('message.select_address')" style="width:100%;">
+          <el-select v-model="transactionForm.from" v-bind:placeholder="$t('message.select_address')" style="width:100%;" @change="updateTransactionForm(transactionForm,availableBalance,'from')">
             <el-option
               v-for="address in allAddresses"
               :key="address.address"
@@ -23,11 +23,13 @@
                   <span class="address" style="float: left">{{ address.address }}</span>
                   <span style="float: right; font-size: 13px">{{ address.balance }}</span>
           </el-option>
+        <el-input v-on:input="updateTransactionForm(transactionForm,availableBalance,'from')"></el-input>
         </el-select>
+
         </el-form-item>
 
         <el-form-item v-bind:label="$t('message.to')">
-          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create  default-first-option v-bind:placeholder="$t('message.put_address_here')" style="width:100%;">
+          <el-select v-model="transactionForm.destinationAddresses" multiple filterable allow-create  default-first-option v-bind:placeholder="$t('message.put_address_here')" style="width:100%;" @change="updateTransactionForm(transactionForm,availableBalance,'to')">
             <el-option-group v-for="group in groupedDestinationAddresses" :key="group.label" :label="group.label">
               <el-option
                 v-for="item in group.addresses"
@@ -42,48 +44,49 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-bind:label="$t('message.amount')">
-          <el-col :span="8">
+        <el-form-item v-bind:label="$t('message.amount')" label-width="150px" >
+          <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.amount_sent_each_address')"
-                v-on:input="updateTransactionForm(transactionForm,availableBalance)"
+                v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount')"
                 v-model="transactionForm.amount">
             </el-input>
           </el-col>
         </el-form-item>
 
           <el-form-item v-bind:label="$t('message.miner_fee')">
-          <el-col :span="8">
+          <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.cost_transaction_in_block')" v-model="transactionForm.fee"
-                v-on:input="updateTransactionForm(transactionForm,availableBalance)"
+                v-on:input="updateTransactionForm(transactionForm,availableBalance,'mining_fee')"
             ></el-input>
           </el-col>
           </el-form-item>
 
           <el-form-item v-bind:label="$t('message.dev_donation')">
-          <el-col :span="8">
-            <el-input v-bind:placeholder="$t('message.suggested_donation')"
-                v-on:input="updateTransactionForm(transactionForm,availableBalance)"
+          <el-col :span="15">
+            <!--<el-input v-bind:placeholder="$t('message.suggested_donation')" -->
+            <el-input v-bind:placeholder="placeholder_suggested_donation" v-bind:disabled="disabled_suggested_donation"
+                v-on:input="updateTransactionForm(transactionForm,availableBalance,'dev_fee')"
             v-model="transactionForm.devDonation"></el-input>
           </el-col>
           </el-form-item>
 
           <el-form-item v-bind:label="$t('message.total_amount')">
-          <el-col :span="8">
+          <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.total_amount_to_send')"
             v-model="transactionForm.totalAmount" readonly></el-input>
           </el-col>
           </el-form-item>
 
           <el-form-item v-bind:label="$t('message.remaining_balance')">
-          <el-col :span="8">
+          <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.amount_left_after_transaction')"
-            v-on:input="updateTransactionForm(transactionForm,availableBalance)"
+            v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount_left_after_transaction')"
             v-model="transactionForm.remaining" readonly></el-input>
           </el-col>
           </el-form-item>
 
         <el-form-item v-bind:label="$t('message.memo')">
-          <el-col :span="10">
+          <el-col :span="15">
             <el-input type=textarea v-bind:placeholder="$t('message.hey_Bob')" v-model="transactionForm.memo" style="width: 100%;"></el-input>
           </el-col>
         </el-form-item>
@@ -209,10 +212,13 @@
 <script>
   import { mapState,mapGetters, mapActions } from 'vuex'
   import CloseButton from '../shared/CloseButton'
+  import {Decimal} from 'decimal.js';
 
   const sprintf = require("sprintf-js").sprintf
   const Repeat = require('repeat')
   var store = require('store')
+  const transaction_fee = 0.0001
+  const dev_fee_percentage = 0.01
   import { Popover, Tooltip } from 'element-ui';
   import Vue from 'vue'
   Vue.use(Popover);
@@ -228,13 +234,17 @@
           destinationAddresses: [],
           amount: '',
           devDonation: '',
-          fee: 0.0001,
+          //fee: transaction_fee,
+          fee: '',
           remaining: '',
-          totalAmount: '0',
+          totalAmount: '',
+          //totalAmount: '0',
         },
         popoverConfirm: false,
         operationsDialogVisible: false,
-        failedOperationsDialogVisible: false
+        failedOperationsDialogVisible: false,
+        disabled_suggested_donation : true,
+        placeholder_suggested_donation : this.$t('message.only_shielded_transactions_contain_donations')
       }
     },
     computed:{
@@ -283,18 +293,30 @@
       showFailedOperations () {
         this.failedOperationsDialogVisible = true;
       },
-      updateTransactionForm (form,availableBalance) {
-        form.amount      = ((form.amount > 0) && (Math.abs(form.amount) < Infinity)) ? parseFloat(form.amount) : 0.0;
-        form.fee         = form.fee    > 0      ? parseFloat(form.fee)    : 0.0;
-        form.devDonation = sprintf("%.8f", 0.01*form.amount);
-        //console.log('bal=' + availableBalance);
-        //console.log('totalamount=' + form.totalAmount);
-        //console.log("updating xtn form");
-        form.remaining   = availableBalance - form.totalAmount;
-        form.remaining   = sprintf("%.8f", form.remaining);
-        form.totalAmount = sprintf("%.8f", form.amount + form.fee + parseFloat(form.devDonation));
+      updateTransactionForm (form,availableBalance,input_from) {
 
-        var shieldedXtn = 0;
+      var nbDestinationAddresses = 0;
+      for(let receiver of form.destinationAddresses) {
+          nbDestinationAddresses = nbDestinationAddresses + 1 ;
+      }
+
+      if (form.from == null || nbDestinationAddresses == 0 ) {
+        form.totalAmount = '';
+        form.devDonation = '';
+        form.fee = '';
+        form.remaining = '';
+        return;
+      }
+
+      if (form.amount == '' ){
+          form.totalAmount = '';
+          form.devDonation = '';
+          form.fee = '';
+          form.remaining = '';
+          return;
+      }
+
+      var shieldedXtn = 0;
       // Does this xtn contain at least one zaddr?
       if (form.from && form.from.substr(0,1) == 'z' ) {
         shieldedXtn = 1;
@@ -306,9 +328,58 @@
                 break;
             }
         }
-        // only shielded xtns have dev donations
-        form.devDonation = shieldedXtn ? form.devDonation : this.$t('message.only_shielded_transactions_contain_donations');
-       }
+      }
+
+      // transaction_fee
+      if (input_from != 'mining_fee'){
+        form.fee = sprintf("%.4f",nbDestinationAddresses * transaction_fee)
+        var d_fee = new Decimal(form.fee);
+      }else{
+        if (form.fee == '') { 
+          var d_fee = new Decimal("0");
+        }else{
+          var d_fee = new Decimal(form.fee);
+        }
+      }
+
+      if (form.amount != '') {
+        form.amount = parseFloat(form.amount);
+      }
+
+      var d_amount = new Decimal(form.amount);
+      var d_nbDestinationAddresses = new Decimal(nbDestinationAddresses);
+
+      var d_totalAmount = new Decimal(d_amount).mul(d_nbDestinationAddresses);
+      d_totalAmount = Decimal.add(d_totalAmount, d_fee);
+
+      var d_devDonation = new Decimal("0");
+      // only shielded xtns have dev donations
+      if (shieldedXtn == 1 ) {
+        if  (input_from == 'dev_fee'){
+          if (form.devDonation == '') {
+            this.placeholder_suggested_donation = this.$t('message.suggested_donation');
+          } else{
+            var d_devDonation = new Decimal(form.devDonation);
+          }
+        } else {
+          var d_devDonation = new Decimal("0");
+          var percentage_fee = new Decimal (dev_fee_percentage);
+          d_devDonation = Decimal.mul(d_amount,d_nbDestinationAddresses);
+          d_devDonation = Decimal.mul(d_devDonation,percentage_fee);
+          form.devDonation = d_devDonation.toString();
+        }
+        this.disabled_suggested_donation = false;
+      } else {
+        this.placeholder_suggested_donation = this.$t('message.only_shielded_transactions_contain_donations');
+        form.devDonation = '';
+        this.disabled_suggested_donation = true;
+      }
+
+      d_totalAmount = Decimal.add(d_totalAmount, d_devDonation);
+      form.totalAmount = d_totalAmount.toString();
+
+      form.remaining = availableBalance - form.totalAmount;
+      form.remaining = sprintf("%.8f", form.remaining);
       }
     },
     mounted: function() {

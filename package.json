@@ -54,6 +54,7 @@
     "axios": "^0.16.1",
     "bitcoin": "^3.0.1",
     "copy-to-clipboard": "^3.0.8",
+    "decimal.js": "^10.0.1",
     "element-ui": "^2.1.0",
     "filepath": "^1.1.0",
     "hush": "file:lib/hush",
