@@ -1,5 +1,5 @@
 <template>
-  <div style="height:95%">
+  <div style="height:95%" >
     {{$t('message.intro_wallet_menu_1')}}
     <div class="container" >
       <el-row class="caption">
@@ -44,9 +44,11 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-bind:label="$t('message.amount')" label-width="150px" >
+        <el-form-item v-bind:label="$t('message.amount')" label-width="150px" id="txtAmount" >
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.amount_sent_each_address')"
+                v-numeric-only
+                ondragstart="return false;" ondrop="return false;"
                 v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount')"
                 v-model="transactionForm.amount">
             </el-input>
@@ -56,6 +58,8 @@
           <el-form-item v-bind:label="$t('message.miner_fee')">
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.cost_transaction_in_block')" v-model="transactionForm.fee"
+                v-numeric-only
+                ondragstart="return false;" ondrop="return false;"
                 v-on:input="updateTransactionForm(transactionForm,availableBalance,'mining_fee')"
             ></el-input>
           </el-col>
@@ -65,6 +69,8 @@
           <el-col :span="15">
             <!--<el-input v-bind:placeholder="$t('message.suggested_donation')" -->
             <el-input v-bind:placeholder="placeholder_suggested_donation" v-bind:disabled="disabled_suggested_donation"
+                v-numeric-only
+                ondragstart="return false;" ondrop="return false;"
                 v-on:input="updateTransactionForm(transactionForm,availableBalance,'dev_fee')"
             v-model="transactionForm.devDonation"></el-input>
           </el-col>
@@ -221,8 +227,92 @@
   const dev_fee_percentage = 0.01
   import { Popover, Tooltip } from 'element-ui';
   import Vue from 'vue'
+
   Vue.use(Popover);
   Vue.use(Tooltip);
+
+
+
+Vue.directive('numeric-only', {
+		bind(el) {
+		  el.addEventListener('keydown', (e) => {
+
+          var text = e.target.value.toString();
+          var number = e.target.value.split('.');
+          var index = text.indexOf(".");
+
+          //console.log('keyCode = ' +  e.keyCode);
+
+          if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1 ||
+					// Allow: Ctrl+A
+					(e.keyCode === 65 && e.ctrlKey === true) ||
+					// Allow: Ctrl+C
+					(e.keyCode === 67 && e.ctrlKey === true) ||
+					// Allow: Ctrl+X
+					(e.keyCode === 88 && e.ctrlKey === true) ||
+                    // Allow: Ctrl+V
+          		    (e.keyCode === 86 && e.ctrlKey === true) ||
+					// Allow: home, end, left, right
+					(e.keyCode >= 35 && e.keyCode <= 39) ||
+                    //Allow : number
+                    (e.keyCode >= 96 && e.keyCode <= 105) ||
+                    //Allow : dot
+                    (e.keyCode == 110 )) {
+					// let it happen, don't do anything
+               }else{
+                 e.preventDefault()
+               }
+
+          //TODO : Cancel copy/paste when the clipboard does not contain a numeric string.
+          //if (e.keyCode === 86 && e.ctrlKey === true)
+          //{
+          //  if (isNAN(CLIPBOARD))
+          //  {
+          //    e.preventDefault()
+          //  }
+          //}
+
+          //Just one dot
+          if(index!= -1 && e.keyCode === 110)
+          {
+              e.preventDefault()
+          }
+
+          //Get the carat position
+          var caratPos = '';
+          if (e.createTextRange) {
+
+		    var r = document.selection.createRange().duplicate()
+		    r.moveEnd('character', e.target.value.length)
+
+            if (r.text == '')
+                {
+                  caratPos = e.target.value.length;
+                } else{
+                  caratPos = e.target.value.lastIndexOf(r.text);
+                }
+	      }
+          else
+          {
+            caratPos = e.target.selectionStart;
+          }
+
+          //var caratPos = getSelectionStart(el);
+          var dotPos = text.indexOf(".");
+          if( caratPos > dotPos && dotPos>-1 && (number[1].length > 7)){
+            if (e.keyCode === 8 || (e.keyCode >=37 && e.keyCode <= 40) || e.keyCode === 46)
+            {
+                // let it happen, don't do anything
+            }else{
+              e.preventDefault()
+            }
+          }
+          return
+      })
+    }
+  });
+
+
 
   export default {
     name: 'transactions',
@@ -342,10 +432,15 @@
         }
       }
 
-      if (form.amount != '') {
+      if (isNaN(form.amount))
+      {
+          //TODO : When a copy/paste of a non-numeric string is copied, the input text is replaced by '0' but not by a second copy/paste.
+          //Force a refresh ?
+          form.amount = 0;
+      }else{
         form.amount = parseFloat(form.amount);
       }
-
+      
       var d_amount = new Decimal(form.amount);
       var d_nbDestinationAddresses = new Decimal(nbDestinationAddresses);
 
@@ -366,7 +461,7 @@
           var percentage_fee = new Decimal (dev_fee_percentage);
           d_devDonation = Decimal.mul(d_amount,d_nbDestinationAddresses);
           d_devDonation = Decimal.mul(d_devDonation,percentage_fee);
-          form.devDonation = d_devDonation.toString();
+          form.devDonation = sprintf("%.8f", d_devDonation.toString());
         }
         this.disabled_suggested_donation = false;
       } else {
@@ -382,6 +477,7 @@
       form.remaining = sprintf("%.8f", form.remaining);
       }
     },
+    
     mounted: function() {
     }
   }
