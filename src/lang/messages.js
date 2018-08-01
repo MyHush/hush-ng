@@ -213,6 +213,8 @@ export default {
 
     copied_to_clipboard: "Copied {value} to clipboard.",
 
+    none:'None',
+
     to: "To"
 
     }
@@ -439,6 +441,8 @@ export default {
 
     copied_to_clipboard: "L'adresse : {value} a été copiée dans le presse-papiers.",
 
+    none:'Aucune',
+    
     to: "vers"
 
     }
