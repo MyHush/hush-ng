@@ -305,9 +305,6 @@ export default {
     import_taddr: "Importer taddr",
     new_taddr: "Nouvelle taddr",
     
-    //transparent: "Transparente",
-    //shielded: "Protégée",
-    
     transparent: "taddr",
     shielded: "zaddr",
         
@@ -446,5 +443,226 @@ export default {
     to: "vers"
 
     }
-  }
+  },
+
+  //Ukrainian - Thanks to @OleksandrBlack - Lucky-Mining
+  ua: {
+    message: {
+    welcome_to_hushNG: "Ласкаво просимо до HushNG!",
+	installing_hushNG: "Встановлення HushNG",
+	launch_hushNG: "Запуск HushNG",
+	cancel_setup: "Скасувати встановлення",
+	join_us: "Приєднуйтесь до нас!",
+	getting_started: "Початок Роботи",
+	initialize_wallet: "Ініціалізація гаманця",
+	getting_started_1: "Hush Next-generation - це ваш вхід до блокчейну Hush. Керуйте своїми гаманцями ",
+	getting_started_2: "і використовуйте протокол HushList для надсилання та отримання зашифрованих та анонімних повідомлень, які називаються записками.",
+	getting_started_3: "Почніть з завантаження Hush proving-key. Після цього ваш гаманець буде ініціалізований та готовий до використання",
+	
+	error_connect_daemon_title: "Помилка підключення до демона Hush",
+	error_connect_daemon_message: "Будь ласка, переконайтеся, що Hush працює",
+    error_talking_daemon_title: "Помилка розмови з демоном Hush",
+
+    hushd_is_already_running: "Hush вже працює! Пропуск процесу завантаження",
+    
+    list_of_contacts: "Нижче наведено список ваших контактів",
+    new_contact: "Новий контакт",
+    edit: "Редагувати",
+    chat: "Чат",
+    delete: "Видалити",
+    save: "Зберегти",
+    cancel: "Скасувати",
+    send: "Надіслати",
+    adress: "Адреса",
+    addresses: "Адреси",
+    groups: "Групи",
+    transactions: "Транзакції",   
+    destination_address: "Адреса призначення", 
+    from: "Від",
+    time: "Час",
+    direction: "Напрямок",
+    close: "Закрити",
+
+    hushList_name: "HushList Ім'я",
+    new_hushList: "Новий HushList",
+    hushlist: "HushList",
+    
+    of_contacts: "# З Контактів",
+    
+    intro_groups_1: "Нижче наведено список ваших приватних HushLists.",
+    intro_groups_2: "Кожен HushList  - це список контактів, які локально зберігаються на цьому комп'ютері,",
+    intro_groups_3: "він не зберігається в блокчейні.",
+    intro_groups_4: "Екрановані адреси (zaddrs) є приватними та анонімними, тоді як прозорі адреси (taddrs) є загальнодоступними та псевдоанонімними.",
+    
+    contacts: "Контакти",
+    lists: "Списки",
+    conversations: "Бесіди",
+    advanced: "Розширений",
+    hushNG_settings: "HushNG Налаштування",
+    settings: "Налаштування",
+    
+    informations: "Інформація",
+    
+    ok: "Ok",
+    
+    network_stats: "Статистика Мережі",
+    import: "Імпорт",
+    intro_adresses_1: "Нижче наведено список ваших адрес",
+    intro_adresses_2: "Екрановані адреси (zaddrs) зберігають вашу конфіденційність за допомогою зашифрованих транзакцій",
+    intro_adresses_3: "які не містять метаданих, таких як сума або хто надсилає та отримує,",
+    intro_adresses_4: "і є АНОНІМНИМИ. Одержувач не зможе відповісти, якщо ви не скажете йому",
+    intro_adresses_5: "як це відбувається в полі замітки. Кожна замітка може містити до 512 байт даних.",
+    intro_adresses_6: "Прозорі адреси (taddrs) - ПСЕВДОАНОНІМНІ, ім'я псевдонімів і інформація про транзакцію",
+    intro_adresses_7: "є загальнодоступною і доступна для пошуку будь-кому назавжди. Якщо ваші",
+    intro_adresses_8: "потреби не вимагають цього, або ви вважаєте це ризикованим, використовуйте екрановану адресу.",
+    
+    fund_hush_fund: "Фонд Ваш фонд HUSH",
+        
+    import_zaddr: "Імпорт zaddr",
+    new_zaddr: "Новий zaddr",
+    
+    import_taddr: "Імпорт taddr",
+    new_taddr: "Новий taddr",
+    
+    transparent: "taddr",
+    shielded: "zaddr",
+    
+    total: "ВСЬОГО",
+    
+    bytes_received: "байт отримано",
+    bytes_sent: "байт відправлено",
+    
+    never_give_private_key: "Ніколи не повідомляйте нікому свій приватний ключ!",
+    treat_it_like_a_password: "Сприймайте це як пароль, який захищає всі монети на вашій адресі.",
+    import_a_private_key: "Ви можете імпортувати приватний ключ до декількох вузлів, всі вони матимуть доступ.",
+    
+    amount: "Сума",
+    shielded_zaddr: "Екранована Адреса (zaddr)",
+    transparent_taddr: "Прозора Адреса (taddr)",
+    
+    import_transparent_address: "Імпорт Прозорої Адреси",
+    wallet_import_format_taddr: "Формат Імпорту Гаманця, починається з 5, K або L",
+    
+    import_shielded_address: "Імпорт Екранованої Адреси",
+    wallet_import_format_zaddr: "Формат Імпорту Гаманця, починається з SK...",
+
+    private_key_wif: "Приватний Ключ (WIF)",
+    
+    wallet: "Гаманець",
+    
+    intro_wallet_menu_1: "Транзакції можуть бути відправлені <br/> з zaddr або taddr залежно від ваших уподобань",
+    create_transaction: "Створити транзакцію",
+    spendable_balance: "Витрачений Баланс",
+    
+    select_address: "Виберіть екрановану або прозору адресу",
+    put_address_here: "помістити адресу тут або вибрати з ваших контактів",
+    
+    amount_sent_each_address: "Сума надсилається кожному адресату",
+    miner_fee: "Комісія Майнера",
+    dev_donation: "Dev Внесок",
+    cost_transaction_in_block: "Вартість включення транзакції в блок",
+    
+    suggested_donation: "Запропонований внесок 1%",
+    total_amount: "Загальна Сума",
+    total_amount_to_send: "Загальна сума для відправлення транзакції",
+    remaining_balance: "Залишковий Баланс",
+    amount_left_after_transaction: "Сума, залишена після цієї операції",
+    memo: "Замітка",
+    hey_Bob: "Ей, Боб, це Аліса, ти чув про Чарлі? ...",
+    create: "Створити",
+    confirm: "Підтвердити",
+    clear_transaction_form: "Очистити форму транзакції",
+    clear: "Очистити",
+    
+    sent_and_received_transactions: "Надіслані та отримані транзакції",
+    transaction_history: "Історія Транзакцій",
+    confirm_transaction_form: "Ви впевнені, що хочете здійснити транзакцію {total_amount} HUSH ?",
+    open_block_explorer: "Клацніть по рядку, щоб відкрити провідник блоків",
+    
+    incoming: "Вхідний",
+    outgoing: "Вихідний",
+    mined: "Видобутий",
+    
+    pending_operations: "Очікування операцій",
+    last_updated: "Останнє Оновлення",
+    
+    id: "Id",
+    status: "Статус",
+    error: "Помилка",
+    
+    failed_operations: "Невдалі операції",
+    date: "Дата",
+    
+    only_shielded_transactions_contain_donations: "Тільки екрановані транзакції містять внески",
+    
+    edit_contact: "Редагувати контакт",
+    name: "Ім'я",
+    address: "Адреса",
+    
+    start_a_conversation: "Почати бесіду",
+    
+    privacy_mode: "Режим Конфіденційності",
+    rpc_port: "RPC Порт",
+    refresh_interval: "Інтервал Оновлення",
+    
+    import_transparent_address: "Імпортувати Прозору Адресу",
+    import_shielded_address: "Імпортувати Екрановану Адресу",
+    
+    make_sure_hushd_is_running: "Будь ласка, переконайтеся, що hushd працює",
+    error_connecting_to_hush_daemon: "Помилка підключення до демону Hush",
+    error_talking_to_hush_daemon: "Помилка розмови з демоном Hush",
+
+    block_height: "Висота блоку",
+    peers: "З'єднання",
+
+    calculating: "Розрахунок...",
+    scanning: "Сканування",
+    discovering: "Виявлення",
+    connecting : "Підключення",
+
+    operation_is_executing: "Операція виконується. Перевірте список очікуючих операцій для отримання додаткової інформації",    
+    transaction_was_created_successfully: "Транзакція була створена успішно. Ідентифікатор транзакції : ",
+
+    contacts_must_have_a_nickname: "Контакти повинні мати псевдонім",
+    contacts_must_have_an_address: "Контакти повинні мати адресу",
+    invalid_address_for_contact: "Недійсна адреса для контакту",
+
+    there_is_already_a_contact: "Контакт вже існує ",
+    with_address: " з адресою ",
+
+    imported_shielded_address_from_WIF: "Імпортується екранована адреса з WIF",
+    imported_transparent_address_from_WIF: "Імпортується прозора адреса з WIF",
+
+    created_new_taddr: "Створити нову taddr",
+    created_new_zaddr: "Створити нову zaddr",
+
+
+    error_importing_viewkey: "Помилка імпортування viewkey ",
+    error_retreiving_viewkey_for: "Помилка отримання viewkey для",    
+    error_sending_memo: "Помилка надсилання замітки",
+    you_must_choose_a_from_address: "Ви повинні вибрати Вихідну адресу!",
+    you_must_have_at_least_one_recipient_in_your_transaction: "У вашій транзакції потрібно мати принаймні одного одержувача!",
+    amount_must_be_number_valid: "Сума має бути >= 0 і <=",
+
+    transaction_for_total_amount_of: "Транзакція на загальну суму",
+    hush_queued_successfully: "HUSH успішно доданий в чергу!",
+    current_wallet_has: "Поточний гаманець має",
+    but: "але",
+    hush_needed_for_this_transaction: "HUSH потрібен для цієї транзакції!",
+    you_need: "Вам потрібно",
+    to_make_this_transaction: "HUSH зробити цю транзакцію",
+
+    error_finding_previous_messages_for: "Помилка пошуку попередніх повідомлень для",
+
+    oh_shite: "Трапилась халепа!",
+
+    copied_to_clipboard: "Адреса : {value} скопійовано в буфер обміну.",
+
+    none:"немає",
+
+    to: "До"
+
+    }
+  } 
+
 }
