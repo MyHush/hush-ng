@@ -884,6 +884,225 @@ export default {
     to: "zu"
 
     }
-  }
+  },
 
+  //Russian - Thanks to @rikst
+  ru: {
+    message: {
+    welcome_to_hushNG: "Добро пожаловать в HushNG!",
+	installing_hushNG: "Устанавливаю HushNG",
+	launch_hushNG: "Запуск HushNG",
+	cancel_setup: "Отменить установку",
+	join_us: "Присоединяйся к нам!",
+	getting_started: "Запускаем",
+	initialize_wallet: "Инициализация кошелька",
+	getting_started_1: "Hush Next-generation - ваш пропуск в Hush блокчейн. Администрирование кошельков",
+	getting_started_2: "и использование HushList протокола для получения и отправки зашифрованных и анонимных сообщений, которые называются заметками.",
+	getting_started_3: "Начните работу, загрузив удостоверяющий Hush ключ. После загрузки ваш кошелек будет инициализирован и готов к использованию",
+	
+	error_connect_daemon_title: "Ошибка при подключении к Hush протоколу",
+	error_connect_daemon_message: "Удостоверьтесь, что Hush запущен",
+    error_talking_daemon_title: "Ошибка при запросе к Hush протоколу",
+
+    hushd_is_already_running: "Hush уже запущен! Пропускаем процесс загрузки",
+    
+    list_of_contacts: "Ниже список ваших контактов",
+    new_contact: "Новый контакт",
+    edit: "Редактирование",
+    chat: "Чат",
+    delete: "Удалить",
+    save: "Сохранить",
+    cancel: "Отмена",
+    send: "Отправить",
+    adress: "Адрес",
+    addresses: "Адреса",
+    groups: "Группы",
+    transactions: "Транзакции",   
+    destination_address: "Адрес получателя", 
+    from: "От",
+    time: "Время",
+    direction: "Направление",
+    close: "Закрыть",
+
+    hushList_name: "Имя HushList",
+    new_hushList: "Новый HushList",
+    hushlist: "HushList",
+    
+    of_contacts: "# контактов",
+    
+    intro_groups_1: "Ниже список ваших приватных HushList-ов.",
+    intro_groups_2: "Каждый HushList - это список контактов, хранящихся локально на этом компьютере,",
+    intro_groups_3: "и он не хранится в блокчейне.",
+    intro_groups_4: "Защищенные адреса (zaddrs) приватны и анонимны, тогда как прозрачные адреса (taddrs) публичны и псевдоанонимны",
+    
+    contacts: "Контакты",
+    lists: "Списки",
+    conversations: "Беседы",
+    advanced: "Расширенные",
+    hushNG_settings: "HushNG Настройки",
+    settings: "Настройки",
+    
+    informations: "Информация",
+    
+    ok: "Ok",
+    
+    network_stats: "Статистика сети",
+    import: "Импорт",
+    intro_adresses_1: "Ниже список ваших контактов",
+    intro_adresses_2: "Защищенные адреса(zaddrs) сохраняют вашу конфиденциальность благодаря зашифрованным тразакцкиям,",
+    intro_adresses_3: "которые не раскрывают такие мета-данные как: сумму или кто является получателем и отправителем,",
+    intro_adresses_4: "и АНОНИМНЫ. Получатель не сможет ответить до тех пор, пока вы не скажите",
+    intro_adresses_5: "им как это сделать в поле заметок. Каждая заметка может содержать до 512 байт информации.",
+    intro_adresses_6: "Прозрачные адреса (taddrs) ПСЕВДОАНОНИМНЫ, т.к. информация о нике и транзакции",
+    intro_adresses_7: "открыта в публичном доступе для любого и навсегда. Если вы не хотите раскрывать эту информацию,",
+    intro_adresses_8: "используйте защищенные адреса.",
+    
+    fund_hush_fund: "Пополнение вашего Hush баланса",
+    
+    import_zaddr: "Импортировать zaddr",
+    new_zaddr: "Новый zaddr",
+    
+    import_taddr: "Импортировать taddr",
+    new_taddr: "Новый taddr",
+    
+    transparent: "taddr",
+    shielded: "zaddr",
+    
+    total: "ИТОГО",
+    
+    bytes_received: "байт отправлено",
+    bytes_sent: "байт получено",
+    
+    never_give_private_key: "Никогда и никому не сообщайте свой приватный ключ!",
+    treat_it_like_a_password: "Храните его как пароль, который защищает все монеты в вашем кошельке.",
+    import_a_private_key: "Вы можете импортировать свой приватный ключ на несколько устройств и у них будет доступ к кошельку .",
+    
+    amount: "Сумма",
+    shielded_zaddr: "Защищенный адрес (zaddr)",
+    transparent_taddr: "Прозрачный адрес (taddr)",
+    
+    import_transparent_address: "Импортировать прозрачный адрес кошелька",
+    wallet_import_format_taddr: "Формат кошелька для импорта, начинается с 5, K или L",
+    
+    import_shielded_address: "Импортировать защищенный адрес кошелька",
+    wallet_import_format_zaddr: "Формат кошелька для импорта, начинается с SK...",
+
+    private_key_wif: "Приватный ключ (WIF)",
+    
+    wallet: "Кошелек",
+    
+    intro_wallet_menu_1: "Транзакции могут быть осуществлены <br/> с zaddr или taddr в зависимости от ваших предпочтений",
+    create_transaction: "Создать транзакцию",
+    spendable_balance: "Доступный баланс",
+    
+    select_address: "Выберите защищенный или прозрачный адрес",
+    put_address_here: "введите адрес или выберите из списка контактов",
+    
+    amount_sent_each_address: "Сумма отправки на каждый адрес",
+    miner_fee: "Комиссия майнера",
+    dev_donation: "Пожертвование разработчикам",
+    cost_transaction_in_block: "Включить в сумму отправки",
+    
+    suggested_donation: "Предлагаемое пожертвование - 1%",
+    total_amount: "Общая сумма",
+    total_amount_to_send: "Общая сумма транзакции",
+    remaining_balance: "Оставшийся баланс",
+    amount_left_after_transaction: "Баланс после тразакции",
+    memo: "Заметка",
+    hey_Bob: "Привет Иван, это Маша, ты что-нибудь слышал о Тане? ...",
+    create: "Создать",
+    confirm: "Подтвердить",
+    clear_transaction_form: "Очистить форму для транзакции",
+    clear: "Очистить",
+    
+    sent_and_received_transactions: "Отправленные и полученные транзакции",
+    transaction_history: "история тразакций",
+    confirm_transaction_form: "Вы уверены, что хотите совершить транзакцию с {total_amount} HUSH ?",
+    open_block_explorer: "Нажмите, чтобы открыть block explorer",
+    
+    incoming: "Входящие",
+    outgoing: "Исходящие",
+    mined: "Намайненное",
+    
+    pending_operations: "Операции к исполнению",
+    last_updated: "Последние обновленные",
+    
+    id: "Id",
+    status: "Статус",
+    error: "Ошибка",
+    
+    failed_operations: "Неудавшиеся операции",
+    date: "Дата",
+    
+    only_shielded_transactions_contain_donations: "Только защищенные операции могут содержать пожертвования",
+    
+    edit_contact: "Редактировать контакт",
+    name: "Имя",
+    address: "Адрес",
+    
+    start_a_conversation: "Начать разговор",
+    
+    privacy_mode: "Защищенный режим",
+    rpc_port: "Порт RPC",
+    refresh_interval: "Интервал обновления",
+    
+    import_transparent_address: "Импортировать прозрачный адрес",
+    import_shielded_address: "Импортировать защищенный адрес",
+    
+    make_sure_hushd_is_running: "Пожалуйста, убедитесь, что hushd запущен",
+    error_connecting_to_hush_daemon: "Ошибка подключения к Hush протоколу",
+    error_talking_to_hush_daemon: "нет ответа от Hush протокола",
+
+    block_height: "Высота блока",
+    peers: "Соединения",
+
+    calculating: "Считаем...",
+    scanning: "Сканируем",
+    discovering: "Открываем",
+    connecting : "Соединяемся",
+
+    operation_is_executing: "Операция выполняется. Проверьте список тразакций к исполнению для дальнейшей информации",    
+    transaction_was_created_successfully: "Транзакция успешно выполнена. Номер транзакции: ",
+
+    contacts_must_have_a_nickname: "Контакт должен содержать ник",
+    contacts_must_have_an_address: "Контакт должен содержать адрес",
+    invalid_address_for_contact: "Неверный адрес для контакта",
+
+    there_is_already_a_contact: "Контакт уже существует ",
+    with_address: " с адресом ",
+
+    imported_shielded_address_from_WIF: "Импортирован защищенный адрес с WIF",
+    imported_transparent_address_from_WIF: "Импортирован прозрачный адрес с WIF",
+
+    created_new_taddr: "Создан новый taddr",
+    created_new_zaddr: "Создан новый zaddr",
+
+
+    error_importing_viewkey: "Ошибка при импортировании ключа ",
+    error_retreiving_viewkey_for: "Ошибка при извлечении ключа для",    
+    error_sending_memo: "Ошибка при отправке мемо",
+    you_must_choose_a_from_address: "Вы должны выбрать адрес!",
+    you_must_have_at_least_one_recipient_in_your_transaction: "Вы должны указать хотя бы одного получателя!",
+    amount_must_be_number_valid: "Сумма должны быть >= 0 и <=",
+
+    transaction_for_total_amount_of: "Тразакция на общую сумму",
+    hush_queued_successfully: "HUSH успешно отправлен!",
+    current_wallet_has: "В текущем кошельке",
+    but: "но",
+    hush_needed_for_this_transaction: "HUSH требуется для этой тразакции!",
+    you_need: "Вам необходимо",
+    to_make_this_transaction: "HUSH, чтобы совершить тразакцию ",
+
+    error_finding_previous_messages_for: "Ошибка при поиске предыдущих сообщений для",
+
+    oh_shite: "О, черт!",
+
+    copied_to_clipboard: "Скопировано {value} в буфер обмена.",
+
+    none: "Никто",
+
+    to: "Кому"
+
+    }
+  }
 }
