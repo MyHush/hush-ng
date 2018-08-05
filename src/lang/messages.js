@@ -211,6 +211,8 @@ export default {
 
     oh_shite: "Oh shite!",
 
+    copied_to_clipboard: "Copied {value} to clipboard.",
+
     to: "To"
 
     }
@@ -432,8 +434,10 @@ export default {
     to_make_this_transaction: "HUSH pour réaliser cette transation.",
 
     error_finding_previous_messages_for: "Erreur lors de la recherche des messages précédents pour r",
-
+    
     oh_shite: "Oopsss!",
+
+    copied_to_clipboard: "L'adresse : {value} a été copiée dans le presse-papiers.",
 
     to: "vers"
 
