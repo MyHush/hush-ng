@@ -1,54 +1,53 @@
 <template>
   <div>
-      {{$t('message.intro_adresses_1')}}<br />
-      <span>
-</span>
+    {{$t('message.intro_adresses_1')}}<br />
+
     <div class="container" >
       <el-row class="caption">
-<el-col :span="10">
-<el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></el-button>
-<el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
-</el-col>
+        <el-col :span="10">
+          <el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></el-button>
+          <el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
+        </el-col>
       </el-row>
       <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
-        <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>        
-      </el-table>        
+        <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>
+      </el-table>
     </div>
+
     <div class="container" >
       <el-row class="caption">
         <el-col :span="10" >
-<el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></el-button>
-<el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></el-button>
-
-</el-col>
-      </el-row>   
+          <el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></el-button>
+          <el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></el-button>
+        </el-col>
+      </el-row>
       <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
-        <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>      
+        <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>
         <icon name=copy></icon>
-        </el-table>
-
+      </el-table>
     </div>
-<div>
-<ul>
-<li>
-{{$t('message.intro_adresses_2')}}
-{{$t('message.intro_adresses_3')}}
-{{$t('message.intro_adresses_4')}}
-{{$t('message.intro_adresses_5')}}
-</li>
-<li>
-{{$t('message.intro_adresses_6')}}
-{{$t('message.intro_adresses_7')}}
-{{$t('message.intro_adresses_8')}}
-</li>
-</ul>
-    <span>
-    <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
-</span>
 
-</div>
+    <div class="container container-instructions">
+      <ul id="address-instructions">
+        <li>
+        {{$t('message.intro_adresses_2')}}
+        {{$t('message.intro_adresses_3')}}
+        {{$t('message.intro_adresses_4')}}
+        {{$t('message.intro_adresses_5')}}
+        </li>
+        <li>
+        {{$t('message.intro_adresses_6')}}
+        {{$t('message.intro_adresses_7')}}
+        {{$t('message.intro_adresses_8')}}
+        </li>
+      </ul>
+      <span>
+        <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
+      </span>
+    </div>
+
     <div class="bottom-row">
       <div class="box alt">
         <ul id="texts">
@@ -62,17 +61,17 @@
           <li v-bind:class="{ unconfirmed: !totalBalance.valid }"> {{ totalBalance.balance }} HUSH</li>
         </ul>
       </div>
-        <div class="box alt">
-            <b>{{$t('message.network_stats')}}</b><br/>
-            <icon name=download></icon>{{ totalBytesRecv }} {{$t('message.bytes_received')}}<br/>
-            <icon name=upload></icon>{{ totalBytesSent }} {{$t('message.bytes_sent')}}<br/>
-        </div>
-        <div class="box alt">
-            <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
-            <icon name="euro-sign"></icon> {{ priceEUR }} EUR/HUSH<br/>
-            <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
-        </div>
+      <div class="box alt">
+        <b>{{$t('message.network_stats')}}</b><br/>
+        <icon name=download></icon>{{ totalBytesRecv }} {{$t('message.bytes_received')}}<br/>
+        <icon name=upload></icon>{{ totalBytesSent }} {{$t('message.bytes_sent')}}<br/>
       </div>
+      <div class="box alt">
+        <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
+        <icon name="euro-sign"></icon> {{ priceEUR }} EUR/HUSH<br/>
+        <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
+      </div>
+    </div>
 
     <el-dialog v-bind:title="$t('message.import_transparent_address')" :visible.sync="importTaddrVisible" width="60%" >
       <el-form :model="importTaddrForm">
@@ -80,11 +79,11 @@
           <el-input placeholder={{$t('message.wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
-            <ul>
+          <ul>
             <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
             <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
             <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
-            </ul>
+          </ul>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -99,11 +98,11 @@
           <el-input v-bind:placeholder="$t('message.wallet_import_format_zaddr')" v-model="importZaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
-            <ul>
+          <ul>
             <li><icon name=key></icon> {{$t('message.never_give_private_key')}}</li>
             <li><icon name=user-secret></icon> {{$t('message.treat_it_like_a_password')}}</li>
             <li><icon name=share-alt></icon> {{$t('message.import_a_private_key')}}</li>
-            </ul>
+          </ul>
         </div>
 <!--
         <el-form-item label="Start Height" label-width="100px">
@@ -145,7 +144,7 @@
 
   let vue = new Vue({ i18n })
 
-  export default { 
+  export default {
     name: 'addresses',
     components: {  },
     data() {
@@ -176,7 +175,7 @@
         'priceBTC',
         'priceEUR',
         'priceUSD',
-      ]),     
+      ]),
       ...mapGetters([
         'zAddresses',
         'tAddresses',
@@ -194,11 +193,11 @@
         'importTaddr',
         'importZaddr',
       ]),
-      copyToClipboard (row) {        
+      copyToClipboard (row) {
         copy(row.address)
         //alert('Copied ' + row.address + ' to clipboard.')
         alert(i18n.t('message.copied_to_clipboard', { value: row.address }))
-      },     
+      },
       importTaddrDialog() {
           this.importTaddrVisible = true;
       },
@@ -217,26 +216,31 @@
       },
     },
 
-    mounted: function() {     
+    mounted: function() {
     }
   }
 </script>
 
 <style>
 
- .container {    
+ .container {
     width: 100%;
     margin-top: 10px;
     padding: 15px 25px 15px 30px;
     background-color: #eaeaea;
     border-radius: 11px;
   }
-  
+
+  .container-instructions {
+     background-color: inherit;
+     border-radius: 0;
+   }
+
   .caption {
     font-weight: 700;
     font-size: 12pt
   }
-  
+
   .caption .balance {
     font-weight: 400;
   }
@@ -250,10 +254,18 @@
     font-weight: 400;
     font-size: 10pt
   }
-  .copy {    
+  .copy {
     font-weight: 400;
     font-size: 11pt;
     color: #5e5e5e;
+  }
+
+  #address-instructions li {
+    padding-bottom: 10px;
+  }
+
+  #funding {
+    margin-top: 10px;
   }
 
   .button {
