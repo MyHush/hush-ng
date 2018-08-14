@@ -8,8 +8,8 @@ export default {
   	join_us: "Join us!",
   	getting_started: "Getting Started",
   	initialize_wallet: "Initialize Wallet",
-  	getting_started_1: "Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets ",
-  	getting_started_2: "and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.",
+  	getting_started_1: "Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.",
+  	getting_started_2: "",
   	getting_started_3: "Start by downloading the Hush proving-key. Afterwards, your wallet will be initialized and ready for use",
 
   	error_connect_daemon_title: "Error connecting to Hush daemon",
