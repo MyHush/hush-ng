@@ -363,7 +363,7 @@
     color: #555;
     font-weight: initial;
     list-style-type: none;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
   }
 
   .intall-list li {

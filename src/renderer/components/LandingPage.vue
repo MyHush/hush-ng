@@ -174,4 +174,8 @@
   .doc .button-alt:hover {
     background-color: #e2e2e2;
   }
+
+  #initialize {
+    padding-bottom: 10px;
+  }
 </style>
