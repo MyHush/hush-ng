@@ -12,7 +12,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="nickName" v-bind:label="$t('message.contacts')" width="100"> </el-table-column>
-        <el-table-column prop="address" v-bind:label="$t('message.addresses')" width="*" class-name="address" > </el-table-column>        
+        <el-table-column prop="address" v-bind:label="$t('message.addresses')" width="*" class-name="address" > </el-table-column>
         <el-table-column
           fixed="right"
           label=""
@@ -21,9 +21,9 @@
             <el-button @click="editContact(scope.row)"  size="small"><icon name=pencil-alt></icon>{{$t('message.edit')}}</el-button>
             <el-button @click="removeContact(scope.row)" size="small"><icon name=bomb></icon>{{$t('message.delete')}}</el-button>
           </template>
-        </el-table-column>        
-      </el-table>        
-    </div>    
+        </el-table-column>
+      </el-table>
+    </div>
 
     <el-dialog v-bind:title="$t('message.edit_contact')" :visible.sync="contactDialogVisible" width="60%" >
       <el-form :model="contactForm">
@@ -34,7 +34,7 @@
          <el-input v-model="contactForm.address" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">         
+      <span slot="footer" class="dialog-footer">
         <el-button @click="contactDialogVisible = false">{{$t('message.cancel')}}</el-button>
         <el-button type="primary" @click="saveContact(contactForm)">{{$t('message.save')}}</el-button>
       </span>
@@ -47,7 +47,7 @@
           <el-input v-model="chatForm.memo" type=textarea auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">         
+      <span slot="footer" class="dialog-footer">
         <el-button @click="chatDialogVisible = false">{{$t('message.cancel')}}</el-button>
         <el-button type="primary" @click="sendToContact(chatForm)">{{$t('message.send')}}</el-button>
       </span>
@@ -55,7 +55,7 @@
   </div>
 </template>
 
-<script> 
+<script>
   import copy from 'copy-to-clipboard';
   import Vue from 'vue'
   import Vuex from 'vuex'
@@ -177,7 +177,7 @@
 </script>
 
 <style>
- 
+
   #addresses {
     width: 100%;
   }

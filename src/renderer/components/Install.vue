@@ -436,11 +436,11 @@
 
   .doc .button-info {
     margin-left: 10px;
-    border-color: #3e3e3e;
-    font-weight: normal;
+    border-color: #777;
     color: #3e3e3e;
+    font-weight: bold;
     margin-right: 5px;
-    background-color: transparent;
+    background-color: white;
   }
 
   .doc .button-info:hover {

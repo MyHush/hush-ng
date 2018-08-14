@@ -1,28 +1,45 @@
 <template>
   <div>
-    {{$t('message.intro_adresses_1')}}<br />
+    <!-- {{$t('message.intro_adresses_1')}}<br /> -->
 
-    <div class="container" >
+    <div class="container action-buttons">
       <el-row class="caption">
-        <el-col :span="10">
-          <el-button round type=warning id="import-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></el-button>
-          <el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
+        <el-col :span="8">
+          <a class="button button-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></a>
+          <a class="button button-address-alt" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></a>
         </el-col>
       </el-row>
-      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
+    </div>
+    <div class="container container-card">
+      <!-- <el-row class="caption row-action">
+        <el-col :span="8">
+          <a class="button button-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></a>
+          <a class="button button-address-alt" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></a>
+        </el-col>
+      </el-row> -->
+      <el-table :data="zAddresses" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>
       </el-table>
     </div>
 
-    <div class="container" >
-      <el-row class="caption">
-        <el-col :span="10" >
-          <el-button round type=warning class="import-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></el-button>
-          <el-button round type=success class="generate-address" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></el-button>
+    <div class="container action-buttons">
+      <el-row class="caption row-taddr">
+        <el-col :span="8">
+          <a class="button button-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></a>
+          <a class="button button-address-alt" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></a>
         </el-col>
       </el-row>
-      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
+    </div>
+
+    <div class="container container-card">
+      <!-- <el-row class="caption row-action">
+        <el-col :span="8">
+          <a class="button button-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></a>
+          <a class="button button-address-alt" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></a>
+        </el-col>
+      </el-row> -->
+      <el-table :data="tAddresses" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>
         <icon name=copy></icon>
@@ -44,7 +61,7 @@
         </li>
       </ul>
       <span>
-        <a class="button" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
+        <a class="button button-primary" id="funding" v-on:click="fundHushFund()">{{$t('message.fund_hush_fund')}}</a>
       </span>
     </div>
 
@@ -67,9 +84,9 @@
         <icon name=upload></icon>{{ totalBytesSent }} {{$t('message.bytes_sent')}}<br/>
       </div>
       <div class="box alt">
-        <icon name="brands/btc"></icon> {{ priceBTC }} BTC/HUSH<br/>
-        <icon name="euro-sign"></icon> {{ priceEUR }} EUR/HUSH<br/>
-        <icon name="dollar-sign"></icon> {{ priceUSD }} USD/HUSH<br/>
+        <icon name="brands/btc"></icon>{{ priceBTC }} BTC/HUSH<br/>
+        <icon name="euro-sign"></icon>{{ priceEUR }} EUR/HUSH<br/>
+        <icon name="dollar-sign"></icon>{{ priceUSD }} USD/HUSH<br/>
       </div>
     </div>
 
@@ -116,7 +133,7 @@
       </span>
     </el-dialog>
 
-    </div>
+  </div>
 </template>
 
 <script>
@@ -221,81 +238,75 @@
   }
 </script>
 
-<style>
+<style scoped>
 
- .container {
-    width: 100%;
-    margin-top: 10px;
-    padding: 15px 25px 15px 30px;
-    background-color: #eaeaea;
-    border-radius: 11px;
+  .action-buttons {
+    margin-bottom: -10px;
+    padding-left: 0;
   }
 
-  .container-instructions {
-     background-color: inherit;
-     border-radius: 0;
-   }
-
-  .caption {
-    font-weight: 700;
-    font-size: 12pt
-  }
-
-  .caption .balance {
-    font-weight: 400;
-  }
-
-  .caption span {
-    font-weight: 400;
-    color: #2f77f7;
+  .row-taddr {
+    padding-top: 15px;
   }
 
   .intro {
     font-weight: 400;
-    font-size: 10pt
+    font-size: .8em;
   }
+
   .copy {
     font-weight: 400;
-    font-size: 11pt;
+    font-size: .9em;
     color: #5e5e5e;
+  }
+
+  .button-address {
+    margin-right: 5px;
+    background-color: #3e3e3e;
+    border-color: #3e3e3e;
+    color: white;
+  }
+
+  .button-address:hover, .button-address-alt:hover {
+    background-color: #2262d6;
+    border: 1px solid #2262d6;
+    color: white;
+  }
+
+  .button-address-alt:hover .fa-icon {
+    fill: white;
+  }
+
+  .button-address .fa-icon {
+    margin-left: 5px;
+    fill: white;
+  }
+
+  .button-address-alt {
+    margin-right: 5px;
+    background-color: white;
+    border-color: #d2d2d2;
+    color: #2d2d2d;
+  }
+
+  .button-address-alt .fa-icon {
+    margin-left: 5px;
+    fill: #2d2d2d;
+  }
+
+  #address-instructions {
+    padding: 20px 0;
   }
 
   #address-instructions li {
     padding-bottom: 10px;
+    font-size: .8em;
   }
 
   #funding {
     margin-top: 10px;
-  }
-
-  .button {
-    font-size: 12pt;
-    cursor: pointer;
-    outline: none;
-    padding: 5px 15px 5px 15px;
-    border-radius: 4px;
-    display: inline-block;
-    color: #fff;
-    background-color: #2F77F7;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-    border: 1px solid #2F77F7;
-    text-decoration: none;
-    -webkit-app-region: no-drag;
-  }
-
-  .button:hover {
-    background-color: #2262d6;
-  }
-
-  .button-alt {
-    color: #3e3e3e;
-    margin-right: 5px;
-    background-color: transparent;
-  }
-
-  .button-alt:hover {
-    background-color: #e2e2e2;
+    padding: 0.75em 2em;
+    border-radius: 2em;
   }
 
   .white {
@@ -305,6 +316,62 @@
 
   .unconfirmed {
     color: red !important;
+  }
+
+  .bottom-row {
+    clear: both;
+    position: fixed;
+    bottom: 15px;
+  }
+
+  .bottom-row svg {
+    margin-right: 8px;
+  }
+
+  .bottom-row .box {
+    float: left;
+    width: 300px;
+    height: 95px;
+    margin-right: 15px;
+    padding: 10px 15px 10px 15px;
+    background-color: #3e3e3e;
+  }
+
+  .bottom-row .alt {
+    font-weight: 300;
+    font-size: .9em;
+    background-color: #cacaca;
+  }
+
+  .bottom-row .box .links {
+    position: absolute;
+    bottom: 10px;
+  }
+
+  .bottom-row .box .links a {
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+  }
+
+  .bottom-row .box #texts {
+    float: left;
+    display: list-item;
+    list-style-type:none;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .bottom-row .box #balances {
+    float: right;
+    text-align: right;
+    list-style-type: none;
+    color: #fff;
+    display: list-item;
+  }
+
+  .bottom-row .box #balances li {
+   font-weight: 500;
   }
 
 </style>
