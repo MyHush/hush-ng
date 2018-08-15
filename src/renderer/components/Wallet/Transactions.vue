@@ -26,8 +26,7 @@
                   <span style="float: right; font-size: 13px">{{ address.balance }}</span>
             </el-option>
             <el-input v-on:input="updateTransactionForm(transactionForm,availableBalance,'from')"></el-input>
-        </el-select>
-
+          </el-select>
         </el-form-item>
 
         <el-form-item v-bind:label="$t('message.to')">
@@ -49,10 +48,10 @@
         <el-form-item v-bind:label="$t('message.amount')" label-width="150px" id="txtAmount" >
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.amount_sent_each_address')"
-                v-numeric-only
-                ondragstart="return false;" ondrop="return false;"
-                v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount')"
-                v-model="transactionForm.amount">
+              v-numeric-only
+              ondragstart="return false;" ondrop="return false;"
+              v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount')"
+              v-model="transactionForm.amount">
             </el-input>
           </el-col>
         </el-form-item>
@@ -60,10 +59,10 @@
         <el-form-item v-bind:label="$t('message.miner_fee')">
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.cost_transaction_in_block')" v-model="transactionForm.fee"
-                v-numeric-only
-                ondragstart="return false;" ondrop="return false;"
-                v-on:input="updateTransactionForm(transactionForm,availableBalance,'mining_fee')"
-            ></el-input>
+              v-numeric-only
+              ondragstart="return false;" ondrop="return false;"
+              v-on:input="updateTransactionForm(transactionForm,availableBalance,'mining_fee')">
+            </el-input>
           </el-col>
         </el-form-item>
 
@@ -71,31 +70,37 @@
           <el-col :span="15">
             <!--<el-input v-bind:placeholder="$t('message.suggested_donation')" -->
             <el-input v-bind:placeholder="placeholder_suggested_donation" v-bind:disabled="disabled_suggested_donation"
-                v-numeric-only
-                ondragstart="return false;" ondrop="return false;"
-                v-on:input="updateTransactionForm(transactionForm,availableBalance,'dev_fee')"
-            v-model="transactionForm.devDonation"></el-input>
+              v-numeric-only
+              ondragstart="return false;" ondrop="return false;"
+              v-on:input="updateTransactionForm(transactionForm,availableBalance,'dev_fee')"
+              v-model="transactionForm.devDonation">
+            </el-input>
           </el-col>
         </el-form-item>
 
         <el-form-item v-bind:label="$t('message.total_amount')">
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.total_amount_to_send')"
-            v-model="transactionForm.totalAmount" readonly></el-input>
+              v-model="transactionForm.totalAmount" readonly>
+            </el-input>
           </el-col>
         </el-form-item>
 
         <el-form-item v-bind:label="$t('message.remaining_balance')">
           <el-col :span="15">
             <el-input v-bind:placeholder="$t('message.amount_left_after_transaction')"
-            v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount_left_after_transaction')"
-            v-model="transactionForm.remaining" readonly></el-input>
+              v-on:input="updateTransactionForm(transactionForm,availableBalance,'amount_left_after_transaction')"
+              v-model="transactionForm.remaining" readonly>
+            </el-input>
           </el-col>
         </el-form-item>
 
         <el-form-item v-bind:label="$t('message.memo')">
           <el-col :span="15">
-            <el-input type=textarea v-bind:placeholder="$t('message.hey_Bob')" v-model="transactionForm.memo" style="width: 100%;"></el-input>
+            <el-input type=textarea v-bind:placeholder="$t('message.hey_Bob')"
+              v-model="transactionForm.memo"
+              style="width: 100%;">
+            </el-input>
           </el-col>
         </el-form-item>
 
@@ -106,7 +111,9 @@
         placement="top"
         width="160"
         v-model="popoverConfirm">
-        <p>{{ this.$t('message.confirm_transaction_form'), {'total_amount': transactionForm.totalAmount} }}</p>
+        <p>
+          {{ this.$t('message.confirm_transaction_form'), {'total_amount': transactionForm.totalAmount} }}
+        </p>
         <div style="text-align: right; margin: 0">
           <el-button size="mini" type="text" @click="popoverConfirm = false">{{$t('message.cancel')}}</el-button>
           <el-button type="primary" size="mini" @click="popoverConfirm = false">{{$t('message.confirm')}}</el-button>
@@ -144,7 +151,6 @@
             <div v-if="scope.row.confirmations > 0" ><icon name="check" class="confirmed" /> </div>
           </template>
         </el-table-column>
-
         <el-table-column prop="category" v-bind:label="$t('message.direction')" width="90">
           <template slot-scope="scope">
             <div v-if="scope.row.category == 'receive'"> {{$t('message.incoming')}} </div>
