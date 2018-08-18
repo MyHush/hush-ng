@@ -1544,5 +1544,225 @@ export default {
     to: "Do"
 
     }
+  },
+
+    //Norwegian - Thanks to SuperMax and @Takoy_Nahal
+    no: {
+    message: {
+    welcome_to_hushNG: "Velkommen til HushNG!",
+	installing_hushNG: "Installerer HushNG",
+	launch_hushNG: "Start HushNG",
+	cancel_setup: "Avbryt installeringen",
+	join_us: "Bli med!",
+	getting_started: "Starter",
+	initialize_wallet: "Initialiserer wallet",
+	getting_started_1: "Hush Next-generation er din protokoll til Hush blokkjeden. Administrer dine wallets og bruk HushList protokollen til å sende og motta krypterte og anonyme meldinger som kalles memos.",
+	getting_started_2: "",
+	getting_started_3: "Start med å laste ned Hush proving-key. Etterpå blir wallet initialisert og klar til bruk.",
+	
+	error_connect_daemon_title: "Feil ved tilkobling til Hush-demonen",
+	error_connect_daemon_message: "Vennligst sørg for at Hush kjører",
+    error_talking_daemon_title: "Feil ved snakking til Hush daemon",
+
+    hushd_is_already_running: "Hush allerede kjører! Hopper over nedlastning prosessen",
+    
+    list_of_contacts: "Kontaktene dine er listet nedenfor",
+    new_contact: "Ny Kontakt",
+    edit: "Endre",
+    chat: "Chat",
+    delete: "Slett",
+    save: "Lagre",
+    cancel: "Avbryt",
+    send: "Send",
+    adress: "Adresse",
+    addresses: "Adresser",
+    groups: "Grupper",
+    transactions: "Transaksjoner",   
+    destination_address: "Måladdresse", 
+    from: "Fra",
+    time: "Dato",
+    direction: "Retning",
+    close: "Lukk",
+
+    hushList_name: "HushList Navn",
+    new_hushList: "Ny HushList",
+    hushlist: "HushList",
+    
+    of_contacts: "# Av Kontakter",
+    
+    intro_groups_1: "Dine private Hushlister er listet nedenfor.",
+    intro_groups_2: "Hver Hushlist er en liste av kontakter lagret lokalt på denne maskinen,",
+    intro_groups_3: "den er ikke lagret i blokkkjeden.",
+    intro_groups_4: "Skjermede adresser (zaddrs) er private og anonymoe mens transparente addresser (taddrs) er offentlige og pseudonyme.",
+    
+    contacts: "Kontakter",
+    lists: "Lister",
+    conversations: "Samtaler",
+    advanced: "Avansert",
+    hushNG_settings: "HushNG Innstllininger",
+    settings: "Innstllininger",
+    
+    informations: "Informasjon",
+    
+    ok: "Ok",
+    
+    network_stats: "Netverk Stats",
+    import: "Importer",
+    intro_adresses_1: "Adressene dine er listet nedenfor",
+    intro_adresses_2: "Skjermede adresser (zaddrs) bevarer ditt personvern med krypterte transaksjoner",
+    intro_adresses_3: "som ikke lekker metadata som mengden, eller hvem som sender og mottar,",
+    intro_adresses_4: "og er ANONYME . Mottakeren har ingen måte å svare deg på med mindre du forteller",
+    intro_adresses_5: "dem hvordan i notatfeltet. Hvert notat kan inneholde opptil 512 byte data.",
+    intro_adresses_6: "Transparente addresser (taddrs) er PSEUDONYME,som et pennnavn, og transaksjonen",
+    intro_adresses_7: "Informasjonen for dem er offentlig synlig og søkbar for alle og for alltid. Hvis du",
+    intro_adresses_8: "ikke trenger det eller du anser det som risikabelt, bruk en skjermet adresse",
+    
+    fund_hush_fund: "Finanser Din Hush Fond",
+    
+    import_zaddr: "Importer zaddr",
+    new_zaddr: "Ny zaddr",
+    
+    import_taddr: "Importer taddr",
+    new_taddr: "Ny taddr",
+    
+    // transparent: "Transparent",
+    // shielded: "Sjermet",
+    transparent: "taddr",
+    shielded: "zaddr",
+    
+    total: "TOTALT",
+    
+    bytes_received: "bytes mottatt",
+    bytes_sent: "bytes sendt",
+    
+    never_give_private_key: "Aldri del din private-key med noen!",
+    treat_it_like_a_password: "Den skal behandles som et passord som beskytter alle myntene i adressen din.",
+    import_a_private_key: "Du kan importere en privat nøkkel til flere noder, alle nodene skal ha adgang. ",
+    
+    amount: "Beløp",
+    shielded_zaddr: "Skjermet Adresse (zaddr)",
+    transparent_taddr: "Transparent Adresse (taddr)",
+    
+    import_transparent_address: "Importer Transparent Adresse",
+    wallet_import_format_taddr: "Wallet Importertingsformat, starter med 5, K eller L",
+    
+    import_shielded_address: "Importer Skjermet adresse",
+    wallet_import_format_zaddr: "Wallet Importeringsformat, startes med SK...",
+
+    private_key_wif: "Private Key (WIF)",
+    
+    wallet: "Wallet",
+    
+    intro_wallet_menu_1: "Transaksjoner kan sendes <br/> fra en zaddr eller taddr avhengig av dine preferenser",
+    create_transaction: "Oprett en transaksjon",
+    spendable_balance: "Brukbar Balanse",
+    
+    select_address: "Velg en skjermet eller transparent adresse",
+    put_address_here: "sett adressen her eller velg fra dine kontakter",
+    
+    amount_sent_each_address: "Beløp sendt til hver adresse",
+    miner_fee: "Miner avgift",
+    dev_donation: "Donasjon til Utviklere",
+    cost_transaction_in_block: "Kostnad for å inkludere transaksjon i blokk",
+    
+    suggested_donation: "Foreslått 1% donasjon",
+    total_amount: "Total Beløp",
+    total_amount_to_send: "Total beløp for å sende transaksjonen",
+    remaining_balance: "Igjen i Balansen",
+    amount_left_after_transaction: "Beløp igjen etter denne transaksjonen",
+    memo: "Memo",
+    hey_Bob: "Hei Bob, Dette er Alice, hørte du om Charlie? ...",
+    create: "Oprett",
+    confirm: "Bekreft",
+    clear_transaction_form: "Tøm transaksjon feltet",
+    clear: "Klar",
+    
+    sent_and_received_transactions: "Sende og motta transaksjoner",
+    transaction_history: "Alle Transaksjoner",
+    confirm_transaction_form: "Er du sikker at du vil sende {total_amount} HUSH ?",
+    open_block_explorer: "Klikk på en rad for å åpne blokkutforskeren",
+    
+    incoming: "Innkommende",
+    outgoing: "Utgående",
+    mined: "Minet",
+    
+    pending_operations: "Ventende operasjoner",
+    last_updated: "Sist oppdatert",
+    
+    id: "Id",
+    status: "Status",
+    error: "Feil",
+    
+    failed_operations: "Mislykkede operasjoner",
+    date: "Dato",
+    
+    only_shielded_transactions_contain_donations: "Kun skjermede transaksjoner inneholder donasjoner",
+    
+    edit_contact: "Endre contact",
+    name: "Navn",
+    address: "Adresse",
+    
+    start_a_conversation: "Start en samtale",
+    
+    privacy_mode: "Privatmodus",
+    rpc_port: "RPC Port",
+    refresh_interval: "Oppdater Intervallen",
+    
+    import_transparent_address: "Importer Transparent Adresse",
+    import_shielded_address: "Import Skjermet Adresse",
+    
+    make_sure_hushd_is_running: "Vennligst sørg for at hushd kjører",
+    error_connecting_to_hush_daemon: "Feil ved tilkobling til Hush-demonen",
+    error_talking_to_hush_daemon: "Feil ved snakking til Hush-demonen",
+
+    block_height: "Blokkhøyde",
+    peers: "Peers",
+
+    calculating: "Kalkulerer...",
+    scanning: "Skanner",
+    discovering: "Oppdager",
+    connecting : "Kobler til",
+
+    operation_is_executing: "Operasjonen utføres. Kontroller listen over ventende operasjoner for mer informasjon",    
+    transaction_was_created_successfully: "Transaksjonen opprettet. Transaksjons-ID er: ",
+
+    contacts_must_have_a_nickname: "Kontakter må ha et kallenavn",
+    contacts_must_have_an_address: "Kontakter må ha en adresse",
+    invalid_address_for_contact: "Ugyldig adresse",
+
+    there_is_already_a_contact: "En kontakt allerede eksisterer ",
+    with_address: " med adressen ",
+
+    imported_shielded_address_from_WIF: "Importert skjermet adresse fra WIF",
+    imported_transparent_address_from_WIF: "Importert transparent adresse fra WIF",
+
+    created_new_taddr: "Ny taddr opprettet",
+    created_new_zaddr: "Ny zaddr opprettet",
+
+
+    error_importing_viewkey: "Feil ved import av viewkey ",
+    error_retreiving_viewkey_for: "Feil ved henting av viewkey for",    
+    error_sending_memo: "Feil ved sending av memo",
+    you_must_choose_a_from_address: "Du må velge en fra adresse!",
+    you_must_have_at_least_one_recipient_in_your_transaction: "Du må ha minst én mottaker i transaksjonen din!",
+    amount_must_be_number_valid: "Beløå  må være nummer >= 0 og <=",
+
+    transaction_for_total_amount_of: "Transaksjon for total mengde av",
+    hush_queued_successfully: "HUSH er satt i kø!",
+    current_wallet_has: "Nåværende wallet har",
+    but: "men",
+    hush_needed_for_this_transaction: "HUSH trengs for denne transaksjonen!",
+    you_need: "Du trenger",
+    to_make_this_transaction: "HUSH for å gjennomføre denne transaksjonen",
+
+    error_finding_previous_messages_for: "Feil ved å finne tidligere meldinger for",
+
+    oh_shite: "Oisann!",
+
+    copied_to_clipboard: "Kopiert {value} til ordrebrett.",
+
+    to: "Til"
+
+    }
   }   
 }
