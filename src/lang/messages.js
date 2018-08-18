@@ -1541,6 +1541,8 @@ export default {
 
     copied_to_clipboard: "Skopiowano {value} do schowka.",
 
+    none: "Żaden",
+
     to: "Do"
 
     }
@@ -1761,8 +1763,9 @@ export default {
 
     copied_to_clipboard: "Kopiert {value} til ordrebrett.",
 
-    to: "Til"
+    none: "Ingen",
 
+    to: "Til"
     }
   },
   
@@ -1981,7 +1984,6 @@ export default {
     none:'Keiner',
 
     to: "Naar"
-
     }
   }
 }
