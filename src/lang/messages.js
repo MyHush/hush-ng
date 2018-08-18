@@ -1764,5 +1764,224 @@ export default {
     to: "Til"
 
     }
-  }   
+  },
+  
+    //Dutch - Thanks to @DenJohn
+    nl: {
+    message: {
+    welcome_to_hushNG: "Welkom bij HushNG!",
+	installing_hushNG: "Installeren van HushNG",
+	launch_hushNG: "Opstarten van HushNG",
+	cancel_setup: "Annuleer setup",
+	join_us: "Doe met ons mee!",
+	getting_started: "Begin ermee",
+	initialize_wallet: "Portefeuille aanmaken",
+	getting_started_1: "Hush Next-generation is jouw toegangspoort tot de Hush blockchain. Beheer uw portefeuilles en gebruik het HushList-protocol voor het verzenden en ontvangen van gecodeerde en anonieme berichten, die memo's worden genoemd.",
+	getting_started_2: "",
+	getting_started_3: "Begin met het downloaden van de Hush-sleutel. Daarna wordt uw portefeuille aangemaakt en klaargemaakt voor gebruik.",
+	
+	error_connect_daemon_title: "Fout bij het verbinden met de Hush-daemon",
+	error_connect_daemon_message: "Zorg ervoor dat Hush actief is",
+    error_talking_daemon_title: "Niet mogelijk om met de Hush daemon te communiceren",
+
+    hushd_is_already_running: "Hush loopt al! Downloadproces overslaan",
+    
+    list_of_contacts: "Hieronder de lijst met uw contacten",
+    new_contact: "Nieuw contact",
+    edit: "Pas aan",
+    chat: "Chat",
+    delete: "Verwijder",
+    save: "Opslaan",
+    cancel: "Annuleer",
+    send: "Verzenden",
+    adress: "Adres",
+    addresses: "Adressen",
+    groups: "Groepen",
+    transactions: "Transacties",   
+    destination_address: "Bestemmingsadres", 
+    from: "Van",
+    time: "Tijd",
+    direction: "Richting",
+    close: "Sluit",
+
+    hushList_name: "HushList Naam",
+    new_hushList: "Nieuwe HushList",
+    hushlist: "HushList",
+    
+    of_contacts: "Aantal contacten",
+    
+    intro_groups_1: "Hieronder de lijst met je privé HushLists.",
+    intro_groups_2: "Elke HushList is een lijst met contacten die lokaal op deze machine zijn opgeslagen,",
+    intro_groups_3: "de lijst is niet opgeslagen in de blockchain.",
+    intro_groups_4: "Afgeschermde adressen (zaddr's) zijn privé en anoniem, terwijl transparante adressen (taddr's) openbaar en pseudoniemen zijn.",
+    
+    contacts: "Contacten",
+    lists: "Lijsten",
+    conversations: "Gesprekken",
+    advanced: "Geavanceerd",
+    hushNG_settings: "HushNG instelingen",
+    settings: "Instellingen",
+    
+    informations: "Informatie",
+    
+    ok: "Ok",
+    
+    network_stats: "Netwerkstatistieken",
+    import: "Importeer",
+    intro_adresses_1: "Hieronder de lijst met uw adressen",
+    intro_adresses_2: "Afgeschermde adressen (zaddr's) beschermen uw privacy met gecodeerde transacties",
+    intro_adresses_3: "die geen metadata vrijgeeft, zoals het bedrag of wie verzendt en ontvangt,",
+    intro_adresses_4: "en zijn ANONIEM. De ontvanger kan niet antwoorden, tenzij je het hem vertelt",
+    intro_adresses_5: "hoe in het memoveld. Elke memo kan maximaal 512 bytes aan gegevens bevatten.",
+    intro_adresses_6: "Transparante adressen (taddr's) zijn PSEUDONYMOUS, zoals een schuilnaam en de transactie",
+    intro_adresses_7: "informatie voor hen is door iedereen altijd zichtbaar en doorzoekbaar. Als jou",
+    intro_adresses_8: "hoeft dat niet te vereisen of u vindt dat riskant, gebruik een afgeschermd adres.",
+
+    fund_hush_fund: "Zuiver je Hush-munten aan",
+    
+    import_zaddr: "Importeer een zaddr",
+    new_zaddr: "Nieuw zaddr",
+    
+    import_taddr: "Importeer een taddr",
+    new_taddr: "Nieuw taddr",
+    
+    transparent: "taddr",
+    shielded: "zaddr",
+    
+    total: "TOTAAL",
+    
+    bytes_received: "bytes ontvangen",
+    bytes_sent: "bytes verzonden",
+    
+    never_give_private_key: "Geef niemand je privésleutel!",
+    treat_it_like_a_password: "Behandel het als een wachtwoord dat alle munten in je adres beschermt.",
+    import_a_private_key: "U kunt een privésleutel naar meerdere nodes importeren, deze hebben vervolgens allemaal toegang.",
+    
+    amount: "Bedrag",
+    shielded_zaddr: "Afgeschermd adres (zaddr)",
+    transparent_taddr: "Transparant adres (taddr)",
+    
+    import_transparent_address: "Importeer Transparant adres",
+    wallet_import_format_taddr: "Portefeuille-importeerformaat, beginnend met 5, K of L",
+    
+    import_shielded_address: "Importeer afgeschermd adres",
+    wallet_import_format_zaddr: "Portefeuille-importeerformaat, beginnend met SK...",
+
+    private_key_wif: "Privésleutel (WIF)",
+    
+    wallet: "Portefeuille",
+    
+    intro_wallet_menu_1: "Transacties kunnen worden verzonden <br/> vanuit een zaddr of taddr, afhankelijk van uw voorkeur",
+    create_transaction: "Maak een transactie",
+    spendable_balance: "Beschikbaar saldo",
+    
+    select_address: "Selecteer een afgeschermd of transparant adres",
+    put_address_here: "plaats hier uw adres of kies er een uit uw contactlijst",
+    
+    amount_sent_each_address: "Bedrag verzonden per adres",
+    miner_fee: "Miner Fee",
+    dev_donation: "Dev schenking",
+    cost_transaction_in_block: "Kosten om transactie in blok op te nemen",
+    
+    suggested_donation: "Voorgestelde donatie van 1%",
+    total_amount: "Totaalbedrag",
+    total_amount_to_send: "Totaal te verzenden bedrag",
+    remaining_balance: "Resterende saldo",
+    amount_left_after_transaction: "Hoeveelheid over na deze transactie",
+    memo: "Memo",
+    hey_Bob: "Hey Bob, dit is Alice, heb je het gehoord over Charlie? ...",
+    create: "Maak aan",
+    confirm: "Bevestig",
+    clear_transaction_form: "Wis het transactieformulier",
+    clear: "Wissen",
+    
+    sent_and_received_transactions: "Verzonden en ontvangen transacties",
+    transaction_history: "Transactiegeschiedenis",
+    confirm_transaction_form: "Weet u zeker dat u een transactie van {total_amount} HUSH wilt uitvoeren?",
+    open_block_explorer: "Klik op een rij om block explorer te openen",
+    
+    incoming: "Inkomend",
+    outgoing: "Uitgaand",
+    mined: "gemijnd",
+    
+    pending_operations: "Wachtende bewerkingen",
+    last_updated: "Laatst bijgewerkt",
+    
+    id: "Id",
+    status: "Status",
+    error: "Foutmelding",
+    
+    failed_operations: "Mislukte operaties",
+    date: "Datum",
+    
+    only_shielded_transactions_contain_donations: "Alleen afgeschermde transacties bevatten donaties",
+    
+    edit_contact: "Werkt contact bij",
+    name: "Naam",
+    address: "Adres",
+    
+    start_a_conversation: "Start een gesprek",
+    
+    privacy_mode: "Privacy Modus",
+    rpc_port: "RPC Poort",
+    refresh_interval: "Vernieuw Interval",
+    
+    import_transparent_address: "Importeer transparant adres",
+    import_shielded_address: "Importeer afgeschermd adres",
+    
+    make_sure_hushd_is_running: "Zorg ervoor dat hushd actief is",
+    error_connecting_to_hush_daemon: "Fout bij verbinden met de Hush-daemon",
+    error_talking_to_hush_daemon: "Niet mogelijk om met de Hush daemon te communiceren",
+
+    block_height: "Blok hoogte",
+    peers: "Peers",
+
+    calculating: "Berekenen...",
+    scanning: "Scannen",
+    discovering: "Ontdekken",
+    connecting : "Verbinden",
+
+    operation_is_executing: "De operatie is aan het uitvoeren. Controleer de lijst met in behandeling zijnde operaties voor meer informatie",    
+    transaction_was_created_successfully: "Transactie is succesvol gemaakt. Transactie-ID is : ",
+
+    contacts_must_have_a_nickname: "Contactpersonen moeten een bijnaam hebben",
+    contacts_must_have_an_address: "Contactpersonen moeten een adres hebben",
+    invalid_address_for_contact: "Ongeldig adres voor contact",
+
+    there_is_already_a_contact: "Er is al een contactpersoon ",
+    with_address: " met adres ",
+
+    imported_shielded_address_from_WIF: "Geïmporteerd afgeschermd adres van WIF",
+    imported_transparent_address_from_WIF: "Geïmporteerd transparant adres  from WIF",
+
+    created_new_taddr: "Created new taddr",
+    created_new_zaddr: "Created new zaddr",
+
+    error_importing_viewkey: "Fout bij het importeren van de viewkey ",
+    error_retreiving_viewkey_for: "Fout bij ophalen van viewkey voor",    
+    error_sending_memo: "Fout bij verzenden van memo",
+    you_must_choose_a_from_address: "U moet een bestemmingsadres kiezen!",
+    you_must_have_at_least_one_recipient_in_your_transaction: "U moet ten minste één ontvanger in uw transactie hebben!",
+    amount_must_be_number_valid: "Bedrag moet een nummer > = 0 en <= zijn",
+
+    transaction_for_total_amount_of: "Transactie voor totale hoeveelheid",
+    hush_queued_successfully: "HUSH is in de wachtrij geplaatst!",
+    current_wallet_has: "Huidige portefeuille heeft",
+    but: "maar",
+    hush_needed_for_this_transaction: "HUSH nodig voor deze transactie!",
+    you_need: "Je hebt",
+    to_make_this_transaction: "HUSH nodig om deze transactie te maken",
+
+    error_finding_previous_messages_for: "Fout bij het vinden van eerdere berichten voor",
+
+    oh_shite: "Oeps!",
+
+    copied_to_clipboard: "{Value} gekopieerd naar klembord.",
+
+    none:'Keiner',
+
+    to: "Naar"
+
+    }
+  }
 }
