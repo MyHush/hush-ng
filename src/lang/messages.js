@@ -1324,5 +1324,225 @@ export default {
     to: "Para"
 
     }
-  }
+  },
+
+
+    //Polish - Thanks to @passcombo
+   pl: {
+    message: {
+    welcome_to_hushNG: "Witaj w HushNG!",
+	installing_hushNG: "Instalowanie HushNG",
+	launch_hushNG: "Uruchamianie HushNG",
+	cancel_setup: "Anuluj ustawienia",
+	join_us: "Dołącz do nas!",
+	getting_started: "Jak zacząć",
+	initialize_wallet: "Inicjalizuj portfel",
+	getting_started_1: "Hush Next-Generation umożliwia dostęp do łańcucha bloków Hush. Zarządzaj swoimi portfelami oraz używaj protokołu HushList do wysyłania i otrzymywania zaszyfrowanych anonimowych wiadomości, nazywanych tutaj memos.",
+	getting_started_2: "",
+	getting_started_3: "Rozpocznij przez pobranie kluczy uwierzytelniających Hush proving-key. Po pobraniu twój portfel będzie zainicjowany i gotowy do użytku.",
+	
+	error_connect_daemon_title: "Błąd połączenia z demonem Hush (procesem działającym w tle).",
+	error_connect_daemon_message: "Upewnij się, że demon Hush działa! (proces działający w tle)",
+    error_talking_daemon_title: "Błąd w komunikacji z demonem Hush. (procesem działającym w tle)",
+
+    hushd_is_already_running: "Hush jużjest uruchomiony! Pomijanie procesu pobierania. ",
+    
+    list_of_contacts: "Lista kontaktów",
+    new_contact: "Nowy kontakt",
+    edit: "Edutuj",
+    chat: "Czatuj",
+    delete: "Kasuj",
+    save: "Zapisz",
+    cancel: "Anuluj",
+    send: "Wyślij",
+    adress: "Adres",
+    addresses: "Adresy",
+    groups: "Grupy",
+    transactions: "Tranzakcje",   
+    destination_address: "Adres docelowy", 
+    from: "Od",
+    time: "Czas",
+    direction: "Kierunek",
+    close: "Zamknij",
+
+    hushList_name: "Nazwa HushList",
+    new_hushList: "Nowa lista HushList",
+    hushlist: "HushList",
+    
+    of_contacts: "# kontaktów",
+    
+    intro_groups_1: "Poniżej lista twoich prywatnych list HushLists.",
+    intro_groups_2: "Każda lista HushList to lista kontaktów przechowywana lokalnie na twoim urządzeniu,",
+    intro_groups_3: "nie jest przechowywana w łańcuchu bloków.",
+    intro_groups_4: "Chronione adresy (zaddrs) są prywatne i anonimowe natomiast transparentne adresy (taddrs) są widoczne publicznie i pseudo-anonimowe.",
+    
+    contacts: "Kontakty",
+    lists: "Listy",
+    conversations: "Rozmowy",
+    advanced: "Zaawansowane",
+    hushNG_settings: "HushNG Ustawienia",
+    settings: "Ustawienia",
+    
+    informations: "Informacje",
+    
+    ok: "Ok",
+    
+    network_stats: "Statystyki połączeń",
+    import: "Import",
+    intro_adresses_1: "Poniżej znajduje się lista twoich adresów",
+    intro_adresses_2: "Chronione adresy (zaddrs) wspierajątwojąprywatność szyfrowanymi tranzakcjami,",
+    intro_adresses_3: "które nie pozwalają na wyciek metadanych takich jak kwota tranzakcji, kto wysyła i kto otrzymuje,",
+    intro_adresses_4: "i są w pełni anonimowe. Otrzymujący nie będą mieli żadnej możliwości na odpowiedanie, dopuki im nie powiesz",
+    intro_adresses_5: "kim jesteś w polu memo. Każde memo zawiera do 512 bajtów danych.",
+    intro_adresses_6: "Adresy transparentne (taddrs) są pseudo-anonimowe, tak jak pseudonim. Informacje o tranzakcjach dla takich adresów",
+    intro_adresses_7: "są widoczne publicznie i wyszukiwalne, przez każdego, na zawsze. JEśli uważasz to za ryzykowne",
+    intro_adresses_8: "lub nieporządane, używaj chronionych adresów (zaddrs).",
+    
+    fund_hush_fund: "Doładuj swoje konto Hush",
+    
+    import_zaddr: "Importuj zaddr",
+    new_zaddr: "Nowy zaddr",
+    
+    import_taddr: "Importuj taddr",
+    new_taddr: "Nowy taddr",
+    
+    // transparent: "Transparentny",
+    // shielded: "Chroniony",
+    transparent: "taddr",
+    shielded: "zaddr",
+    
+    total: "RAZEM",
+    
+    bytes_received: "bajty otrzymane",
+    bytes_sent: "bajty wysłane",
+    
+    never_give_private_key: "Nigdy nikomu nie przekazuj kluczy prywatnych!",
+    treat_it_like_a_password: "Traktuj je jak hasło, które zabezpiecza wszystkie twoje pieniądze na posiadanych adresach.",
+    import_a_private_key: "Możesz importować klucze prywatne do wielu urządzeń na których chcesz mieć dostęp do swoich adresów.",
+    
+    amount: "Kwota",
+    shielded_zaddr: "Chroniony Adres (zaddr)",
+    transparent_taddr: "Transparentny Adres (taddr)",
+    
+    import_transparent_address: "Importuj Transparentne Adresy",
+    wallet_import_format_taddr: "Format Importu Portfela, zaczyna się od 5, K lub L",
+    
+    import_shielded_address: "Importuj Chronione Adresy",
+    wallet_import_format_zaddr: "Format Importu Portfela, zaczyna się od SK...",
+
+    private_key_wif: "Klucze prywatne (WIF)",
+    
+    wallet: "Portfel",
+    
+    intro_wallet_menu_1: "Tranzakcja może zostać wysłąna z adresu <br/> zaddr lub taddr w zależności od twojej preferencji.",
+    create_transaction: "Utwórz tranzakcję",
+    spendable_balance: "Dostępne środki",
+    
+    select_address: "Wybierz chroniony lub transparentny adres",
+    put_address_here: "tutaj wstaw adres lub wybierz jakiś ze swoich kontaktów",
+    
+    amount_sent_each_address: "Kwota wysłana",
+    miner_fee: "Opłata dla górników (Miner Fee)",
+    dev_donation: "Wesprzyj finansowo programistę aplikacji",
+    cost_transaction_in_block: "Koszt dołączenia tranzakcji do bloku",
+    
+    suggested_donation: "Sugerowany 1% dotacji",
+    total_amount: "Kwota całkowita",
+    total_amount_to_send: "Całą kwota tranzakcji",
+    remaining_balance: "Pozostałe Środki",
+    amount_left_after_transaction: "Środki pozostałe po tranzakcji",
+    memo: "Memo",
+    hey_Bob: "Cześć Bob, tu Alice, czy słyszałeś o Charlim? ...",
+    create: "Stwórz",
+    confirm: "Potwierdź",
+    clear_transaction_form: "Wymaż tranzakcje z",
+    clear: "Wymaż",
+    
+    sent_and_received_transactions: "Wysłane i otrzymane tranzakcje",
+    transaction_history: "Historia Tranzakcji",
+    confirm_transaction_form: "Czy masz pewność, że chcesz wysłać tranzakcję o kwocie {total_amount} HUSH ?",
+    open_block_explorer: "Kliknij w wiersz aby otworzyć przeglądarkę bloków",
+    
+    incoming: "Przychodzące",
+    outgoing: "Wychodzące",
+    mined: "Wykopane (Mined)",
+    
+    pending_operations: "Operacje w trakcie",
+    last_updated: "Ostatnia aktualizacja",
+    
+    id: "Id",
+    status: "Status",
+    error: "Błąd",
+    
+    failed_operations: "Nieudane operacje",
+    date: "Data",
+    
+    only_shielded_transactions_contain_donations: "Tylko chronione tranzakcje zawierajądotacje dla programisty",
+    
+    edit_contact: "Edytuj kontakt",
+    name: "Imię",
+    address: "Adres",
+    
+    start_a_conversation: "Rozpocznij konwersację",
+    
+    privacy_mode: "Mod Prywatności",
+    rpc_port: "Port RPC",
+    refresh_interval: "Okres odświeżania",
+    
+    import_transparent_address: "Importuj Adresy Transparentne",
+    import_shielded_address: "Importuj Adresy Chronione",
+    
+    make_sure_hushd_is_running: "Upewnij się, że hushd jest uruchomiony",
+    error_connecting_to_hush_daemon: "Błąd połączenia z Hush daemon",
+    error_talking_to_hush_daemon: "Błąd komunikacji z Hush daemon",
+
+    block_height: "Wysokość bloku",
+    peers: "Ilość połączeń",
+
+    calculating: "Obliczanie...",
+    scanning: "Skanowanie",
+    discovering: "Wykrywanie",
+    connecting : "Łączenie",
+
+    operation_is_executing: "Operacja jest wykonywana. Przejdź do listy operacji w trakcie wykonywania po więcej informacji.",    
+    transaction_was_created_successfully: "Tranzakcja utworzona poprawnie. Identyfikator tranzakcji to : ",
+
+    contacts_must_have_a_nickname: "Kontakty muszą mieć pseudonimy",
+    contacts_must_have_an_address: "Kontakty muszą mieć adresy",
+    invalid_address_for_contact: "Niepoprawny adres kontaktu",
+
+    there_is_already_a_contact: "Kontakt z takim adresem ",
+    with_address: " już istnieje ",
+
+    imported_shielded_address_from_WIF: "Zaimportowane chronione adresy z klucza WIF",
+    imported_transparent_address_from_WIF: "Zaimportowane transparentne adresy z klucza WIF",
+
+    created_new_taddr: "Utworzono nowy taddr",
+    created_new_zaddr: "Utworzono nowy zaddr",
+
+    error_importing_viewkey: "Błąd przy imporcie widoku klucza viewkey ",
+    error_retreiving_viewkey_for: "Błąd przy odczycie widoku klucza viewkey dla",    
+    error_sending_memo: "Błąd wysyłania memo",
+    you_must_choose_a_from_address: "Musisz wybrać adres w polu Od!",
+    you_must_have_at_least_one_recipient_in_your_transaction: "Musisz mieć przynajmniej jednego odbiorcę swojej tranzakcji!",
+    amount_must_be_number_valid: "Kwota musi być liczbą pomiędzy 0 i ",
+
+    transaction_for_total_amount_of: "Tranzakcja na całkowitą kwotę ",
+    hush_queued_successfully: " HUSH zakolejkowana poprawnie!",
+    current_wallet_has: "Obecny portfel zawiera",
+    but: "ale",
+    hush_needed_for_this_transaction: "HUSH potrzebne dla ten tranzakcji!",
+    you_need: "Potrzebujesz",
+    to_make_this_transaction: "HUSH aby dokonaćtej tranzakcji",
+
+    error_finding_previous_messages_for: "Błąd przy wyszukaniu poprzednich tranzakcji dla",
+
+    oh_shite: "A niech to dunder świśnie!",
+
+    copied_to_clipboard: "Skopiowano {value} do schowka.",
+
+    to: "Do"
+
+    }
+  }   
 }
