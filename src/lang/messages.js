@@ -1,4 +1,4 @@
-export default {
+﻿export default {
   en: {
     message: {
     welcome_to_hushNG: "Welcome to HushNG!",
@@ -233,7 +233,7 @@ export default {
 	initialize_wallet: "Initialiser le portefeuille",
 	
     getting_started_1: "Hush Next-Generation est votre passerelle vers la blockchain Hush.",
-    getting_started_2: "GÃ©rez vos portefeuilles et utilisez le protocole HushList pour envoyer et recevoir des messages chiffrÃ©s et anonymes, appelÃ©s mÃ©mos.",
+    getting_started_2: "Gérez vos portefeuilles et utilisez le protocole HushList pour envoyer et recevoir des messages chiffrés et anonymes, appelés mémos.",
     getting_started_3: "Commencez par télécharger la clé de vérification Hush. Ensuite, votre portefeuille sera initialisé et prêt à l'emploi",
 	error_connect_daemon_title: "Erreur lors de la connexion au daemon Hush",
     error_connect_daemon_message: "S'il vous plaît, assurez-vous que Hush est en cours d'exécution",
