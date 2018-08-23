@@ -27,6 +27,11 @@ You must have a recent version of NodeJS and npm installed: https://nodejs.org/e
     # build electron application for production
     npm run build
 
+## Contributing
+
+You are very welcome to submit patches to Hush-NG! Please send them to the `dev` branch,
+which is our tip of development.
+
 ## License
 
 GPLv3
