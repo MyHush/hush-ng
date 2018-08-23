@@ -16,7 +16,7 @@ and supports Linux, Mac and Windows.
 
 ## Build Setup
 
-You must have NodeJS and npm installed: https://nodejs.org/en/download/
+You must have a recent version of NodeJS and npm installed: https://nodejs.org/en/download/
 
     # install dependencies
     npm install
