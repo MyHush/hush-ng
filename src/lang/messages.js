@@ -438,8 +438,9 @@
 
     copied_to_clipboard: "L'adresse : {value} a été copiée dans le presse-papiers.",
 
+
     none:'Aucune',
-    
+
     to: "vers"
 
     }

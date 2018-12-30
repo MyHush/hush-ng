@@ -63,8 +63,10 @@
   import messages from '../../../lang/messages'
   import { mapState,mapGetters, mapActions } from 'vuex'
   function log(msg) { console.log(msg) }
+
   Vue.use(Vuex)
   Vue.use(VueI18n)
+
   // Create VueI18n instance with options
   //let localisation = navigator.language
   let localisation = navigator.language.split("-")[0] // Use browser first language
@@ -75,7 +77,9 @@
     //numberFormats
     messages
   })
+
   let vue = new Vue({ i18n })
+
   export default {
     name: 'addresses',
     components: {  },
