@@ -57,8 +57,28 @@
 
 <script> 
   import copy from 'copy-to-clipboard';
+  import Vue from 'vue'
+  import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
+  import messages from '../../../lang/messages'
   import { mapState,mapGetters, mapActions } from 'vuex'
   function log(msg) { console.log(msg) }
+
+  Vue.use(Vuex)
+  Vue.use(VueI18n)
+
+  // Create VueI18n instance with options
+  //let localisation = navigator.language
+  let localisation = navigator.language.split("-")[0] // Use browser first language
+  const i18n = new VueI18n({
+    fallbackLocale: 'en',
+    locale: localisation,
+    //dateTimeFormats,
+    //numberFormats
+    messages
+  })
+
+  let vue = new Vue({ i18n })
 
   export default {
     name: 'addresses',
@@ -82,19 +102,17 @@
         chatDialogVisible: false
       }
     },
-
     computed:{
       ...mapState([
         'contacts'
       ])
     },
-
     methods: {
       copy (value) {
         copy(value)
-        alert('Copied ' + value + ' to clipboard.')
+        //alert('Copied ' + value + ' to clipboard.')
+        alert(i18n.t('message.copied_to_clipboard', { value: value }))
       },
-
       addContact (value) {
          this.contactForm.id                  = null;
          this.contactForm.nickName            = "";
@@ -102,7 +120,6 @@
          this.contactForm.conversationAddress = "";
          this.contactDialogVisible            = true;
       },
-
       editContact (contact) {
          console.log(contact);
          this.contactForm.id                  = contact.id;
@@ -111,14 +128,11 @@
          this.contactForm.conversationAddress = contact.conversationAddress;
          this.contactDialogVisible            = true;
       },
-
       removeContact (contact) {
         this.$store.commit('removeContact',contact );
         this.$store.dispatch('saveContacts');
         log("Removed contact " + contact.nickName);
       },
-
-
       chatContact (contact) {
          this.chatForm.nickName            = contact.nickName;
          this.chatForm.address             = contact.address;
@@ -128,19 +142,16 @@
          console.log("Opening chat with " + contact.nickName + ":" + contact.address + " with zc=" + contact.conversationAddress );
          this.$store.dispatch('renderChat', contact);
       },
-
       saveContact (contactForm) {
          console.log(contactForm);
          this.$store.commit('addOrUpdateContact',contactForm);
          this.$store.dispatch('saveContacts');
          this.contactDialogVisible = false;
       },
-
       sendToContact (chatForm) {
         log("Send a memo to " + chatForm.nickName + " consisting of " + chatForm.memo);
         var memoLength = chatForm.memo.length;
         log("Memo length = " + memoLength);
-
         if (memoLength <= 512) {
             this.$store.dispatch('sendMemoToContact',this.chatForm);
         } else {
@@ -148,7 +159,6 @@
             log("Multipart HushList memo not implemented yet!");
         }
       },
-
     },
     mounted: function() {
     }
@@ -160,28 +170,24 @@
   #addresses {
     width: 100%;
   }
-
   #addresses #intro {
     float: left;
     font-weight: 500;
     font-size: 12pt;
     margin-left: 40px;
   }
-
   #addresses #intro span {
     position: relative;
     top: -5px;
     font-weight: 400;
     font-size: 10pt;
   }
-
   #addresses #generate-address {
     float: right;
     position: relative;
     top: 3px;
     font-weight: 500;
   }
-
   .address-list {
     clear: both;
     float: left;
@@ -191,13 +197,11 @@
     background-color: #eaeaea;
     border-radius: 11px;
   }
-
   .address-list .type {
     float: left;
     font-weight: 600;
     font-size: 12pt;
   }
-
   .address-list .copy {
     float: left;
     margin-left: 88px;
@@ -205,7 +209,6 @@
     font-size: 11pt;
     color: #5e5e5e;
   }
-
   .address-list .address-details {
     clear: left;
     float: left;
@@ -217,11 +220,9 @@
     overflow: auto;
     -webkit-app-region: no-drag;
   }
-
   .address-details .balance {
     width: 25px;
   }
-
   .address-list .address-details .address {
     position: static;
     margin-left: 120px;
@@ -232,13 +233,11 @@
     cursor: pointer;
     -webkit-app-region: no-drag;
   }
-
   .address-list .address-details .balance, .address-list .address-details .address  {
     float: left;
     font-weight: 400;
     color: #5e5e5e;
   }
-
   .button {
     font-size: 11pt;
     cursor: pointer;
@@ -254,17 +253,14 @@
     text-decoration: none;
     -webkit-app-region: no-drag;
   }
-
   .button:hover {
     background-color: #2262d6;
   }
-
   .button-alt {
     color: #3e3e3e;
     margin-right: 5px;
     background-color: transparent;
   }
-
   .button-alt:hover {
     background-color: #e2e2e2;
   }

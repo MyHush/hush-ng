@@ -16,7 +16,7 @@ and supports Linux, Mac and Windows.
 
 ## Build Setup
 
-You must have NodeJS and npm installed: https://nodejs.org/en/download/
+You must have a recent version of NodeJS and npm installed: https://nodejs.org/en/download/
 
     # install dependencies
     npm install
@@ -26,6 +26,11 @@ You must have NodeJS and npm installed: https://nodejs.org/en/download/
 
     # build electron application for production
     npm run build
+
+## Contributing
+
+You are very welcome to submit patches to Hush-NG! Please send them to the `dev` branch,
+which is our tip of development.
 
 ## License
 

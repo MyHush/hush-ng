@@ -10,7 +10,7 @@
 <el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
 </el-col>
       </el-row>
-      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
+      <el-table :data="zAddresses" height="200" style="width: 100%" v-bind:empty-text="$t('message.none')"  @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>        
       </el-table>        
@@ -23,7 +23,7 @@
 
 </el-col>
       </el-row>   
-      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
+      <el-table :data="tAddresses" height="200" style="width: 100%" v-bind:empty-text="$t('message.none')" @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>      
         <icon name=copy></icon>
@@ -123,7 +123,27 @@
 <script>
   import { mapState,mapGetters, mapActions } from 'vuex'
   import copy from 'copy-to-clipboard';
+  import Vue from 'vue'
+  import Vuex from 'vuex'
+  import VueI18n from 'vue-i18n'
+  import messages from '../../../lang/messages'
   var store = require('store')
+
+  Vue.use(Vuex)
+  Vue.use(VueI18n)
+
+  // Create VueI18n instance with options
+  //let localisation = navigator.language
+  let localisation = navigator.language.split("-")[0] // Use browser first language
+  const i18n = new VueI18n({
+    fallbackLocale: 'en',
+    locale: localisation,
+    //dateTimeFormats,
+    //numberFormats
+    messages
+  })
+
+  let vue = new Vue({ i18n })
 
   export default { 
     name: 'addresses',
@@ -176,7 +196,8 @@
       ]),
       copyToClipboard (row) {        
         copy(row.address)
-        alert('Copied ' + row.address + ' to clipboard.')
+        //alert('Copied ' + row.address + ' to clipboard.')
+        alert(i18n.t('message.copied_to_clipboard', { value: row.address }))
       },     
       importTaddrDialog() {
           this.importTaddrVisible = true;
