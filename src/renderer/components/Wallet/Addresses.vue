@@ -10,7 +10,7 @@
 <el-button round type=success id="generate-address" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></el-button>
 </el-col>
       </el-row>
-      <el-table :data="zAddresses" height="200" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
+      <el-table :data="zAddresses" height="200" style="width: 100%" v-bind:empty-text="$t('message.none')"  @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>        
       </el-table>        
@@ -23,7 +23,7 @@
 
 </el-col>
       </el-row>   
-      <el-table :data="tAddresses" height="200" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
+      <el-table :data="tAddresses" height="200" style="width: 100%" v-bind:empty-text="$t('message.none')" @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>      
         <icon name=copy></icon>
@@ -77,7 +77,7 @@
     <el-dialog v-bind:title="$t('message.import_transparent_address')" :visible.sync="importTaddrVisible" width="60%" >
       <el-form :model="importTaddrForm">
         <el-form-item v-bind:label="$t('message.private_key_wif')" label-width="100px">
-          <el-input placeholder={{$t('message.wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+          <el-input v-bind:placeholder="$t('message.wallet_import_format_taddr')" v-model="importTaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
             <ul>
