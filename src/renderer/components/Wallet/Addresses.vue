@@ -77,7 +77,7 @@
     <el-dialog v-bind:title="$t('message.import_transparent_address')" :visible.sync="importTaddrVisible" width="60%" >
       <el-form :model="importTaddrForm">
         <el-form-item v-bind:label="$t('message.private_key_wif')" label-width="100px">
-          <el-input placeholder={{$t('message.wallet_import_format_taddr')}} v-model="importTaddrForm.wif" auto-complete="off"></el-input>
+          <el-input v-bind:placeholder="$t('message.wallet_import_format_taddr')" v-model="importTaddrForm.wif" auto-complete="off"></el-input>
         </el-form-item>
         <div>
             <ul>
