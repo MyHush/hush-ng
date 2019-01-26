@@ -14,15 +14,21 @@ and supports Linux, Mac and Windows.
 
 <img src="https://raw.githubusercontent.com/MyHush/hush-ng/dev/static/hush-ng-addresses-preview.png" alt="Hush-NG preview">
 
-## Build Setup
+## Installing + Running Hush-NG
 
 You must have a recent version of NodeJS and npm installed: https://nodejs.org/en/download/
+
+    # clone repo
+    git clone https://github.com/MyHush/hush-ng
+    cd hush-ng
 
     # install dependencies
     npm install
 
     # serve with hot reload at localhost:9080
     npm run dev
+
+## Building Electron Binaries
 
     # build electron application for production
     npm run build
