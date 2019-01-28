@@ -1,23 +1,23 @@
-﻿export default {
+export default {
   en: {
     message: {
     welcome_to_hushNG: "Welcome to HushNG!",
-	installing_hushNG: "Installing HushNG",
-	launch_hushNG: "Launch HushNG",
-	cancel_setup: "Cancel setup",
-	join_us: "Join us!",
-	getting_started: "Getting Started",
-	initialize_wallet: "Initialize wallet",
-	getting_started_1: "Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets ",
-	getting_started_2: "and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.",
-	getting_started_3: "Start by downloading the Hush proving-key. Afterwards, your wallet will be initialized and ready for use",
-	
-	error_connect_daemon_title: "Error connecting to Hush daemon",
-	error_connect_daemon_message: "Please make sure Hush is running",
+  	installing_hushNG: "Installing HushNG",
+  	launch_hushNG: "Launch HushNG",
+  	cancel_setup: "Cancel setup",
+  	join_us: "Join us!",
+  	getting_started: "Getting Started",
+  	initialize_wallet: "Initialize Wallet",
+  	getting_started_1: "Hush Next-generation is your gateway to the Hush blockchain. Manage your wallets and use HushList protocol to send and receive encrypted and anonymous messages, which are called memos.",
+  	getting_started_2: "",
+  	getting_started_3: "Start by downloading the Hush proving-key. Afterwards, your wallet will be initialized and ready for use",
+
+  	error_connect_daemon_title: "Error connecting to Hush daemon",
+  	error_connect_daemon_message: "Please make sure Hush is running",
     error_talking_daemon_title: "Error talking to Hush daemon",
 
     hushd_is_already_running: "Hush is already running! Skipping download process",
-    
+
     list_of_contacts: "Below is a list of your contacts",
     new_contact: "New contact",
     edit: "Edit",
@@ -27,10 +27,10 @@
     cancel: "Cancel",
     send: "Send",
     adress: "Address",
-    addresses: "Adresses",
+    addresses: "Addresses",
     groups: "Groupes",
-    transactions: "Transactions",   
-    destination_address: "Destination address", 
+    transactions: "Transactions",
+    destination_address: "Destination address",
     from: "From",
     time: "Time",
     direction: "Direction",

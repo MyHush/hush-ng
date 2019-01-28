@@ -19,17 +19,17 @@
               <div class="progress" v-bind:class="{ pending: step.pending, error: step.error, success: step.success }"></div> {{ step.title }}
             </li>
           </ul>
-            <router-link class="button primary" to="/wallet" style="font-weight: 600;">{{$t('message.launch_hushNG')}}</router-link><br><br>
-            <button class="button button-info" @click="cancelsetup()">{{$t('message.cancel_setup')}}</button><br><br>
+          <p id="button-wrap">
+            <router-link class="button primary" to="/wallet" style="font-weight: 600;">
+              {{$t('message.launch_hushNG')}}
+            </router-link>
+            <button class="button button-info" @click="cancelsetup()">
+              {{$t('message.cancel_setup')}}
+            </button>
+          </p>
         </div>
         <div class="doc">
-          <div class="title alt">{{$t('message.join_us')}}</div>
-          <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://myhush.org/discord.html')">Discord</button>
-          <button class="button button-alt" @click="open('https://twitter.com/MyHushTeam')">Twitter</button>
-          <!-- <button class="button button-alt" @click="open('https://fb.me/MyHushTeam')">Facebook</button> -->
-          <!-- <button class="button button-alt" @click="open('https://bitcointalk.org/index.php?topic=2008578.0')">Bitcoin Talk</button> -->
-          <button class="button button-alt" @click="open('https://reddit.com/r/myhush/')">Reddit</button>
+          <join-us></join-us>
         </div>
       </div>
     </main>
@@ -39,6 +39,7 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
   import CloseButton from './shared/CloseButton'
+  import JoinUs from './shared/JoinUs'
   import Vue from 'vue'
   let vue = new Vue()
 
@@ -54,7 +55,7 @@
 
   export default {
     name: 'install',
-    components: { CloseButton, SystemInformation },
+    components: { CloseButton, SystemInformation, JoinUs },
     data () {
       return {
         installSteps: [
@@ -225,7 +226,7 @@
             var dpath = require('filepath').create(path).append(self.downloads[i].component)
             self.download(self.downloads[i].url, dpath.toString(), platform, i)
             }
-        
+
             // Initiate Hush.conf
             self.installSteps[2].pending = true
             var currentdate = new Date();
@@ -237,7 +238,7 @@
                 + currentdate.getSeconds()
             if (platform == "linux") {
             var path = require('os').homedir() + '/.hush/'
-            var conffile = path + "hush.conf" 
+            var conffile = path + "hush.conf"
             if (!fs.existsSync(conffile)) {
                 var stream = fs.createWriteStream(conffile)
                 var rpcpassword = Math.random().toString(36).slice(2)
@@ -362,7 +363,7 @@
     color: #555;
     font-weight: initial;
     list-style-type: none;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
   }
 
   .intall-list li {
@@ -373,6 +374,10 @@
   .install-list li code {
     color: #3e3e3e;
     font-weight: bold;
+  }
+
+  #button-wrap {
+    padding-bottom: 10px;
   }
 
   .progress {
@@ -430,13 +435,15 @@
   }
 
   .doc .button-info {
-    border-color: #3e3e3e;
+    margin-left: 10px;
+    border-color: #777;
     color: #3e3e3e;
+    font-weight: bold;
     margin-right: 5px;
-    background-color: transparent;
+    background-color: white;
   }
 
   .doc .button-info:hover {
-    background-color: #e2e2e2;
+    background-color: rgba(62,62,62,0.1);
   }
 </style>

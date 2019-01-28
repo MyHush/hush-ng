@@ -43,16 +43,16 @@
   })
 
   let vue = new Vue({ i18n })
- 
+
   export default {
     name: 'main-page',
     components: {SideMenu },
-   
-    computed: { 
+
+    computed: {
       ...mapState([
           'walletPolling',
-        ]), 
-   
+        ]),
+
     },
     data () {
       return {
@@ -166,7 +166,7 @@
               self.$store.dispatch('refreshOperations');
               self.$store.commit('setLastUpdate', Date.now() );
               self.$router.push('/wallet/addresses')
-            }); 
+            });
           }
 
         // This causes most of the UI to not render until the
@@ -282,6 +282,7 @@
     line-height: 80vh;
     font-size: 1.2em;
   }
+
   .pending {
     border: 2px solid #7ed35f;
     background-color: transparent;
@@ -302,70 +303,22 @@
     padding: 77px 20px 20px 88.3px;
   }
 
-  .bottom-row {
-    clear: both;
-    position: fixed;
-    bottom: 15px;
-  }
-
-  .bottom-row .box {
-    float: left;
-    width: 300px;
-    height: 95px;
-    margin-right: 15px;
-    padding: 10px 15px 10px 15px;
-    background-color: #3e3e3e;
-  }
-
-  .bottom-row .alt {
-    font-weight: 300;
-    font-size: 11pt;
-    background-color: #cacaca;
-  }
-
-  .bottom-row .box .links {
-    position: absolute;
-    bottom: 10px;
-  }
-
-  .bottom-row .box .links a {
-    text-decoration: none;
-    cursor: pointer;
-    -webkit-app-region: no-drag;
-  }
-
-  .bottom-row .box #texts {
-    float: left;
-    display: list-item;
-    list-style-type:none;
-    font-weight: 500;
-    color: #fff;
-  }
-
-  .bottom-row .box #balances {
-    float: right;
-    text-align: right;
-    list-style-type: none;
-    color: #fff;
-    display: list-item;
-  }
-  .bottom-row .box #balances li {   
-     font-weight: 500;
-  }
-
-  .container {    
+  .container {
     width: 100%;
     margin-top: 10px;
     padding: 15px 25px 15px 30px;
+  }
+
+  .container-card {
     background-color: #eaeaea;
     border-radius: 11px;
   }
-  
+
   .caption {
     font-weight: 700;
     font-size: 12pt
   }
-  
+
   .caption .balance {
     font-weight: 400;
   }
@@ -379,7 +332,7 @@
     font-weight: 400;
     font-size: 10pt
   }
-  .copy {    
+  .copy {
     font-weight: 400;
     font-size: 11pt;
     color: #5e5e5e;
@@ -402,17 +355,17 @@
     background-color:#eaeaea;
   }
 
-  el-table__body, .el-table__footer, .el-table__header {    
-      background-color:#eaeaea;
+  el-table__body, .el-table__footer, .el-table__header {
+    background-color:#eaeaea;
   }
 
   .el-table .gutter {
-        background-color:#eaeaea;
+    background-color:#eaeaea;
   }
 
   .el-table td, .el-table th.is-leaf {
-      background-color:#eaeaea;
-      border: none;
+    background-color:#eaeaea;
+    border: none;
   }
 
   .el-select-dropdown__item.is-disabled {
@@ -421,7 +374,8 @@
 }
 
   .button {
-    font-size: 11pt;
+    font-size: .9em;
+    font-weight: bold;
     cursor: pointer;
     outline: none;
     padding: 5px 15px 5px 15px;
@@ -438,6 +392,7 @@
 
   .button:hover {
     background-color: #2262d6;
+    border: 1px solid #2262d6;
   }
 
   .button-alt {
@@ -447,6 +402,6 @@
   }
 
   .button-alt:hover {
-    background-color: #e2e2e2;
+    background-color: rgba(62,62,62,0.1);
   }
 </style>
