@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="system-information">
     <div class="title">{{$t('message.informations')}}</div>
     <div class="items">
       <div class="item">
@@ -48,6 +48,14 @@
 </script>
 
 <style scoped>
+  #system-information {
+    margin-top: 10px;
+  }
+
+  #system-information .title {
+    font-weight: bold;
+  }
+
   .title {
     color: #888;
     font-size: 18px;

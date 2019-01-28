@@ -25,16 +25,14 @@
           <p>
             {{$t('message.getting_started_3')}}
           </p>
-          <router-link class="button" to="/install">{{$t('message.initialize_wallet')}}</router-link><br><br>
+          <p id="initialize">
+            <router-link class="button" to="/install">
+              {{$t('message.initialize_wallet')}}
+            </router-link>
+          </p>
         </div>
         <div class="doc">
-          <div class="title alt">{{$t('message.join_us')}}</div>
-          <button class="button button-alt" @click="open('https://github.com/MyHush')">Github</button>
-          <button class="button button-alt" @click="open('https://myhush.org/discord.html')">Discord</button>
-          <button class="button button-alt" @click="open('https://twitter.com/MyHushTeam')">Twitter</button>
-          <!-- <button class="button button-alt" @click="open('https://fb.me/MyHushTeam')">Facebook</button> -->
-          <!-- <button class="button button-alt" @click="open('https://bitcointalk.org/index.php?topic=2008578.0')">Bitcoin Talk</button> -->
-          <button class="button button-alt" @click="open('https://reddit.com/r/myhush/')">Reddit</button>
+          <join-us></join-us>
         </div>
       </div>
     </main>
@@ -44,12 +42,13 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
   import CloseButton from './shared/CloseButton'
-  
+  import JoinUs from './shared/JoinUs'
+
   var store = require('store')
 
   export default {
     name: 'landing-page',
-    components: { CloseButton, SystemInformation },
+    components: { CloseButton, SystemInformation, JoinUs },
     methods: {
       open (link) {
         this.$electron.shell.openExternal(link)
@@ -58,7 +57,7 @@
     mounted: function() {
       if (store.get('setupComplete') == true) {
         this.$router.push('/mainpage')
-       
+
       }
     }
   }
@@ -146,6 +145,7 @@
 
   .doc .button {
     font-size: .9em;
+    font-weight: bold;
     cursor: pointer;
     outline: none;
     padding: 0.75em 2em;
@@ -173,5 +173,9 @@
 
   .doc .button-alt:hover {
     background-color: #e2e2e2;
+  }
+
+  #initialize {
+    padding-bottom: 10px;
   }
 </style>
