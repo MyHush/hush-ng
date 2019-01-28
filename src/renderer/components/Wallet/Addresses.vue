@@ -10,14 +10,9 @@
         </el-col>
       </el-row>
     </div>
+    
     <div class="container container-card">
-      <!-- <el-row class="caption row-action">
-        <el-col :span="8">
-          <a class="button button-address" v-on:click="importZaddrDialog()">{{$t('message.import_zaddr')}}<icon name=angle-double-down></icon></a>
-          <a class="button button-address-alt" v-on:click="addZAddress()">{{$t('message.new_zaddr')}}<icon name=plus></icon></a>
-        </el-col>
-      </el-row> -->
-      <el-table :data="zAddresses" style="width: 100%" empty-text="None"  @row-click="copyToClipboard">
+      <el-table :data="zAddresses" style="width: 100%" v-bind:empty-text="$t('message.none')" @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column prop="addressView" v-bind:label="$t('message.shielded_zaddr')" width="*" class-name="zaddress"> </el-table-column>
       </el-table>
@@ -33,13 +28,7 @@
     </div>
 
     <div class="container container-card">
-      <!-- <el-row class="caption row-action">
-        <el-col :span="8">
-          <a class="button button-address" v-on:click="importTaddrDialog()">{{$t('message.import_taddr')}}<icon name=angle-double-down></icon></a>
-          <a class="button button-address-alt" v-on:click="addTAddress()">{{$t('message.new_taddr')}}<icon name=plus></icon></a>
-        </el-col>
-      </el-row> -->
-      <el-table :data="tAddresses" style="width: 100%" empty-text="None" @row-click="copyToClipboard">
+      <el-table :data="tAddresses" style="width: 100%" v-bind:empty-text="$t('message.none')" @row-click="copyToClipboard">
         <el-table-column prop="balance" v-bind:label="$t('message.amount')" width="140" nowrap> </el-table-column>
         <el-table-column  prop="addressView" v-bind:label="$t('message.transparent_taddr')" width="*" class-name="taddress" > </el-table-column>
         <icon name=copy></icon>
